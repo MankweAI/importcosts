@@ -1,0 +1,82 @@
+[
+    {
+        "clusterSlug": "car-parts",
+        "hs6": "870829"
+    },
+    {
+        "clusterSlug": "clothing",
+        "hs6": "610910"
+    },
+    {
+        "clusterSlug": "cosmetics",
+        "hs6": "330499"
+    },
+    {
+        "clusterSlug": "engine-oil",
+        "hs6": "271019"
+    },
+    {
+        "clusterSlug": "furniture",
+        "hs6": "940360"
+    },
+    {
+        "clusterSlug": "inverters",
+        "hs6": "850440"
+    },
+    {
+        "clusterSlug": "kitchenware",
+        "hs6": "732393"
+    },
+    {
+        "clusterSlug": "laptops",
+        "hs6": "847130"
+    },
+    {
+        "clusterSlug": "lithium-batteries",
+        "hs6": "850760"
+    },
+    {
+        "clusterSlug": "medical-gloves",
+        "hs6": "401511"
+    },
+    {
+        "clusterSlug": "power-tools",
+        "hs6": "846721"
+    },
+    {
+        "clusterSlug": "printers",
+        "hs6": "844332"
+    },
+    {
+        "clusterSlug": "routers",
+        "hs6": "851762"
+    },
+    {
+        "clusterSlug": "security-cameras",
+        "hs6": "852580"
+    },
+    {
+        "clusterSlug": "smartphones",
+        "hs6": "851713"
+    },
+    {
+        "clusterSlug": "sneakers",
+        "hs6": "640411"
+    },
+    {
+        "clusterSlug": "solar-panels",
+        "hs6": "854143"
+    },
+    {
+        "clusterSlug": "tvs",
+        "hs6": "852872"
+    },
+    {
+        "clusterSlug": "tyres",
+        "hs6": "401110"
+    },
+    {
+        "clusterSlug": "vitamins-supplements",
+        "hs6": "210690"
+    }
+]

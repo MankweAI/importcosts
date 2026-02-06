@@ -1,0 +1,22 @@
+hs6,dutyType,adValoremPct,specificRate,specificUnit,notes
+854143,FREE,0,,,Solar modules (Changed to FREE)
+850760,AD_VALOREM,15,,,Lithium-ion accumulators
+870380,AD_VALOREM,25,,,Electric vehicles
+610910,AD_VALOREM,45,,,T-shirts of cotton
+640411,COMPOUND,30,5,pair,Sports footwear
+392690,AD_VALOREM,20,,,Other articles of plastics
+950300,AD_VALOREM,20,,,Tricycles and toys
+940330,AD_VALOREM,20,,,Wooden furniture for offices
+330499,AD_VALOREM,20,,,Beauty or make-up preparations
+300490,FREE,0,,,Medicaments
+851713,FREE,0,,,Smartphones
+847130,FREE,0,,,Laptops
+620342,AD_VALOREM,45,,,Mens trousers of cotton
+620462,AD_VALOREM,45,,,Womens trousers of cotton
+640219,COMPOUND,30,5,pair,Other sports footwear
+090121,AD_VALOREM,0,,,Coffee roasted
+170490,AD_VALOREM,25,,,Sugar confectionery
+220300,SPECIFIC,,0.5,litre,Beer made from malt
+721049,AD_VALOREM,10,,,Flat-rolled products of iron
+841510,AD_VALOREM,15,,,Air conditioning machines
+010101,AD_VALOREM,5,,,Live Horses (New Item)

@@ -1,0 +1,2002 @@
+[
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/solar-panels/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "solar-panels",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/inverters/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "inverters",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/lithium-batteries/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "lithium-batteries",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/smartphones/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "smartphones",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/laptops/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "laptops",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tvs/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tvs",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/routers/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "routers",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/security-cameras/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "security-cameras",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/printers/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "printers",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/power-tools/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "power-tools",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/tyres/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "tyres",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/car-parts/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "car-parts",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/engine-oil/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "engine-oil",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/medical-gloves/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "medical-gloves",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/vitamins-supplements/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "vitamins-supplements",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/cosmetics/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "cosmetics",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/clothing/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "clothing",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/sneakers/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "sneakers",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/furniture/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "furniture",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/china/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "CN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/united-states/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "US",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/germany/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "DE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/uae/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "AE",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/india/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "IN",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/uk/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "GB",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/japan/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "JP",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/italy/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "IT",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/turkey/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "TR",
+    "destIso2": "ZA"
+  },
+  {
+    "slug": "/import-duty-vat-landed-cost/kitchenware/from/vietnam/to/south-africa",
+    "pageType": "CLUSTER_ORIGIN_DEST",
+    "indexStatus": "NOINDEX",
+    "canonicalSlug": null,
+    "readinessScore": 0,
+    "clusterSlug": "kitchenware",
+    "originIso2": "VN",
+    "destIso2": "ZA"
+  }
+]
