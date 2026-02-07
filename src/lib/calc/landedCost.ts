@@ -65,8 +65,27 @@ export async function calculateLandedCost(
         timestamp: new Date(),
     });
 
-    // 3. Calculate Customs Duty
-    const dutyResult = calculateDuty(tariffRate, input, input.customsValue);
+    // 3. Resolve Customs Value based on Incoterm
+    const baseCustomsValue = input.customsValue;
+    const freightInsurance = input.incoterm && input.incoterm !== "CIF"
+        ? (input.freightInsuranceCost || 0)
+        : 0;
+    const customsValue = baseCustomsValue + freightInsurance;
+
+    auditTrace.push({
+        step: "CUSTOMS_VALUE",
+        description: "Computed customs value based on incoterm and freight/insurance",
+        value: {
+            baseCustomsValue,
+            incoterm: input.incoterm || "CIF",
+            freightInsuranceCost: freightInsurance,
+            customsValue
+        },
+        timestamp: new Date(),
+    });
+
+    // 4. Calculate Customs Duty
+    const dutyResult = calculateDuty(tariffRate, input, customsValue);
 
     dutyResult.debugLog.forEach(log => {
         auditTrace.push({
@@ -76,8 +95,8 @@ export async function calculateLandedCost(
         });
     });
 
-    // 4. Calculate VAT
-    const vatResult = calculateVat(input.customsValue, dutyResult.lineItem.amount);
+    // 5. Calculate VAT
+    const vatResult = calculateVat(customsValue, dutyResult.lineItem.amount);
 
     vatResult.debugLog.forEach(log => {
         auditTrace.push({
@@ -87,8 +106,8 @@ export async function calculateLandedCost(
         });
     });
 
-    // 5. Calculate Ancillary Costs (Phase 8b)
-    const ancillaryResult = calculateAncillary(input, input.customsValue);
+    // 6. Calculate Ancillary Costs (Phase 8b)
+    const ancillaryResult = calculateAncillary(input, customsValue);
 
     ancillaryResult.debugLog.forEach(log => {
         auditTrace.push({
@@ -98,14 +117,17 @@ export async function calculateLandedCost(
         });
     });
 
-    // 6. Aggregate Totals
+    // 7. Aggregate Totals
     const breakdown: CalcLineItem[] = [
         dutyResult.lineItem,
         vatResult.lineItem,
         ...ancillaryResult.items
     ];
 
-    const landedCostTotal = input.customsValue + dutyResult.lineItem.amount + vatResult.lineItem.amount + ancillaryResult.total;
+    const landedCostTotal = customsValue + dutyResult.lineItem.amount + vatResult.lineItem.amount + ancillaryResult.total;
+    const landedCostExVat = input.importerType === "VAT_REGISTERED"
+        ? landedCostTotal - vatResult.lineItem.amount
+        : undefined;
 
     auditTrace.push({
         step: "COMPLETE",
@@ -114,7 +136,7 @@ export async function calculateLandedCost(
         timestamp: new Date(),
     });
 
-    // 6. Persist Run
+    // 8. Persist Run
     // Using the service we built in Phase 1
     try {
         await createCalcRun({
@@ -150,15 +172,20 @@ export async function calculateLandedCost(
     // Assumptions
     const assumptions = {
         exchangeRate: 18.50, // indicative for now, or 1.0 if strictly ZAR. Let's use a "Reference Rate" for display.
-        dutyRateUsed: dutyResult.lineItem.rateApplied || "0%"
+        dutyRateUsed: dutyResult.lineItem.rateApplied || "0%",
+        customsValueBase: baseCustomsValue,
+        customsValueCif: customsValue,
+        vatRecoverable: input.importerType === "VAT_REGISTERED"
     };
 
     return {
         landedCostTotal,
+        landedCostExVat,
         breakdown,
         currency: "ZAR",
         tariffVersionId: activeVersion.id,
         tariffVersionLabel: activeVersion.label,
+        tariffVersionEffectiveFrom: activeVersion.effectiveFrom.toISOString(),
         confidence: "HIGH",
         auditTrace,
         landedCostPerUnit: input.quantity ? landedCostTotal / input.quantity : undefined,

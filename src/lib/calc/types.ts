@@ -3,6 +3,8 @@ import { ConfidenceLabel } from "@prisma/client";
 export interface CalcInput {
     hsCode: string;
     customsValue: number; // In ZAR
+    originCountry?: string;
+    importerType?: "VAT_REGISTERED" | "NON_VENDOR";
     quantity?: number; // Count of items
     volumeLitres?: number; // For specific duties (e.g. beverages)
     weightKg?: number; // For specific duties (e.g. heavy goods)
@@ -29,12 +31,14 @@ export interface AuditTraceStep {
 
 export interface CalcOutput {
     landedCostTotal: number;
+    landedCostExVat?: number;
     breakdown: CalcLineItem[];
     currency: string;
 
     // Metadata
     tariffVersionId: string;
     tariffVersionLabel: string;
+    tariffVersionEffectiveFrom?: string;
     confidence: ConfidenceLabel;
     auditTrace: AuditTraceStep[];
 
@@ -46,5 +50,8 @@ export interface CalcOutput {
     assumptions?: {
         exchangeRate: number;
         dutyRateUsed: string;
+        customsValueBase?: number;
+        customsValueCif?: number;
+        vatRecoverable?: boolean;
     };
 }

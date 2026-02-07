@@ -1,0 +1,251 @@
+recommendations_for_gold_grade_improvements:
+  overview:
+    objective: "Move Landed Costs app from Bronze to Gold by making it decision-grade for professional SA importers across personas."
+    principles:
+      - "Decision-first: show key answers (taxes, landed cost) before details."
+      - "Never hide uncertainty: HS classification confidence and alternatives must be visible."
+      - "Auditability: every number must be explainable with an input → rule → output chain."
+      - "Importer mental model: inputs and outputs must mirror how importers/brokers actually think and work."
+
+  ui_ux_layout_and_flow:
+    above_the_fold_results_focus:
+      description: "Reorder interface so key results appear immediately after calculation."
+      requirements:
+        - "After user hits Calculate, show large, prominent summary numbers at the top of results area:"
+        - "Total Taxes (ZAR)"
+        - "Total Landed Cost (ZAR)"
+        - "Landed Cost per Unit (ZAR)"
+      rationale: "Mirrors ‘one-screen answer-first’ layout and reduces perceived complexity."
+      implementation_notes:
+        - "Ensure totals are not only present in a table footer; they must be surfaced as primary UI elements."
+        - "If results render below inputs, auto-scroll or anchor-jump to the summary block."
+
+    contextual_header_and_breadcrumbs:
+      description: "Replace generic title with contextual header reflecting the user’s shipment context."
+      requirements:
+        - "On tool pages, include breadcrumbs and a contextual H1 like:"
+        - "Import duty & landed cost for [Product/HS] from [Origin] → South Africa"
+        - "On the generic home page, allow user to select/search product/HS first, then reflect that context in the header."
+      rationale: "Immediate orientation increases trust and reduces confusion."
+
+    expanded_input_fields:
+      description: "Add missing inputs required for real-world landed-cost accuracy."
+      minimum_additions:
+        origin_country_selector:
+          details:
+            - "Add origin selector (destination assumed South Africa but must be explicit in UI)."
+            - "Tariffs, trade preference, and rules vary by origin."
+        freight_insurance_cost_field:
+          details:
+            - "Add a field for freight/insurance costs."
+            - "Offer toggle behavior: include shipping in CIF or enter separately."
+            - "Clarify what is included in Customs Value vs freight/insurance to avoid double counting."
+        incoterm_selector:
+          details:
+            - "Allow selection of incoterms (e.g., FOB, CIF, DDP)."
+            - "Current ‘CIF (Standard)’ fixed value must become selectable."
+            - "Provide tooltip/info icon explaining incoterm implications for customs value and landed cost."
+        importer_type:
+          details:
+            - "Add importer profile selection:"
+            - "VAT-registered business vs private/non-vendor importer."
+            - "VAT treatment and whether VAT is recoverable changes decision-making."
+        quantity_and_unit_measures:
+          details:
+            - "Quantity exists; consider adding weight/volume if relevant to tariff calculations."
+            - "Some tariff lines include unit-based duties; weight/volume supports those scenarios."
+      rationale: "Form must match how importers price shipments; missing inputs undermines decision-grade output."
+
+    scenario_presets_and_comparison:
+      description: "Add quick presets and comparison tools to match importer decision behavior."
+      requirements:
+        - "Preset buttons for common value bands (example: R10k, R50k, R250k) that recalculate instantly."
+        - "Provide simple compare flow (side-by-side) for:"
+        - "Origin A vs Origin B"
+        - "Incoterm A vs Incoterm B"
+      output_expectations:
+        - "Comparison table should show Duty, VAT, Total Taxes, Total Landed Cost, and deltas."
+      rationale: "Importers commonly compare sourcing options and terms; comparison drives engagement and conversion."
+
+    document_checklist_and_next_steps:
+      description: "Add actionable post-calc workflow elements: checklist + next actions."
+      requirements:
+        document_checklist:
+          grouping:
+            - "Always required"
+            - "Commonly required"
+            - "If applicable"
+          features:
+            - "Short ‘why’ tooltips on each doc."
+            - "Keep it ‘zero-PDF’: embed structured guidance rather than linking users to long PDFs."
+        next_steps_actions_block:
+          examples:
+            - "Compare with other origins"
+            - "View HS code directory"
+            - "See import checklist"
+          internal_linking:
+            - "Ensure meaningful internal links guide users to adjacent tools/pages (HS lookup, anti-dumping info, compliance notes)."
+      rationale: "Importing is more than math; users need to know what to do next."
+
+    results_drawer_why_for_all_lines:
+      description: "Ensure every line item supports an audit trail via a ‘Why?’ drawer."
+      requirements:
+        - "Every component (Duty, VAT, fees) must have a clickable ‘Why?’ explanation."
+        - "Drawer must include:"
+        - "Formula"
+        - "Values used"
+        - "Rates applied"
+        - "Tariff version/effective date"
+        - "Official source or legal reference text pointer (not long quotes) that supports the rule."
+      rationale: "Professional importers and brokers demand explainability; auditability builds trust."
+
+    sticky_action_bar:
+      description: "Provide persistent actions after calculation."
+      requirements:
+        - "Sticky footer or action bar with:"
+        - "Save"
+        - "Export (PDF/CSV)"
+        - "Compare Scenarios"
+        - "Watchlist (alert)"
+        logged_out_behavior:
+          - "For logged-out users, Save/Export should prompt sign-in rather than failing silently."
+      rationale: "Keeps high-intent actions visible; supports workflow continuity."
+
+    mobile_responsiveness:
+      description: "Ensure usability on mobile without overwhelming users."
+      requirements:
+        - "On small screens, keep Calculate and primary actions visible."
+        - "Use collapsible sections to avoid long scrolling."
+        - "Breakdown table can collapse details by default while preserving summary totals."
+
+  hs_classification_ux_and_logic:
+    show_multiple_hs_candidates_and_confidence:
+      description: "HS selection must surface uncertainty and alternatives throughout the flow."
+      requirements:
+        - "Display multiple HS6 candidates in search results (already partially present)."
+        - "After selection and calculation, show an HS confidence badge near the result summary."
+        - "If confidence is low, show next-best alternatives and optionally their cost impact."
+      rationale: "Wrong HS means wrong duty/VAT; the app must communicate uncertainty rather than output false precision."
+
+    guided_disambiguation_questions:
+      description: "Introduce 1–3 clarifying questions when classification is ambiguous."
+      triggers:
+        - "Low-confidence HS matches"
+        - "Multiple close candidates"
+      examples:
+        - "Material composition (steel vs aluminum)"
+        - "Form factor or functional attributes (wired vs wireless)"
+      ui_shape:
+        - "Simple yes/no toggles or short multiple-choice prompts that refine candidates."
+      rationale: "Mirrors expert classification practice; increases correctness while remaining lightweight."
+
+    free_text_hs_lookup_directory:
+      description: "Create a dedicated HS finder tool/page for browsing and searching the tariff hierarchy."
+      requirements:
+        - "Keyword search across HS descriptions."
+        - "Browse by chapters and drill down."
+        - "Accessible from calculator via ‘Not sure of HS code?’ link or help icon."
+      rationale: "Many importers are uncertain; they need a discovery path that doesn’t require exact code knowledge."
+
+    error_handling_and_suggestions:
+      description: "Handle missing HS code/rate gracefully."
+      requirements:
+        - "If HS code not found or no rate defined:"
+        - "Explain what this means (possible misclassification or missing data)."
+        - "Suggest alternatives: broader category, nearby codes, or consult broker."
+        - "Provide links to HS finder and support resources."
+      rationale: "Raw errors undermine trust; guided recovery keeps users moving."
+
+    hs_range_calculation:
+      description: "When uncertainty remains, compute and display a duty/tax range."
+      requirements:
+        - "If multiple plausible HS candidates with different rates exist, show:"
+        - "Estimated Duty: [min] – [max]"
+        - "Explain why a range is shown and how to resolve it."
+      rationale: "Communicates uncertainty honestly and protects user decision-making."
+
+  accuracy_verification_layer:
+    incorporate_real_shipping_and_currency:
+      description: "Make currency and shipping assumptions explicit and editable."
+      requirements:
+        - "Let users enter freight/insurance and choose incoterms; compute customs value accordingly."
+        - "Allow exchange rate input or selection (or provide defaults) and show how it was applied."
+        - "Expose all assumptions (e.g., default exchange rate) so the user can override."
+      rationale: "Import costing depends heavily on freight and FX; hardcoded assumptions reduce accuracy."
+
+    full_duty_formula_compliance:
+      description: "Ensure engine handles all relevant duty types and levy structures."
+      requirements:
+        - "Support ad valorem duties and unit-based duties where applicable."
+        - "Include special duties/levies where relevant (e.g., excise, surcharges, category-specific fees) if present in tariff rules."
+        - "Add regression tests using known product examples to verify calculation steps."
+      rationale: "Decision-grade outputs must match real statutory structures, not simplified math."
+
+    cross_check_with_customs_cases:
+      description: "Build ground-truth validation against real shipments or broker outputs."
+      requirements:
+        - "Collect test shipments (trusted examples) and verify tool reproduces same outcomes."
+        - "Provide calibration/audit mode showing step-by-step computations as a broker would do."
+        - "If possible, support invoice upload or structured input to mirror broker workflow."
+      rationale: "Gold status requires demonstrated parity with professional practice."
+
+    update_policy_and_alerts:
+      description: "Make tariff data freshness and changes visible."
+      requirements:
+        - "Show tariff effective date / version on results (not only buried)."
+        - "Optionally show historical change info when available (rate changed date, old→new)."
+        - "Have a clear data update mechanism to stay aligned with official updates."
+      rationale: "Importers need confidence that numbers reflect current law."
+
+    persona_specific_modes:
+      description: "Different users need different complexity levels without changing underlying math."
+      requirements:
+        - "Add an ‘Advanced Mode’ toggle for brokers/enterprises:"
+        - "Override assumptions, see full audit trail by default, fine-grained controls."
+        - "Keep novice mode simple with safe defaults and guided explanations."
+      rationale: "One-size-fits-all UI reduces adoption across personas."
+
+  optional_high_value_features:
+    tariff_change_alerts_and_watchlist:
+      description: "Let users watch HS codes/products and get notified when rates/rules change."
+      requirements:
+        - "Watchlist per HS code or saved scenario."
+        - "Notifications when relevant tariff changes or trade rules affect a watched item."
+      value: "High willingness-to-pay feature for repeat importers and procurement teams."
+
+    downloadable_reports:
+      description: "One-click PDF/CSV exports with full traceability."
+      requirements:
+        - "Exports must include:"
+        - "All inputs (HS, origin, values, incoterm, freight/insurance, FX rate, importer type)"
+        - "Full breakdown (duty, VAT, fees)"
+        - "HS confidence/alternatives if applicable"
+        - "Audit trail (formulas/rules summary)"
+        - "Document checklist and compliance notes"
+      ui_notes:
+        - "Provide a polished PDF format (date-stamped, structured sections)."
+        - "CSV export supports spreadsheet/ERP workflows."
+
+    scenario_comparisons_pro_feature:
+      description: "Dedicated compare tool for multiple calculations side-by-side."
+      requirements:
+        - "Compare origins and incoterms and highlight deltas."
+        - "Include differences in compliance/doc requirements and risk flags."
+      value: "Matches real sourcing decisions and broker quoting workflows."
+
+    watchlist_and_dashboard:
+      description: "Logged-in workspace for saved scenarios and team workflows."
+      requirements:
+        - "Dashboard listing saved calculations with key totals and context."
+        - "Scenario status tracking (optional): invoice uploaded, pending, etc."
+        - "Share/collaboration hooks (at least export/share links) for teams."
+      value: "Supports repeat usage and enterprise adoption."
+
+    localization_and_support:
+      description: "Polish for SA context and user confidence."
+      requirements:
+        - "ZAR formatting and local date formats."
+        - "Integrated or selectable exchange rate references (with user override)."
+        - "Embedded glossary/tooltips for key terms (e.g., ‘Letter of Authority’)."
+        - "Support/FAQ resources accessible from key decision points."
+      value: "Reduces friction for novices while remaining credible to pros."

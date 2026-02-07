@@ -33,7 +33,12 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
     const [form, setForm] = useState({
         hsCode: defaultHsCode,
         customsValue: "",
+        originCountry: "",
+        importerType: "VAT_REGISTERED" as const,
+        freightInsuranceCost: "",
         quantity: "1",
+        weightKg: "",
+        volumeLitres: "",
         incoterm: "CIF" as const
     });
 
@@ -41,6 +46,15 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
     React.useEffect(() => {
         setForm(prev => ({ ...prev, hsCode: defaultHsCode }));
     }, [defaultHsCode]);
+
+    React.useEffect(() => {
+        if (!result) return;
+        const timer = setTimeout(() => {
+            const summary = document.getElementById("result-summary");
+            summary?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+        return () => clearTimeout(timer);
+    }, [result]);
 
     const handleCalculate = async () => {
         setLoading(true);
@@ -50,14 +64,24 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
         try {
             const val = parseFloat(form.customsValue);
             const qty = parseInt(form.quantity);
+            const freightVal = parseFloat(form.freightInsuranceCost);
+            const weightVal = parseFloat(form.weightKg);
+            const volumeVal = parseFloat(form.volumeLitres);
             if (isNaN(val)) throw new Error("Please enter a valid customs value");
+            if (form.incoterm !== "CIF" && form.freightInsuranceCost && isNaN(freightVal)) {
+                throw new Error("Please enter a valid freight/insurance value");
+            }
 
             const payload = {
                 hsCode: form.hsCode,
                 customsValue: val,
+                originCountry: form.originCountry?.trim() || undefined,
+                importerType: form.importerType,
                 quantity: isNaN(qty) ? 1 : qty,
+                weightKg: !isNaN(weightVal) ? weightVal : undefined,
+                volumeLitres: !isNaN(volumeVal) ? volumeVal : undefined,
                 incoterm: form.incoterm,
-                // Assume 0 freight for CIF default simplified flow
+                freightInsuranceCost: form.incoterm !== "CIF" && !isNaN(freightVal) ? freightVal : undefined
             };
 
             // Validate locally first? Or just send.
@@ -111,6 +135,19 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
                     </div>
 
                     <div className="space-y-2">
+                        <Label htmlFor="originCountry">Origin Country</Label>
+                        <Input
+                            id="originCountry"
+                            value={form.originCountry}
+                            onChange={e => setForm({ ...form, originCountry: e.target.value })}
+                            placeholder="e.g. China"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Destination assumed South Africa. Origin affects duty preferences and compliance.
+                        </p>
+                    </div>
+
+                    <div className="space-y-2">
                         <Label htmlFor="value">Customs Value (ZAR)</Label>
                         <Input
                             id="value"
@@ -119,6 +156,9 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
                             onChange={e => setForm({ ...form, customsValue: e.target.value })}
                             placeholder="e.g. 10000"
                         />
+                        <p className="text-xs text-muted-foreground">
+                            If incoterm is CIF, include freight/insurance in this value. Otherwise enter invoice value and add freight below.
+                        </p>
                         <div className="flex gap-2 mt-1">
                             {[10000, 50000, 250000].map(val => (
                                 <Button
@@ -134,7 +174,62 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label>Importer Type</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                            <Button
+                                type="button"
+                                variant={form.importerType === "VAT_REGISTERED" ? "default" : "outline"}
+                                onClick={() => setForm({ ...form, importerType: "VAT_REGISTERED" })}
+                            >
+                                VAT-Registered
+                            </Button>
+                            <Button
+                                type="button"
+                                variant={form.importerType === "NON_VENDOR" ? "default" : "outline"}
+                                onClick={() => setForm({ ...form, importerType: "NON_VENDOR" })}
+                            >
+                                Non-Vendor
+                            </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            VAT-registered importers may recover VAT; we show both totals after calculation.
+                        </p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>Incoterm</Label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {(["CIF", "FOB", "EXW"] as const).map(term => (
+                                <Button
+                                    key={term}
+                                    type="button"
+                                    variant={form.incoterm === term ? "default" : "outline"}
+                                    onClick={() => setForm({ ...form, incoterm: term })}
+                                >
+                                    {term}
+                                </Button>
+                            ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            Incoterm determines whether freight/insurance is included in customs value.
+                        </p>
+                    </div>
+
+                    {form.incoterm !== "CIF" && (
+                        <div className="space-y-2">
+                            <Label htmlFor="freightInsurance">Freight & Insurance (ZAR)</Label>
+                            <Input
+                                id="freightInsurance"
+                                type="number"
+                                value={form.freightInsuranceCost}
+                                onChange={e => setForm({ ...form, freightInsuranceCost: e.target.value })}
+                                placeholder="e.g. 2500"
+                            />
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="qty">Quantity</Label>
                             <Input
@@ -146,10 +241,24 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>Incoterm</Label>
-                            <div className="flex h-10 items-center px-3 rounded-md border bg-muted/50 text-sm text-muted-foreground">
-                                CIF (Standard)
-                            </div>
+                            <Label htmlFor="weight">Weight (kg)</Label>
+                            <Input
+                                id="weight"
+                                type="number"
+                                value={form.weightKg}
+                                onChange={e => setForm({ ...form, weightKg: e.target.value })}
+                                placeholder="Optional"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="volume">Volume (litres)</Label>
+                            <Input
+                                id="volume"
+                                type="number"
+                                value={form.volumeLitres}
+                                onChange={e => setForm({ ...form, volumeLitres: e.target.value })}
+                                placeholder="Optional"
+                            />
                         </div>
                     </div>
 

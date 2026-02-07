@@ -44,6 +44,11 @@ export function WhyDrawer({ isOpen, onClose, item, context }: WhyDrawerProps) {
                                 Tariff: {context.tariffVersionLabel}
                             </Badge>
                         )}
+                        {context?.tariffVersionEffectiveFrom && (
+                            <Badge variant="secondary" className="text-xs">
+                                Effective: {new Date(context.tariffVersionEffectiveFrom).toLocaleDateString()}
+                            </Badge>
+                        )}
                     </div>
                     <SheetTitle className="text-2xl font-bold mt-2">{item.label}</SheetTitle>
                     <SheetDescription>

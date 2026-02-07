@@ -5,9 +5,10 @@ import { CalcOutput, CalcLineItem } from "@/lib/calc/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { WhyDrawer } from "./WhyDrawer";
 import { ReportCTA } from "./ReportCTA";
-import { Info, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 interface ResultBreakdownProps {
     result: CalcOutput;
@@ -18,6 +19,9 @@ interface ResultBreakdownProps {
 
 export function ResultBreakdown({ result, referenceResult, onCompare, onClearCompare }: ResultBreakdownProps) {
     const [selectedItem, setSelectedItem] = useState<CalcLineItem | null>(null);
+    const dutyAmount = result.breakdown.find(i => i.id === "duty")?.amount || 0;
+    const vatAmount = result.breakdown.find(i => i.id === "vat")?.amount || 0;
+    const totalTaxes = dutyAmount + vatAmount;
 
     // Comparison View Logic
     const comparisonCard = referenceResult ? (
@@ -63,6 +67,49 @@ export function ResultBreakdown({ result, referenceResult, onCompare, onClearCom
 
     return (
         <div className="w-full space-y-4">
+            {/* Summary (Decision-First) */}
+            <div id="result-summary" className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="p-6">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <h2 className="text-xl font-semibold">Summary</h2>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>HS Confidence</span>
+                            <Badge variant="secondary">{result.confidence}</Badge>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="rounded-md border bg-muted/30 p-4">
+                            <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Taxes</p>
+                            <p className="text-2xl font-bold">{result.currency} {totalTaxes.toFixed(2)}</p>
+                        </div>
+                        <div className="rounded-md border bg-muted/30 p-4">
+                            <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Landed Cost</p>
+                            <p className="text-2xl font-bold">{result.currency} {result.landedCostTotal.toFixed(2)}</p>
+                        </div>
+                        <div className="rounded-md border bg-muted/30 p-4">
+                            <p className="text-xs text-muted-foreground uppercase tracking-wider">Cost Per Unit</p>
+                            <p className="text-2xl font-bold">
+                                {result.landedCostPerUnit ? `${result.currency} ${result.landedCostPerUnit.toFixed(2)}` : "-"}
+                            </p>
+                        </div>
+                    </div>
+
+                    {typeof result.landedCostExVat === "number" && (
+                        <div className="mt-4 text-sm text-muted-foreground">
+                            VAT-registered view: Net landed cost (ex VAT) = <span className="font-semibold text-foreground">{result.currency} {result.landedCostExVat.toFixed(2)}</span>
+                        </div>
+                    )}
+
+                    <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                        <span>Tariff Version: <span className="font-medium text-foreground">{result.tariffVersionLabel}</span></span>
+                        {result.tariffVersionEffectiveFrom && (
+                            <span>Effective: <span className="font-medium text-foreground">{new Date(result.tariffVersionEffectiveFrom).toLocaleDateString()}</span></span>
+                        )}
+                    </div>
+                </div>
+            </div>
+
             {/* Comparison Display - Force Render Update */}
             <div key="comparison-section-v2" className="animate-in fade-in slide-in-from-top-4 duration-500">
                 {comparisonCard}
