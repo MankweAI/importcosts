@@ -1,0 +1,486 @@
+spec:
+  name: "landed_costs_dual_mode_capture_inputs"
+  version: "1.0.0"
+  status: "implementation_ready"
+  owner: "product"
+  audience: "SWE LLM (OpenAI Codex)"
+  objective:
+    - "Capture BOTH importer intents:"
+    - "1) Users who do NOT have full shipment inputs (planning / comparing) -> Assisted Mode"
+    - "2) Users who DO have full shipment inputs (invoice/FX/freight/insurance/etc.) -> Professional Mode"
+    - "Maintain one shared calculation engine; differentiate UX, defaults, and affordances."
+    - "Strengthen USP vs free calculators by emphasizing HS verification, uncertainty transparency, auditability, and reusable artifacts."
+
+  non_goals:
+    - "Do not change the core calculation engine logic beyond wiring existing inputs."
+    - "Do not remove existing Assisted Mode flow; this is additive."
+    - "Do not introduce paid-only access to core calculation result numbers (paywall artifacts/workflow only)."
+
+  guiding_principles:
+    - "Two clear entry paths; same backend engine."
+    - "Importer POV: flows must match real user mental models (planning vs reconciling a real shipment)."
+    - "Never hide uncertainty: HS confidence + alternatives + guided questions when low confidence + optional range outputs."
+    - "Auditability is a first-class UI output: every number is explainable."
+    - "Free tier must remain useful for pSEO; monetization via artifacts + memory + monitoring + compare."
+
+  user_intents_and_personas:
+    intents:
+      - id: "planning_estimate"
+        label: "I don’t have inputs"
+        description: "User wants to estimate landed costs from product intent (import X from Y) and compare options."
+        primary_mode: "assisted"
+      - id: "reconcile_real_shipment"
+        label: "I already have inputs"
+        description: "User has invoice, exchange rate, freight/insurance breakdowns; wants accurate landed cost + defensible audit trail."
+        primary_mode: "professional"
+    personas:
+      - "Solo importer / side business"
+      - "SME importer (repeat shipments, needs internal approvals)"
+      - "Procurement team (compares suppliers/origins)"
+      - "Finance team (needs defensible numbers + exports)"
+      - "Customs broker / clearing agent (advanced controls, audit trail)"
+      - "Freight forwarder/logistics coordinator (shipment detail entry, doc requirements)"
+
+  ia_information_architecture:
+    pages:
+      - route: "/"
+        name: "Home"
+        purpose:
+          - "Offer two explicit entry paths: Assisted Mode vs Professional Mode."
+          - "Drive both pSEO and direct-tool usage."
+      - route: "/calculate"
+        name: "Calculator (mode selector wrapper)"
+        purpose:
+          - "Central calculation page; loads either Assisted or Professional mode based on mode param/state."
+      - route: "/calculate?mode=assisted"
+        name: "Assisted Mode"
+        purpose:
+          - "Help users who don’t know inputs."
+      - route: "/calculate?mode=professional"
+        name: "Professional Mode"
+        purpose:
+          - "Fast path for users with full shipment details."
+      - route: "/import-duty-vat-landed-cost/[product]/[origin]"
+        name: "pSEO landing page"
+        purpose:
+          - "Pre-filled example and capture both intents via two-mode CTA."
+
+  ui_ux_requirements:
+    global:
+      mode_switcher:
+        description: "Persistent switch/tabs to toggle Assisted vs Professional mode."
+        placement:
+          - "Visible on Home and Calculator pages."
+          - "On pSEO pages, present as two CTAs (buttons) rather than tabs."
+        modes:
+          assisted:
+            label: "Assisted Landed Cost"
+            subtitle: "Recommended if you’re planning or comparing suppliers"
+          professional:
+            label: "Professional Landed Cost"
+            subtitle: "I already have my shipment details"
+        persistence:
+          - "Remember last selected mode in localStorage and/or user profile."
+          - "Allow URL param override (?mode=...)."
+
+      shared_engine_contract:
+        description: "Both modes must submit to the same calculation API/engine."
+        api_endpoint: "/api/calculate"
+        requirements:
+          - "Mode affects only UI defaults, field visibility, and helper flows—not core math results."
+
+      outputs_above_fold:
+        description: "After calculation, show key results above fold."
+        required_fields:
+          - "Total Taxes (ZAR)"
+          - "Total Landed Cost (ZAR)"
+          - "Landed Cost per Unit (ZAR)"
+        behavior:
+          - "Auto-scroll or anchor-jump to results summary after calculation."
+          - "Do not hide totals inside table footer only."
+
+      auditability_why_drawer:
+        description: "Every line item must include a 'Why?' drawer."
+        per_line_must_include:
+          - "Formula"
+          - "Values used"
+          - "Rates applied"
+          - "Tariff version/effective date"
+          - "Short legal/source reference pointer (no long quotes)"
+        availability:
+          - "Always available in both modes (free)."
+
+      post_calc_action_bar:
+        description: "Sticky actions after calculation."
+        actions:
+          - id: "save"
+            label: "Save"
+            access: "logged_in_required"
+            logged_out_behavior: "Prompt sign-in modal"
+          - id: "export_pdf"
+            label: "Export PDF"
+            access: "paid_or_logged_in_gate"
+            logged_out_behavior: "Prompt sign-in modal"
+          - id: "export_csv"
+            label: "Export CSV"
+            access: "paid_or_logged_in_gate"
+            logged_out_behavior: "Prompt sign-in modal"
+          - id: "compare"
+            label: "Compare Scenarios"
+            access: "paid_or_logged_in_gate"
+            logged_out_behavior: "Prompt sign-in modal"
+          - id: "watchlist"
+            label: "Watchlist / Alerts"
+            access: "paid_or_logged_in_gate"
+            logged_out_behavior: "Prompt sign-in modal"
+
+      document_checklist_block:
+        description: "Show structured documents checklist beneath results."
+        groups:
+          - "Always required"
+          - "Commonly required"
+          - "If applicable"
+        each_item:
+          - "Short title"
+          - "Why tooltip"
+        availability:
+          - "Always visible in both modes (free)."
+
+      mobile_responsiveness:
+        requirements:
+          - "Keep Calculate button and primary actions visible on small screens."
+          - "Use collapsible sections for breakdown details."
+          - "Preserve results summary always."
+
+    home_page_specific:
+      hero:
+        title: "Landed Cost you can defend"
+        description: "Plan a shipment or reconcile a real one—get an auditable landed cost with HS confidence."
+      entry_cards:
+        - mode: "assisted"
+          cta: "Help me estimate"
+          description: "I’m planning / comparing. I don’t have all the numbers yet."
+        - mode: "professional"
+          cta: "I have my shipment details"
+          description: "I have invoice, FX rate, freight/insurance. Calculate precisely."
+
+    pseo_page_specific:
+      description: "pSEO landing pages must capture both intents."
+      required_ctas:
+        - id: "cta_professional"
+          label: "Adjust for my real shipment (I have inputs)"
+          target: "/calculate?mode=professional"
+          behavior:
+            - "Prefill known context from page (product/HS candidate, origin, destination=ZA)."
+        - id: "cta_assisted"
+          label: "Help me estimate (I don’t have inputs)"
+          target: "/calculate?mode=assisted"
+          behavior:
+            - "Prefill known context from page (product intent, origin)."
+
+  professional_mode_spec:
+    purpose:
+      - "Fast, precise entry path for users who already have shipment details."
+      - "Optimize for accuracy, speed, and auditability."
+      - "Must still provide HS verification and uncertainty transparency."
+
+    form_layout:
+      sections_in_order:
+        - id: "shipment_details"
+          title: "Shipment details"
+          fields:
+            - id: "invoice_value"
+              label: "Invoice value"
+              type: "money"
+              required: true
+            - id: "currency"
+              label: "Currency"
+              type: "select"
+              required: true
+              options: ["ZAR", "USD", "EUR", "GBP", "CNY", "Other"]
+            - id: "exchange_rate"
+              label: "Exchange rate"
+              type: "number"
+              required: true
+              help:
+                - "Editable. Must show how rate is used in audit trail."
+            - id: "freight_cost"
+              label: "Freight"
+              type: "money"
+              required: true
+            - id: "insurance_cost"
+              label: "Insurance"
+              type: "money"
+              required: false
+              default: 0
+            - id: "other_charges"
+              label: "Other charges"
+              type: "money"
+              required: false
+              default: 0
+            - id: "quantity"
+              label: "Quantity"
+              type: "number"
+              required: false
+              default: 1
+
+        - id: "customs_details"
+          title: "Customs details"
+          fields:
+            - id: "hs_code"
+              label: "HS Code"
+              type: "hs_selector"
+              required: true
+              behavior:
+                - "Allow direct HS entry."
+                - "Show HS confidence + alternatives immediately after entry."
+                - "Include 'Verify HS' button to run guided disambiguation if confidence < threshold."
+            - id: "origin_country"
+              label: "Origin country"
+              type: "country_select"
+              required: true
+            - id: "destination_country"
+              label: "Destination"
+              type: "fixed"
+              value: "South Africa"
+            - id: "incoterm"
+              label: "Incoterm"
+              type: "select"
+              required: true
+              options: ["FOB", "CIF", "EXW", "DDP", "DAP", "Other"]
+              help:
+                - "Affects customs value computation; reflected in audit."
+            - id: "importer_type"
+              label: "Importer type"
+              type: "select"
+              required: true
+              options:
+                - "VAT-registered business (vendor)"
+                - "Non-vendor / private importer"
+
+      primary_action:
+        id: "calculate"
+        label: "Calculate (with audit trail)"
+        behavior:
+          - "Validates required fields."
+          - "Submits payload to /api/calculate."
+          - "Scrolls to results summary."
+
+    hs_verification_flow:
+      description: "Professional mode must not blindly accept HS. Verification is the differentiator."
+      display_after_hs_entry:
+        - "Selected HS (HS6)"
+        - "Confidence score (e.g., High/Medium/Low + percent)"
+        - "Top 2–3 alternative HS codes with short descriptions"
+      thresholds:
+        low_confidence:
+          value: 0.70
+          behavior:
+            - "Prominent warning: 'HS uncertain—verify recommended'"
+            - "Offer guided questions (1–2) before calculation OR as optional 'Verify HS' step."
+      guided_questions:
+        max_questions: 3
+        types: ["yes_no", "single_select"]
+        behavior:
+          - "Refine candidate set and update confidence."
+      cost_impact_preview:
+        enabled: true
+        behavior:
+          - "If alternatives materially change duty, show a preview range or delta."
+          - "If uncertainty remains, results may show duty/tax range with explanation."
+
+  assisted_mode_spec:
+    purpose:
+      - "Help users who do NOT have shipment details estimate and compare."
+      - "Keep existing behavior but ensure mode framing and CTA separation."
+    requirements:
+      - "Retain HS helper, presets, and guidance."
+      - "Allow optional use of estimates for freight/insurance and exchange rate defaults."
+      - "Encourage comparison flows (origins/incoterms) and show doc/risk guidance."
+
+  api_and_data_contracts:
+    calculate_request_payload:
+      description: "Unify payload fields; mode only affects which UI collects them."
+      must_include:
+        - "hs_code"
+        - "origin_country"
+        - "destination_country=ZA"
+        - "incoterm"
+        - "importer_type"
+        - "invoice_value"
+        - "currency"
+        - "exchange_rate"
+        - "freight_cost"
+        - "insurance_cost"
+        - "other_charges"
+        - "quantity"
+      optional:
+        - "weight"
+        - "volume"
+      invariants:
+        - "Server computes customs value consistently based on incoterm and provided breakdowns."
+        - "Server returns an audit object per line item for WhyDrawer."
+
+    calculate_response_payload:
+      required_top_level:
+        - "summary.total_taxes_zar"
+        - "summary.total_landed_cost_zar"
+        - "summary.landed_cost_per_unit_zar"
+        - "summary.hs_confidence"
+        - "summary.hs_alternatives (top N)"
+        - "tariff_version"
+        - "effective_date"
+      required_breakdown:
+        - "line_items[]: { key, label, amount_zar, audit { formula, inputs_used, rates, tariff_ref, effective_date } }"
+      required_guidance:
+        - "document_checklist: grouped lists"
+        - "risk_flags: list"
+      optional:
+        - "ranges: { duty_min_max?, taxes_min_max?, landed_min_max? }"
+        - "compare_support: normalized fields for side-by-side output"
+
+  monetization_and_gating:
+    free_access_must_include:
+      - "Core calculation numbers (summary + breakdown)"
+      - "HS confidence + alternatives display"
+      - "WhyDrawer audit trail visibility"
+      - "Document checklist + risk flags"
+    paid_or_logged_in_gated_features:
+      - "PDF export"
+      - "CSV export"
+      - "Save scenarios / dashboard history"
+      - "Compare scenarios (multi-save, side-by-side compare)"
+      - "Watchlist alerts (tariff changes, rules affecting saved HS/scenarios)"
+    gating_behavior:
+      - "If user triggers gated feature while logged out -> sign-in modal."
+      - "If logged in but not paid -> upgrade modal with feature explanation."
+      - "Never degrade core result usefulness to force upgrade."
+
+  seo_and_distribution:
+    pseo_pages_must_capture_both_intents:
+      - "Always show two-mode CTAs (Professional + Assisted)."
+      - "Prefill professional mode with page context."
+      - "Prefill assisted mode with product intent/origin."
+    noindex_rules:
+      - "Pages remain NOINDEX until they contain decision-grade unique computed outputs and guidance blocks."
+      - "Avoid doorway behavior by ensuring each indexable page has:"
+      - "Pre-filled calculator + computed scenarios + doc checklist + risk flags + internal links."
+    internal_linking:
+      - "After results, link to related HS codes, related products, and compliance pages."
+
+  acceptance_criteria:
+    functional:
+      - "User can choose Assisted or Professional from Home."
+      - "User can switch modes without losing shared context (HS/origin), unless they reset."
+      - "Professional mode supports fast entry of invoice/FX/freight/insurance and produces calculation."
+      - "HS verification appears in Professional mode with confidence and alternatives."
+      - "Low confidence triggers guided verification flow (max 3 questions)."
+      - "Results show totals above fold and all line items have WhyDrawer audits."
+      - "Document checklist is displayed in both modes."
+      - "Sticky action bar appears after calculation."
+    gating:
+      - "Save/export/compare/watchlist correctly prompt sign-in or upgrade."
+      - "Core results remain accessible without payment."
+    pseo:
+      - "pSEO pages show two CTAs and prefill the respective mode."
+      - "Index gating remains intact (noindex until decision-grade blocks exist)."
+    analytics_instrumentation:
+      events:
+        - "mode_selected (assisted|professional)"
+        - "hs_verify_clicked"
+        - "hs_guided_question_answered"
+        - "calculate_submitted (mode, has_all_inputs_boolean)"
+        - "calculate_success / calculate_error"
+        - "export_clicked (pdf|csv)"
+        - "save_clicked"
+        - "compare_clicked"
+        - "watchlist_clicked"
+      required_properties:
+        - "mode"
+        - "hs_confidence_bucket (high|medium|low)"
+        - "origin_country"
+        - "incoterm"
+        - "importer_type"
+
+  implementation_tasks:
+    - id: "ui_home_two_entry_paths"
+      description: "Add two cards/CTAs on Home for Assisted vs Professional; persist selection."
+    - id: "router_mode_param"
+      description: "Implement /calculate?mode=... routing and persistence."
+    - id: "professional_form"
+      description: "Build Professional Mode form with structured sections and required fields."
+    - id: "hs_verification_component"
+      description: "Enhance HS selector to show confidence + alternatives + Verify HS flow in Professional mode."
+    - id: "guided_questions_flow"
+      description: "Implement guided disambiguation question UI (max 3) with confidence refinement."
+    - id: "results_summary_above_fold"
+      description: "Ensure summary totals render prominently and auto-scroll post-calc."
+    - id: "why_drawer_all_lines"
+      description: "Ensure every line item has WhyDrawer using audit payload."
+    - id: "document_checklist_render"
+      description: "Render grouped checklist beneath results for both modes."
+    - id: "sticky_actions_post_calc"
+      description: "Implement sticky action bar with gating."
+    - id: "pseo_two_ctas_prefill"
+      description: "Update pSEO templates to provide both mode CTAs and prefill context."
+    - id: "analytics_events"
+      description: "Add required instrumentation events and properties."
+
+  qa_test_matrix:
+    scenarios:
+      - name: "Professional mode - complete inputs - high HS confidence"
+        steps:
+          - "Select Professional mode"
+          - "Enter invoice/currency/exchange rate/freight/insurance/HS/origin/incoterm/importer type"
+          - "Calculate"
+        expected:
+          - "Totals above fold"
+          - "HS confidence shown"
+          - "No guided questions triggered"
+          - "WhyDrawer works for each line item"
+          - "Checklist visible"
+      - name: "Professional mode - low HS confidence triggers verification"
+        steps:
+          - "Enter ambiguous HS/product mapping"
+          - "Observe low confidence warning"
+          - "Click Verify HS"
+          - "Answer 1–3 questions"
+          - "Calculate"
+        expected:
+          - "Confidence updates"
+          - "Alternatives update"
+          - "If uncertainty remains, ranges/deltas shown with explanation"
+      - name: "Assisted mode still functions"
+        steps:
+          - "Select Assisted mode"
+          - "Use HS helper search"
+          - "Use presets"
+          - "Calculate"
+        expected:
+          - "No regressions"
+          - "Same outputs/audit behavior"
+      - name: "pSEO page captures both intents"
+        steps:
+          - "Visit pSEO page"
+          - "Click Professional CTA"
+          - "Verify prefill"
+          - "Click Assisted CTA"
+          - "Verify prefill"
+        expected:
+          - "Correct mode routing"
+          - "Context prefilled"
+      - name: "Gating behavior"
+        steps:
+          - "Logged out: click Export PDF / Save / Compare / Watchlist"
+          - "Logged in free: click gated actions"
+        expected:
+          - "Logged out -> sign-in prompt"
+          - "Logged in free -> upgrade prompt"
+          - "Core results always accessible"
+
+  launch_checklist:
+    - "Run QA matrix across browsers and mobile."
+    - "Verify analytics events firing with correct properties."
+    - "Verify pSEO index gating remains intact (noindex until decision-grade)."
+    - "Verify Professional mode matches importer workflow and requires minimal clicks."
+    - "Verify HS verification + audit trail remain the differentiators vs free calculators."
