@@ -1,0 +1,139 @@
+{
+    "metadata": {
+        "name": "Decision-First Product Checklist",
+        "product": "importcosts",
+        "version": "1.0",
+        "purpose": "Ensure every feature, page, and output helps users make clearer import decisions",
+        "core_motto": "We don’t sell calculations — we sell better import decisions."
+    },
+    "A_core_decision_test": {
+        "must_pass_all": [
+            {
+                "id": "A1",
+                "question": "Does this help the user make a clearer decision than before?",
+                "failure_action": "Redesign or deprioritize"
+            },
+            {
+                "id": "A2",
+                "question": "Can a user act on this in under 30 seconds?",
+                "failure_conditions": [
+                    "Requires reading long text",
+                    "Requires downloading PDFs",
+                    "Requires external research"
+                ]
+            },
+            {
+                "id": "A3",
+                "question": "Could a real importer forward this to a colleague or broker as their view?",
+                "failure_action": "Output is not decision-ready"
+            }
+        ]
+    },
+    "B_minimum_decision_outputs": {
+        "B1_affordability_viability": {
+            "required_outputs": [
+                "total_landed_cost",
+                "landed_cost_per_unit",
+                "assumptions_used",
+                "confidence_label"
+            ],
+            "ui_requirement": "Must be prominent above the fold"
+        },
+        "B2_comparison_decision": {
+            "must_have": [
+                "scenario_presets",
+                "one_click_compare"
+            ],
+            "comparison_types": [
+                "origin_comparison",
+                "incoterm_comparison",
+                "freight_mode_comparison"
+            ],
+            "rule": "If comparison feels hard, the design is not decision-first"
+        },
+        "B3_hs_classification_decision": {
+            "must_show": [
+                "hs_candidates",
+                "confidence_per_hs",
+                "impact_if_hs_changes"
+            ],
+            "clarifying_questions": {
+                "max_questions": 3,
+                "trigger": "when_confidence_is_low"
+            },
+            "rule": "Never hide HS uncertainty"
+        },
+        "B4_risk_decision": {
+            "must_show": [
+                "risk_flags",
+                "risk_confidence_labels"
+            ],
+            "example_risks": [
+                "anti_dumping_possible",
+                "permit_likely",
+                "inspection_risk"
+            ]
+        },
+        "B5_compliance_decision": {
+            "must_include_checklist": true,
+            "checklist_groups": [
+                "always_required",
+                "conditionally_required",
+                "preference_required"
+            ],
+            "rule": "Checklist must be route-specific, not generic"
+        },
+        "B6_broker_action_decision": {
+            "export_must_include": [
+                "inputs_used",
+                "landed_cost_breakdown",
+                "hs_candidates_with_confidence",
+                "docs_checklist",
+                "risks_flagged"
+            ],
+            "rule": "Export must read like a decision memo, not a generic report"
+        }
+    },
+    "C_ui_ux_decision_rules": {
+        "per_screen_requirements": [
+            "big_numbers_first",
+            "why_drawer_available_for_every_number",
+            "no_hidden_assumptions",
+            "one_click_actions",
+            "no_text_walls_before_results"
+        ],
+        "failure_condition": "If users must scroll far before seeing answers, redesign"
+    },
+    "D_free_vs_paid_boundary": {
+        "free_mode_must": [
+            "be_genuinely_useful",
+            "show_full_landed_cost",
+            "show_confidence_and_basic_docs",
+            "provide_basic_hs_help"
+        ],
+        "free_mode_failure": "Users will not trust the product",
+        "paid_mode_must_unlock": [
+            "save_routes",
+            "export_decision_packs",
+            "scenario_comparison",
+            "watchlist_changes",
+            "full_audit_trail"
+        ],
+        "paid_mode_failure": "If it only removes limits, users will not pay"
+    },
+    "E_internal_product_rule": {
+        "question": "If this feature disappeared tomorrow, would users make worse decisions?",
+        "if_yes": "Prioritize and keep",
+        "if_no": "Deprioritize or remove"
+    },
+    "F_success_metrics": {
+        "decision_first_kpis": [
+            "calc_completion_rate",
+            "why_drawer_open_rate",
+            "compare_usage_rate",
+            "export_or_save_rate",
+            "repeat_usage_rate"
+        ],
+        "warning": "If these are low, the product is still numbers-first, not decision-first"
+    }
+}

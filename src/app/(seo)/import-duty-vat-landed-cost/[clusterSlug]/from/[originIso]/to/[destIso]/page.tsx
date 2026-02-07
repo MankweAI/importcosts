@@ -8,6 +8,8 @@ import { SeoFaqBlock } from "@/components/seo/SeoFaqBlock";
 import { CalcCard } from "@/components/calc/CalcCard";
 import { getCountryByIso2 } from "@/lib/db/services/country.service";
 import { ComputedScenariosBlock } from "@/components/seo/ComputedScenariosBlock";
+import { OriginComparisonBlock } from "@/components/seo/OriginComparisonBlock";
+import { DocsChecklist } from "@/components/seo/DocsChecklist";
 
 interface PageProps {
     params: Promise<{
@@ -92,10 +94,21 @@ export default async function SeoLandingPage({ params }: PageProps) {
 
             {/* COMPUTED SCENARIOS (Indexable Content) */}
             {page.indexStatus === "INDEX" && (
-                <section className="py-8 container mx-auto max-w-4xl px-4">
+                <section className="py-8 container mx-auto max-w-4xl px-4 space-y-8">
                     <ComputedScenariosBlock
                         clusterName={clusterName}
                         hsCode={defaultHsCode}
+                    />
+
+                    <OriginComparisonBlock
+                        clusterSlug={clusterSlug}
+                        currentOriginIso={originIso.toUpperCase()}
+                        hsCode={defaultHsCode}
+                    />
+
+                    <DocsChecklist
+                        hsCode={defaultHsCode}
+                        originCountry={originIso}
                     />
                 </section>
             )}

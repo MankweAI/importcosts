@@ -40,4 +40,11 @@ export interface CalcOutput {
 
     // Per Unit
     landedCostPerUnit?: number;
+
+    // Decision Support
+    risks?: string[]; // e.g., "Permit Required", "Anti-dumping duty"
+    assumptions?: {
+        exchangeRate: number;
+        dutyRateUsed: string;
+    };
 }

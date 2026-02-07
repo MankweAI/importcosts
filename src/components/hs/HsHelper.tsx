@@ -22,6 +22,7 @@ interface HsResult {
     hs6: string;
     title: string;
     label: string;
+    confidence: number;
 }
 
 interface HsHelperProps {
@@ -36,8 +37,11 @@ export function HsHelper({ value, onSelect, className }: HsHelperProps) {
     const [results, setResults] = React.useState<HsResult[]>([])
     const [loading, setLoading] = React.useState(false)
 
+    const [mounted, setMounted] = React.useState(false)
+
     // Debounce Search
     React.useEffect(() => {
+        setMounted(true) // Hydration Fix
         const timer = setTimeout(() => {
             if (query.length >= 2) {
                 fetchResults(query);
@@ -45,6 +49,20 @@ export function HsHelper({ value, onSelect, className }: HsHelperProps) {
         }, 300);
         return () => clearTimeout(timer);
     }, [query]);
+
+    // Hydration Fallback (renders static button first)
+    if (!mounted) {
+        return (
+            <Button
+                variant="outline"
+                role="combobox"
+                className={cn("w-full justify-between font-normal", !value && "text-muted-foreground", className)}
+            >
+                {value ? value : "Search product or HS code..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+        )
+    }
 
     const fetchResults = async (q: string) => {
         setLoading(true);
@@ -111,7 +129,17 @@ export function HsHelper({ value, onSelect, className }: HsHelperProps) {
                                             )}
                                         />
                                         <div className="flex flex-col">
-                                            <span className="font-semibold">{item.hs6}</span>
+                                            <span className="font-semibold flex items-center gap-2">
+                                                {item.hs6}
+                                                <span className={cn(
+                                                    "text-[10px] px-1.5 py-0.5 rounded-full border",
+                                                    item.confidence > 0.9 ? "bg-green-100 text-green-700 border-green-200" :
+                                                        item.confidence > 0.7 ? "bg-blue-100 text-blue-700 border-blue-200" :
+                                                            "bg-amber-100 text-amber-700 border-amber-200"
+                                                )}>
+                                                    {item.confidence > 0.9 ? "High" : item.confidence > 0.7 ? "Med" : "Low"}
+                                                </span>
+                                            </span>
                                             <span className="text-xs text-muted-foreground truncate max-w-[220px]">
                                                 {item.title}
                                             </span>

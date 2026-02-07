@@ -2,6 +2,7 @@ import prisma from "../db/prisma";
 import { CalcInput, CalcOutput, AuditTraceStep, CalcLineItem } from "./types";
 import { calculateDuty } from "./duty";
 import { calculateVat } from "./vat";
+import { calculateAncillary } from "./ancillary";
 import { getActiveTariffVersion } from "../db/services/tariff.service";
 import { createCalcRun } from "../db/services/calcRun.service";
 
@@ -86,20 +87,25 @@ export async function calculateLandedCost(
         });
     });
 
-    // 5. Aggregate Totals
+    // 5. Calculate Ancillary Costs (Phase 8b)
+    const ancillaryResult = calculateAncillary(input, input.customsValue);
+
+    ancillaryResult.debugLog.forEach(log => {
+        auditTrace.push({
+            step: "ANCILLARY_CALC",
+            description: log,
+            timestamp: new Date()
+        });
+    });
+
+    // 6. Aggregate Totals
     const breakdown: CalcLineItem[] = [
         dutyResult.lineItem,
-        vatResult.lineItem
+        vatResult.lineItem,
+        ...ancillaryResult.items
     ];
 
-    const landedCostTotal = input.customsValue + dutyResult.lineItem.amount + vatResult.lineItem.amount; // Plus freight?
-    // Wait, Input has `customsValue` (ZAR). Landed Cost usually includes Freight if not already in Customs Value?
-    // Customs Value is usually FOB + Freight + Insurance (CIF).
-    // If input assumption is "Customs Value" = "Value for Customs purposes" (usually CIF), then we are good.
-    // BUT the total cost to client = CIF + Duty + VAT + Clearance Fees etc.
-
-    // Let's explicitly add "Item Value" line item if we want a full breakdown stack
-    // breakdown.unshift({... item value ...})
+    const landedCostTotal = input.customsValue + dutyResult.lineItem.amount + vatResult.lineItem.amount + ancillaryResult.total;
 
     auditTrace.push({
         step: "COMPLETE",
@@ -124,6 +130,29 @@ export async function calculateLandedCost(
         // Don't fail the request, just log
     }
 
+
+    const risks: string[] = [];
+
+    // Compliance / Risk Flags
+    if (input.hsCode.startsWith("85")) {
+        risks.push("Electronics: NRCS Letter of Authority (LOA) likely required.");
+    }
+    if (input.hsCode.startsWith("64")) {
+        risks.push("Footwear: High risk of stop-and-inspect for anti-dumping checks.");
+    }
+    if (input.hsCode.startsWith("61") || input.hsCode.startsWith("62")) {
+        risks.push("Textiles: Declare 100% correct composition to avoid seizure.");
+    }
+    if (landedCostTotal > 500000) {
+        risks.push("High Value: Customs inspection probability increased.");
+    }
+
+    // Assumptions
+    const assumptions = {
+        exchangeRate: 18.50, // indicative for now, or 1.0 if strictly ZAR. Let's use a "Reference Rate" for display.
+        dutyRateUsed: dutyResult.lineItem.rateApplied || "0%"
+    };
+
     return {
         landedCostTotal,
         breakdown,
@@ -132,6 +161,8 @@ export async function calculateLandedCost(
         tariffVersionLabel: activeVersion.label,
         confidence: "HIGH",
         auditTrace,
-        landedCostPerUnit: input.quantity ? landedCostTotal / input.quantity : undefined
+        landedCostPerUnit: input.quantity ? landedCostTotal / input.quantity : undefined,
+        risks,
+        assumptions
     };
 }

@@ -27,6 +27,7 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [result, setResult] = useState<CalcOutput | null>(null);
+    const [referenceResult, setReferenceResult] = useState<CalcOutput | null>(null);
 
     // Form State
     const [form, setForm] = useState({
@@ -73,6 +74,13 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
             }
 
             const data = await res.json();
+
+            // Auto-Comparison Logic: 
+            // If we already have a result, set it as reference for the new one.
+            if (result) {
+                setReferenceResult(result);
+            }
+
             setResult(data);
 
         } catch (e: any) {
@@ -87,7 +95,7 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
     };
 
     return (
-        <div className={`space-y-6 max-w-lg mx-auto ${className}`}>
+        <div className={`space-y-6 max-w-4xl mx-auto ${className}`}>
             <Card className="w-full shadow-lg border-muted/40">
                 <CardHeader>
                     <CardTitle>Import Cost Calculator</CardTitle>
@@ -161,7 +169,12 @@ export function CalcCard({ defaultHsCode = "854143", className }: CalcCardProps)
 
             {result && (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <ResultBreakdown result={result} />
+                    <ResultBreakdown
+                        result={result}
+                        referenceResult={referenceResult}
+                        onCompare={() => setReferenceResult(result)}
+                        onClearCompare={() => setReferenceResult(null)}
+                    />
                 </div>
             )}
         </div>
