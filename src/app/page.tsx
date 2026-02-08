@@ -1,18 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
-import { MarketingHome } from "@/components/home/MarketingHome";
-import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
-import { UserWorkspaceLayout } from "@/components/layout/UserWorkspaceLayout";
 
-export default async function HomePage() {
-  const { userId } = await auth();
-
-  if (userId) {
-    return (
-      <UserWorkspaceLayout>
-        <DashboardOverview userId={userId} />
-      </UserWorkspaceLayout>
-    );
-  }
-
-  return <MarketingHome />;
+export default function Home() {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <h1>Welcome to Import Costs</h1>
+      <p>Under Construction</p>
+    </main>
+  );
 }

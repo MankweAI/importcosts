@@ -4,7 +4,14 @@ export interface CalcInput {
     hsCode: string;
     customsValue: number; // In ZAR
     originCountry?: string;
+    destinationCountry?: string;
     importerType?: "VAT_REGISTERED" | "NON_VENDOR";
+    invoiceValue?: number;
+    currency?: string;
+    exchangeRate?: number;
+    freightCost?: number;
+    insuranceCost?: number;
+    otherCharges?: number;
     quantity?: number; // Count of items
     volumeLitres?: number; // For specific duties (e.g. beverages)
     weightKg?: number; // For specific duties (e.g. heavy goods)

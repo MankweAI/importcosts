@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.7,
         },
         {
-            url: `${BASE_URL}/calculator`,
+            url: `${BASE_URL}/calculate`,
             lastModified: now,
             changeFrequency: "weekly",
             priority: 0.9,

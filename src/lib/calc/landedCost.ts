@@ -1,4 +1,5 @@
 import prisma from "../db/prisma";
+import { Prisma } from "@prisma/client";
 import { CalcInput, CalcOutput, AuditTraceStep, CalcLineItem } from "./types";
 import { calculateDuty } from "./duty";
 import { calculateVat } from "./vat";
@@ -35,17 +36,55 @@ export async function calculateLandedCost(
 
     // 2. Resolve HS Code Rate
     // Find the rate in the active version
-    const rate = await prisma.tariffRate.findFirst({
+    let tariffRate = await prisma.tariffRate.findFirst({
         where: {
             tariffVersionId: activeVersion.id,
             hsCodeId: (await prisma.hsCode.findUnique({ where: { hs6: input.hsCode } }))?.id || "MISSING",
+            dutyType: { not: "ANTI_DUMPING" } // Exclude AD for base rate lookup, handle separately?
         },
         include: { hsCode: true },
     });
 
+    // 2b. Check for Preferential Rate (Origin Override)
+    if (input.originCountry) {
+        // Find HS Code ID first (efficiently)
+        const hsCode = await prisma.hsCode.findUnique({ where: { hs6: input.hsCode } });
+
+        if (hsCode) {
+            const preference = await prisma.originPreference.findFirst({
+                where: {
+                    tariffVersionId: activeVersion.id,
+                    hsCodeId: hsCode.id,
+                    originIso2: input.originCountry // Assuming ISO2
+                },
+                include: { agreement: true }
+            });
+
+            if (preference) {
+                // Map Preference to TariffRate shape for calculation
+                const override: any = preference.dutyOverride;
+
+                tariffRate = {
+                    ...tariffRate,
+                    dutyType: override.dutyType,
+                    adValoremPct: override.adValoremPct ? new Prisma.Decimal(override.adValoremPct) : null,
+                    specificRule: override.specificRule,
+                    compoundRule: override.compoundRule,
+                    notes: `Preferential Rate: ${preference.agreement.name} (${input.originCountry})`
+                } as any;
+
+                auditTrace.push({
+                    step: "PREFERENCE_APPLIED",
+                    description: `Applied preferential rate for ${input.originCountry} (${preference.agreement.code})`,
+                    value: override,
+                    timestamp: new Date()
+                });
+            }
+        }
+    }
+
     // Handle Missing HS Code implies "Not Found" -> Default logic?
     // MVP: Error if not found.
-    let tariffRate = rate;
     if (!tariffRate) {
         // Try to find HS Code ID first
         const hsCode = await prisma.hsCode.findUnique({ where: { hs6: input.hsCode } });
@@ -65,27 +104,34 @@ export async function calculateLandedCost(
         timestamp: new Date(),
     });
 
-    // 3. Resolve Customs Value based on Incoterm
-    const baseCustomsValue = input.customsValue;
-    const freightInsurance = input.incoterm && input.incoterm !== "CIF"
-        ? (input.freightInsuranceCost || 0)
+    // 3. Resolve Customs Values
+    // If invoiceCalc is used:
+    const invoiceValueZar = (input.invoiceValue && input.exchangeRate)
+        ? input.invoiceValue * input.exchangeRate
+        : undefined;
+
+    // Explicit inputs or derived from Invoice
+    let productValue = invoiceValueZar !== undefined ? invoiceValueZar : (input.customsValue || 0);
+    const freightInsurance = (input.incoterm && input.incoterm !== "CIF")
+        ? (input.freightInsuranceCost || (input.freightCost || 0) + (input.insuranceCost || 0))
         : 0;
-    const customsValue = baseCustomsValue + freightInsurance;
+
+    // In SA, Duty is calculated on FOB (approx Product Value).
+    // VAT is calculated on ATV = (FOB * 1.1) + Duty.
+    // Landed Cost = Product + Freight + Duty + VAT + Fees.
+
+    const fobValue = productValue;
+    const cifValue = productValue + freightInsurance;
 
     auditTrace.push({
-        step: "CUSTOMS_VALUE",
-        description: "Computed customs value based on incoterm and freight/insurance",
-        value: {
-            baseCustomsValue,
-            incoterm: input.incoterm || "CIF",
-            freightInsuranceCost: freightInsurance,
-            customsValue
-        },
+        step: "VALUE_DETERMINATION",
+        description: "Determined FOB and CIF values",
+        value: { fobValue, cifValue, freightInsurance, incoterm: input.incoterm },
         timestamp: new Date(),
     });
 
-    // 4. Calculate Customs Duty
-    const dutyResult = calculateDuty(tariffRate, input, customsValue);
+    // 4. Calculate Customs Duty (On FOB)
+    const dutyResult = calculateDuty(tariffRate, input, fobValue);
 
     dutyResult.debugLog.forEach(log => {
         auditTrace.push({
@@ -95,8 +141,8 @@ export async function calculateLandedCost(
         });
     });
 
-    // 5. Calculate VAT
-    const vatResult = calculateVat(customsValue, dutyResult.lineItem.amount);
+    // 5. Calculate VAT (On FOB base, standard ATV method)
+    const vatResult = calculateVat(fobValue, dutyResult.lineItem.amount);
 
     vatResult.debugLog.forEach(log => {
         auditTrace.push({
@@ -106,8 +152,9 @@ export async function calculateLandedCost(
         });
     });
 
-    // 6. Calculate Ancillary Costs (Phase 8b)
-    const ancillaryResult = calculateAncillary(input, customsValue);
+    // 6. Calculate Ancillary Costs (e.g. Clearance Fees)
+    // Often based on CIF or just Fixed. Phase 8b logic implies fixed or % of CIF.
+    const ancillaryResult = calculateAncillary(input, cifValue);
 
     ancillaryResult.debugLog.forEach(log => {
         auditTrace.push({
@@ -118,13 +165,34 @@ export async function calculateLandedCost(
     });
 
     // 7. Aggregate Totals
+    // We want a full waterfall breakdown for the UI.
     const breakdown: CalcLineItem[] = [
+        {
+            id: "customs_value",
+            label: "Product Value (FOB)",
+            amount: fobValue,
+            currency: "ZAR",
+            rateApplied: input.incoterm === "CIF" ? "Includes Freight" : "Excl. Freight",
+            notes: "The base value of your goods converted to ZAR."
+        },
+        ...(freightInsurance > 0 ? [{
+            id: "freight",
+            label: "Freight & Insurance",
+            amount: freightInsurance,
+            currency: "ZAR",
+            rateApplied: "Actual",
+            notes: "Shipping costs to bring goods to South Africa."
+        }] : []),
         dutyResult.lineItem,
         vatResult.lineItem,
         ...ancillaryResult.items
     ];
 
-    const landedCostTotal = customsValue + dutyResult.lineItem.amount + vatResult.lineItem.amount + ancillaryResult.total;
+    const landedCostTotal = cifValue + dutyResult.lineItem.amount + vatResult.lineItem.amount + ancillaryResult.total;
+
+    // Validate: product + freight + duty + vat + fees
+    //         = cif + duty + vat + fees. Correct.
+
     const landedCostExVat = input.importerType === "VAT_REGISTERED"
         ? landedCostTotal - vatResult.lineItem.amount
         : undefined;
@@ -137,19 +205,17 @@ export async function calculateLandedCost(
     });
 
     // 8. Persist Run
-    // Using the service we built in Phase 1
     try {
         await createCalcRun({
             userId,
             tariffVersionId: activeVersion.id,
             inputs: input as any, // Cast for Prisma JSON
             outputs: { breakdown, total: landedCostTotal } as any,
-            confidence: "HIGH", // Deterministic engine = High confidence
+            confidence: "HIGH",
             explain: { auditTrace } as any
         });
     } catch (e) {
         console.error("Failed to persist calculation run", e);
-        // Don't fail the request, just log
     }
 
 
@@ -171,10 +237,10 @@ export async function calculateLandedCost(
 
     // Assumptions
     const assumptions = {
-        exchangeRate: 18.50, // indicative for now, or 1.0 if strictly ZAR. Let's use a "Reference Rate" for display.
+        exchangeRate: input.exchangeRate || 18.50, // indicative
         dutyRateUsed: dutyResult.lineItem.rateApplied || "0%",
-        customsValueBase: baseCustomsValue,
-        customsValueCif: customsValue,
+        customsValueBase: fobValue,
+        customsValueCif: cifValue,
         vatRecoverable: input.importerType === "VAT_REGISTERED"
     };
 

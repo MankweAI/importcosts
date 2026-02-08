@@ -221,6 +221,7 @@ model OriginPreference {
   agreement     TradeAgreement @relation(fields: [agreementId], references: [id])
 
   @@index([tariffVersionId, hsCodeId, originIso2])
+  @@unique([tariffVersionId, hsCodeId, originIso2])
 }
 
 model DocRequirement {

@@ -1,27 +1,46 @@
 import { PlanTier } from "@prisma/client";
 import prisma from "@/lib/db/prisma";
 
-export type Feature = "create_calc_run" | "export_pdf" | "create_org" | "view_trends";
+export type Feature =
+    | "create_calc_run"
+    | "export_pdf"
+    | "export_csv"
+    | "compare_scenarios"
+    | "watchlist"
+    | "create_org"
+    | "view_trends";
 
 export const TIER_LIMITS = {
     [PlanTier.FREE]: {
         maxSavedCalcs: 3,
         canExportPdf: false,
+        canExportCsv: false,
+        canCompareScenarios: false,
+        canWatchlist: false,
         canCreateOrg: false,
     },
     [PlanTier.SME]: {
         maxSavedCalcs: Infinity,
         canExportPdf: true,
+        canExportCsv: true,
+        canCompareScenarios: true,
+        canWatchlist: true,
         canCreateOrg: false,
     },
     [PlanTier.PRO]: {
         maxSavedCalcs: Infinity,
         canExportPdf: true,
+        canExportCsv: true,
+        canCompareScenarios: true,
+        canWatchlist: true,
         canCreateOrg: true,
     },
     [PlanTier.ENTERPRISE]: {
         maxSavedCalcs: Infinity,
         canExportPdf: true,
+        canExportCsv: true,
+        canCompareScenarios: true,
+        canWatchlist: true,
         canCreateOrg: true,
     },
 };
@@ -62,6 +81,30 @@ export async function checkGate(userId: string, feature: Feature): Promise<{ all
                 return {
                     allowed: false,
                     reason: "PDF Export is available on SME plan and above."
+                };
+            }
+            return { allowed: true };
+        case "export_csv":
+            if (!limits.canExportCsv) {
+                return {
+                    allowed: false,
+                    reason: "CSV Export is available on SME plan and above."
+                };
+            }
+            return { allowed: true };
+        case "compare_scenarios":
+            if (!limits.canCompareScenarios) {
+                return {
+                    allowed: false,
+                    reason: "Scenario comparison is available on SME plan and above."
+                };
+            }
+            return { allowed: true };
+        case "watchlist":
+            if (!limits.canWatchlist) {
+                return {
+                    allowed: false,
+                    reason: "Watchlist alerts are available on SME plan and above."
                 };
             }
             return { allowed: true };

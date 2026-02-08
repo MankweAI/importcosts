@@ -5,7 +5,7 @@ import { createCalcRun } from "@/lib/db/services/calcRun.service";
 import { CalcInput, CalcOutput } from "@/lib/calc/types";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/db/prisma";
-import { checkGate } from "@/lib/auth/permissions";
+import { checkGate, type Feature } from "@/lib/auth/permissions";
 
 export async function saveCalculation(input: CalcInput, result: CalcOutput) {
     const { userId } = await auth();
@@ -55,5 +55,16 @@ export async function saveCalculation(input: CalcInput, result: CalcOutput) {
         console.error("Failed to save calculation:", error);
         return { success: false, error: "Failed to save to workspace" };
     }
+}
+
+export async function checkFeatureGate(feature: Feature) {
+    const { userId } = await auth();
+
+    if (!userId) {
+        return { allowed: false, reason: "Authentication required" };
+    }
+
+    const permission = await checkGate(userId, feature);
+    return permission;
 }
 

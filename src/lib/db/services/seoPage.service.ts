@@ -62,7 +62,7 @@ export async function upsertPage(data: CreatePageInput): Promise<SeoPage> {
 }
 
 export async function getPageBySlug(slug: string) {
-    return prisma.seoPage.findUnique({
+    const page = await prisma.seoPage.findUnique({
         where: { slug },
         include: {
             productCluster: true,
@@ -71,6 +71,24 @@ export async function getPageBySlug(slug: string) {
             dest: true,
         },
     });
+
+    if (page) return page;
+
+    // Fallback: Try lowercase slug (e.g. if URL has /CN/ but DB has /cn/)
+    const lowerSlug = slug.toLowerCase();
+    if (lowerSlug !== slug) {
+        return prisma.seoPage.findUnique({
+            where: { slug: lowerSlug },
+            include: {
+                productCluster: true,
+                hsCode: true,
+                origin: true,
+                dest: true,
+            },
+        });
+    }
+
+    return null;
 }
 
 export async function getPageById(id: string): Promise<SeoPage | null> {
@@ -137,9 +155,38 @@ export async function countPagesByStatus(): Promise<Record<string, number>> {
         by: ["indexStatus"],
         _count: { id: true },
     });
-
     return counts.reduce((acc, curr) => {
         acc[curr.indexStatus] = curr._count.id;
         return acc;
     }, {} as Record<string, number>);
+}
+
+export async function getPageByClusterAndRoute(
+    clusterSlug: string,
+    originIso: string,
+    destIso: string
+) {
+    // 1. Find Cluster ID
+    const cluster = await prisma.productCluster.findUnique({
+        where: { slug: clusterSlug },
+        select: { id: true }
+    });
+
+    if (!cluster) return null;
+
+    // 2. Find Page by logical keys
+    return prisma.seoPage.findFirst({
+        where: {
+            productClusterId: cluster.id,
+            originIso2: originIso.toUpperCase(),
+            destIso2: destIso.toUpperCase(),
+            pageType: "CLUSTER_ORIGIN_DEST"
+        },
+        include: {
+            productCluster: true,
+            hsCode: true,
+            origin: true,
+            dest: true,
+        },
+    });
 }

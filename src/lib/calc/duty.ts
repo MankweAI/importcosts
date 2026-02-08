@@ -70,17 +70,18 @@ export function calculateDuty(
     // MVP Simplification: Implement "OR specific" as distinct if needed, but for now treating as basic check.
     // Actually, SA Tariff "30% or 500c/kg" is common. 
     // Let's check `compoundRule`.
+    // 4. COMPOUND (Ad Valorem OR Specific, usually max, but sometimes AND. SA usually "Rated X% or Y whichever is greater")
     else if (dutyType === "COMPOUND") {
-        // Implement MAX logic if implied
-        const pct = rate.adValoremPct?.toNumber() || 0;
-        const valDuty = cifValue * (pct / 100);
+        const adValoremPct = rate.adValoremPct?.toNumber() || 0;
+        const valDuty = cifValue * (adValoremPct / 100);
 
         let specDuty = 0;
-        const rule = rate.specificRule as any; // Using specificRule field for the specific component of compound
+        const rule = rate.specificRule as any;
+        let unit = "";
+
         if (rule) {
-            // ... duplicate specific logic logic ...
-            // Ideally refactor specific logic to helper.
             const specificRate = Number(rule.rate);
+            unit = rule.unit;
             let qty = 0;
             if (rule.unit === "kg") qty = input.weightKg || 0;
             else if (rule.unit === "litre") qty = input.volumeLitres || 0;
@@ -88,18 +89,44 @@ export function calculateDuty(
             specDuty = specificRate * qty;
         }
 
-        // SA standard "Rated ... with a maximum of ..." or "Rated ... or ... whichever is greater"
-        // MVP Strategy: Take the GREATER of the two.
-        if (valDuty > specDuty) {
-            amount = valDuty;
-            rateApplied = `${pct}% (Compound)`;
-            formula = `Max(${pct}%*Val, Spec)`;
-            debugLog.push(`Compound: Ad Valorem (${valDuty}) > Specific (${specDuty})`);
-        } else {
-            amount = specDuty;
-            rateApplied = `Specific (Compound)`; // Improvements: show rate
-            formula = `Max(${pct}%*Val, Spec)`;
-            debugLog.push(`Compound: Specific (${specDuty}) > Ad Valorem (${valDuty})`);
+        const compoundRule = rate.compoundRule as any;
+        const operator = compoundRule?.operator || "MAX"; // Default to MAX if unknown
+
+        if (operator === "SUM") {
+            amount = valDuty + specDuty;
+            rateApplied = `${adValoremPct}% + Specific`;
+            formula = `${adValoremPct}% + ${specDuty.toFixed(2)}`;
+            debugLog.push(`Compound (SUM): ${valDuty} + ${specDuty}`);
+        }
+        else if (operator === "MAX_LESS") {
+            // "10% or 55c/kg less 90%" -> Max(10%, (Specific - 90% of Value))
+            const lessPct = compoundRule?.lessAdValoremPct || 0;
+            const lessValue = cifValue * (lessPct / 100);
+            const adjustedSpec = Math.max(0, specDuty - lessValue); // Can't be negative? usually implies it zeroes out.
+
+            if (valDuty > adjustedSpec) {
+                amount = valDuty;
+                rateApplied = `${adValoremPct}% (Compound)`;
+                debugLog.push(`Compound (MAX_LESS): AdValorem (${valDuty}) > (Specific ${specDuty} - ${lessPct}% of Val ${lessValue})`);
+            } else {
+                amount = adjustedSpec;
+                rateApplied = `Specific less ${lessPct}%`;
+                debugLog.push(`Compound (MAX_LESS): (Specific ${specDuty} - ${lessPct}% of Val ${lessValue}) > AdValorem (${valDuty})`);
+            }
+        }
+        else {
+            // Default MAX
+            if (valDuty > specDuty) {
+                amount = valDuty;
+                rateApplied = `${adValoremPct}% (Compound)`;
+                formula = `Max(${adValoremPct}%, Spec)`;
+                debugLog.push(`Compound (MAX): Ad Valorem (${valDuty}) > Specific (${specDuty})`);
+            } else {
+                amount = specDuty;
+                rateApplied = `Specific (Compound)`;
+                formula = `Max(${adValoremPct}%, Spec)`;
+                debugLog.push(`Compound (MAX): Specific (${specDuty}) > Ad Valorem (${valDuty})`);
+            }
         }
     }
 

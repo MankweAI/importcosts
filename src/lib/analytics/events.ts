@@ -13,6 +13,16 @@ export const EVENT_NAMES = {
     PAYWALL_VIEWED: "paywall_viewed",
     CHECKOUT_CLICKED: "checkout_clicked",
     SUBSCRIPTION_STARTED: "subscription_started",
+    MODE_SELECTED: "mode_selected",
+    HS_VERIFY_CLICKED: "hs_verify_clicked",
+    HS_GUIDED_QUESTION_ANSWERED: "hs_guided_question_answered",
+    CALCULATE_SUBMITTED: "calculate_submitted",
+    CALCULATE_SUCCESS: "calculate_success",
+    CALCULATE_ERROR: "calculate_error",
+    EXPORT_CLICKED: "export_clicked",
+    SAVE_CLICKED: "save_clicked",
+    COMPARE_CLICKED: "compare_clicked",
+    WATCHLIST_CLICKED: "watchlist_clicked",
 } as const;
 
 export type EventName = (typeof EVENT_NAMES)[keyof typeof EVENT_NAMES];
@@ -111,6 +121,12 @@ export type SubscriptionStartedEvent = BaseEventProperties & {
     };
 };
 
+// Generic event for newer UI interactions
+export type GenericEvent = BaseEventProperties & {
+    event: EventName;
+    properties: Record<string, unknown>;
+};
+
 // Union type for all events
 export type AnalyticsEvent =
     | PageViewEvent
@@ -119,4 +135,5 @@ export type AnalyticsEvent =
     | HsSuggestedEvent
     | PaywallViewedEvent
     | CheckoutClickedEvent
-    | SubscriptionStartedEvent;
+    | SubscriptionStartedEvent
+    | GenericEvent;
