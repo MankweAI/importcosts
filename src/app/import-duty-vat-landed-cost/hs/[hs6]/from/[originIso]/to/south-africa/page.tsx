@@ -47,7 +47,7 @@ export default async function HSOriginPage({ params }: PageProps) {
             isIndexable={isIndexable}
             canonicalUrl={`https://importcosts.co.za/import-duty-vat-landed-cost/hs/${hs6}/from/${originIso}/to/south-africa`}
             title={`Import Cost: HS ${hs6} from ${originIso}`}
-            description=""
+
         >
             <ContextHero
                 title={`Import Duty: HS ${hs6} from ${originIso}`}

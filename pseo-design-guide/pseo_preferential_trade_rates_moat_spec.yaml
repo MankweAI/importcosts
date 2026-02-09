@@ -1,0 +1,400 @@
+mrf:
+  name: "pseo_preferential_trade_rates_moat_spec"
+  version: "1.0.0"
+  scope:
+    project: "Project 1 — pSEO pages only (logged-out)"
+    pages_in_scope:
+      - "/import-duty-vat-landed-cost/{clusterSlug}/from/{originIso}/to/south-africa"
+      - "/import-duty-vat-landed-cost/hs/{hs6}/from/{originIso}/to/south-africa"
+    destination_iso_fixed: "ZA"
+    explicitly_out_of_scope:
+      - "SaaS app workflows (post-signin dashboards)"
+      - "Broker filing automation"
+      - "Paid alerts implementation (may be gated but not specified here)"
+
+  hypothesis_to_ship:
+    - "pSEO pages should cite exact preferential duty rates per HS × origin × agreement to create a moat."
+    - "Must NOT overclaim: preferences are conditional on Rules of Origin + proof-of-origin + sometimes schedule staging/quota."
+
+  authoritative_source_policy:
+    principle: "Prefer official/legal sources; every cited preferential rate must have an auditable reference."
+    sources:
+      sars_trade_agreements_directory:
+        url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/"
+        use_for: ["agreement existence", "official agreement documents", "implementation dates when listed"]
+      sars_rules_of_origin:
+        url: "https://www.sars.gov.za/customs-and-excise/rules-of-origin/"
+        use_for: ["RoO requirement explanation", "proof-of-origin requirements references"]
+      sars_trade_agreements_admin_policy:
+        url: "https://www.sars.gov.za/wp-content/uploads/Ops/Policies/SC-RO-02-Administration-of-Trade-Agreements-External-Policy.pdf"
+        use_for: ["administration rules", "registration requirement where applicable", "schedule pointers"]
+      dtic_trade_agreements:
+        url: "https://www.thedtic.gov.za/sectors-and-services-2/1-4-2-trade-and-export/market-access/trade-agreements/"
+        use_for: ["high-level agreement list", "context/validation"]
+      dtic_afcfta_commencement:
+        url: "https://www.thedtic.gov.za/sectors-and-services-2/1-4-2-trade-and-export/afcfta-2/"
+        use_for: ["AfCFTA preferential trade commencement date"]
+    hard_rule:
+      - "Do not publish a preferential rate on-page unless it has a source_ref that points to an official/legal doc location with version metadata."
+      - "If a rate cannot be verified from authoritative sources, display status=unknown with reason (never guess)."
+
+  agreements_catalog:
+    purpose: "Canonical list of agreements relevant to SA import preferences."
+    must_include_minimum:
+      - id: "SACU"
+        display_name: "SACU"
+        type: "customs_union"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/sacu/"
+        notes: "Customs union treatment; handle carefully (import duty context may differ across internal customs territory)."
+      - id: "AFCFTA"
+        display_name: "AfCFTA"
+        type: "fta"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/afcfta/"
+        dtic_ref_url: "https://www.thedtic.gov.za/sectors-and-services-2/1-4-2-trade-and-export/afcfta-2/"
+        commenced_preferential_trade_za: "2024-01-31"
+      - id: "SADC_PROTOCOL"
+        display_name: "SADC Treaty & Protocols"
+        type: "fta"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/sadc-treaty-and-protocols/"
+      - id: "SADC_EU_EPA"
+        display_name: "SADC–EU EPA"
+        type: "epa"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/sadc-eu-epa/"
+        sars_impl_date_hint: "2016-10-21"
+      - id: "SACUM_UK_EPA"
+        display_name: "SACUM–UK EPA"
+        type: "epa"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/sacum-uk-epa/"
+      - id: "EFTA_SACU"
+        display_name: "EFTA–SACU FTA"
+        type: "fta"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/efta-sacu/"
+      - id: "SACU_MERCOSUR"
+        display_name: "SACU–MERCOSUR PTA"
+        type: "pta"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/mercosur-sacu/"
+        sacu_full_text_pdf: "https://www.sacu.int/uploads/documents/e3ff375d9f17707ee5a8f7e34985a8dd9d8e439a.pdf"
+      - id: "RSA_EU_TDCA"
+        display_name: "RSA–EU TDCA"
+        type: "fta"
+        sars_ref_url: "https://www.sars.gov.za/legal-counsel/international-treaties-agreements/trade-agreements/rsa-eu-tdca/"
+    extensibility:
+      - "Support adding new agreements and country coverage without code changes (data-driven)."
+
+  data_model:
+    entities:
+
+      Agreement:
+        fields:
+          - id: "string"
+          - display_name: "string"
+          - type: "customs_union|fta|epa|pta"
+          - status: "active|legacy|overlap|paused"
+          - commenced_date: "date|null"
+          - sars_ref_url: "string|null"
+          - dtic_ref_url: "string|null"
+          - notes: "string|null"
+
+      AgreementCoverage:
+        purpose: "Map origin_iso -> applicable agreement(s) with ZA (and partner constraints)."
+        fields:
+          - agreement_id: "string"
+          - origin_iso: "string"
+          - coverage_status: "covered|not_covered|partial|unknown"
+          - coverage_notes: "string|null"
+          - effective_from: "date|null"
+          - effective_to: "date|null"
+          - source_ref: "SourceRef"
+
+      PreferenceRateLine:
+        purpose: "HS-level preferential duty rate (or margin) per agreement + origin."
+        fields:
+          - agreement_id: "string"
+          - origin_iso: "string"
+          - hs_code_level: "HS6|HS8"
+          - hs_code: "string"
+          - rate_type: "ad_valorem_pct|specific|mixed|margin_of_preference_pct|duty_free|quota_rate"
+          - rate_value: "number|null"
+          - currency: "string|null"
+          - unit: "string|null"
+          - effective_from: "date"
+          - effective_to: "date|null"
+          - staging_step: "string|null"
+          - quota_id: "string|null"
+          - source_ref: "SourceRef"
+          - data_quality:
+              status: "verified|derived|unknown"
+              notes: "string|null"
+
+      RulesOfOriginRequirement:
+        purpose: "Human-readable RoO + proof requirements to claim preference."
+        fields:
+          - agreement_id: "string"
+          - hs_code_level: "HS6|HS8|chapter|heading|all"
+          - hs_code: "string|null"
+          - requirement_summary: "string"
+          - proof_documents: "array<string>"
+          - validity_rules: "array<string>"
+          - registration_required: "boolean|null"
+          - source_ref: "SourceRef"
+
+      SourceRef:
+        fields:
+          - source_type: "sars_html|sars_pdf|dtic_html|gazette_pdf|agreement_pdf|other_official"
+          - url: "string"
+          - document_title: "string|null"
+          - published_date: "date|null"
+          - retrieved_at: "datetime"
+          - checksum: "string|null"
+          - page_or_section_hint: "string|null"
+
+    storage:
+      requirement:
+        - "All PreferenceRateLine rows must be versioned; never overwrite in-place."
+        - "Use tariff_version_id to snapshot the entire preference dataset."
+      tables_suggested:
+        - "agreements"
+        - "agreement_coverage"
+        - "preference_rate_lines"
+        - "roo_requirements"
+        - "tariff_versions"
+        - "source_refs"
+
+  ingestion_pipeline:
+    purpose: "Populate exact preferential rates from authoritative sources into structured DB."
+    constraints:
+      - "Do not rely on blog summaries for numeric rates."
+      - "Prefer SARS-hosted agreement schedules / official PDFs where available."
+    pipeline_steps:
+      - step: "discover_sources"
+        actions:
+          - "Start from SARS Trade Agreements directory pages (per agreement)."
+          - "Extract links to official PDFs/schedules/annexes."
+      - step: "parse_rates"
+        actions:
+          - "Parse HS-level concessions into PreferenceRateLine."
+          - "Support rate types: ad valorem %, margins of preference, duty-free markers, staged schedules."
+          - "If exact HS-level rate cannot be extracted: create no line; mark unknown."
+      - step: "parse_roo"
+        actions:
+          - "Extract RoO/proof requirements where available (or store pointers + short summaries)."
+          - "At minimum, store proof document names and general RoO caveat per agreement."
+      - step: "validate"
+        actions:
+          - "Run schema validation: hs_code format, date ranges, duplicates, missing source_ref."
+          - "Spot-check: compare MFN baseline vs preferential where applicable for sanity (preferential should not be higher than MFN unless clearly documented)."
+      - step: "publish_version"
+        actions:
+          - "Create tariff_version_id with timestamp and source checksum set."
+          - "Swap active_version pointer atomically."
+    schedule:
+      - "Run monthly by default; run immediately when a new official schedule is detected."
+    safety:
+      - "If pipeline fails, keep last known good version; do not publish partial data."
+
+  computation_engine:
+    purpose: "Given (hs_code, origin_iso, ZA) return: applicable agreements, best rate, savings, eligibility and proof."
+    inputs:
+      - hs_code: "string # HS6 minimum; HS8 preferred if available"
+      - origin_iso: "string"
+      - destination_iso: "ZA"
+      - importer_context:
+          wants_preference: "boolean|null"
+          has_proof_of_origin: "boolean|null"
+          exporter_statement_available: "boolean|null"
+          registration_status_known: "boolean|null"
+    outputs:
+      PreferenceDecision:
+        fields:
+          - mfn_rate:
+              rate_type: "ad_valorem_pct|specific|mixed"
+              rate_value: "number|null"
+              source_ref: "SourceRef|null"
+          - applicable_agreements: "array<AgreementOption>"
+          - best_option: "AgreementOption|null"
+          - status: "eligible|maybe|not_eligible|unknown"
+          - unknown_or_block_reason: "string|null"
+          - required_actions: "array<string>"
+          - proof_checklist: "array<string>"
+          - rate_confidence: "high|medium|low"
+          - tariff_version_id: "string"
+    AgreementOption:
+      fields:
+        - agreement_id: "string"
+        - agreement_name: "string"
+        - coverage_status: "covered|partial|unknown|not_covered"
+        - preferential_rate:
+            rate_type: "ad_valorem_pct|specific|mixed|margin_of_preference_pct|duty_free|quota_rate|unknown"
+            rate_value: "number|null"
+            effective_from: "date|null"
+            effective_to: "date|null"
+        - savings_vs_mfn:
+            savings_pct: "number|null"
+            notes: "string|null"
+        - eligibility_signal:
+            status: "eligible|maybe|not_eligible|unknown"
+            reason: "string|null"
+        - proof_required: "array<string>"
+        - roo_summary: "string|null"
+        - source_refs: "array<SourceRef>"
+
+    logic:
+      - "1) Determine agreement candidates from AgreementCoverage(origin_iso)."
+      - "2) For each agreement, look up PreferenceRateLine by (agreement_id, origin_iso, hs_code) with best match (HS8 > HS6 > heading > chapter if allowed)."
+      - "3) Compute preferential_rate_effective based on current date and staged schedules."
+      - "4) Decide eligibility status:"
+      - "   - not_eligible if coverage_status=not_covered."
+      - "   - unknown if coverage_status unknown OR no rate line for that HS."
+      - "   - maybe if rate exists but importer_context lacks proof/registration info."
+      - "   - eligible only when importer_context indicates proof/registration available OR agreement explicitly states automatic preference (rare)."
+      - "5) Select best_option = lowest duty burden (duty_free < ad_valorem lower rate < margin)."
+      - "6) Output required_actions + proof_checklist from RulesOfOriginRequirement if present; otherwise general RoO warning + link to SARS RoO."
+    hard_honesty_rules:
+      - "Never output eligible when data is missing."
+      - "If AfCFTA coverage is partial/unknown, surface that explicitly."
+
+  api_contract:
+    endpoints:
+
+      get_preference_options:
+        path: "/api/preference-options"
+        method: "POST"
+        request:
+          hs_code: "string"
+          origin_iso: "string"
+          destination_iso: "ZA"
+          importer_context: "object|null"
+        response:
+          preference_decision: "PreferenceDecision"
+
+      calculate:
+        path: "/api/calculate"
+        change_type: "extend_existing"
+        additions_to_response:
+          preference_decision: "PreferenceDecision"
+        requirement:
+          - "Every pSEO calculation response must include preference_decision (even if not_eligible/unknown)."
+          - "Expose tariff_version_id and source_refs for audit."
+
+  ui_components:
+    PreferentialRatesPanel:
+      purpose: "Decision-first display of exact preferential rates + savings + claim requirements."
+      placement:
+        - "ResultsPanel: immediately after AssumptionsAndFreshnessBox"
+      render_condition: "calcStatus == success"
+      props:
+        preferenceDecision: "PreferenceDecision"
+        showAuditLinks: true
+      must_render:
+        header_row:
+          - "Best available preferential rate (if any)"
+          - "MFN duty rate"
+          - "Estimated savings (ZAR + %)"
+        body_sections:
+          - "Applicable agreements list (expandable)"
+          - "Eligibility status badge: eligible|maybe|not_eligible|unknown"
+          - "Proof checklist (collapsed by default)"
+          - "Why not guaranteed (RoO caveat) tooltip"
+        audit_footer:
+          - "Tariff version id"
+          - "Source links (official) with 'view schedule' labels"
+      special_behavior:
+        - "If status=unknown: show exact reason (e.g., 'No HS-level schedule parsed for this agreement yet') + prompt user action: 'Verify HS / provide product details / consult broker'."
+        - "If status=maybe: show minimal questions (2 toggles): 'Do you have proof of origin?' 'Are you registered for preference?' to refine status without sign-in."
+      seo_requirement:
+        - "Preferential rate values (numbers) must be visible in HTML (not only client-rendered) on indexable pages."
+
+    PreferenceClaimChecklist:
+      purpose: "Actionable steps to claim preference at clearance."
+      placement:
+        - "Under PreferentialRatesPanel"
+      render_condition: "calcStatus == success"
+      props:
+        proofChecklist: "array<string>"
+        requiredActions: "array<string>"
+      must_include:
+        - "Proof-of-origin document list"
+        - "Validity/handling notes (if known)"
+        - "Registration note if applicable"
+        - "If unknown: show 'What to confirm' list"
+
+    AgreementCoverageExplainer:
+      purpose: "Educate without bloat: why agreements appear / do not appear."
+      placement:
+        - "Collapsed accordion under PreferentialRatesPanel"
+      content_rules:
+        - "Short, structured bullets only."
+        - "Link to SARS agreement directory pages (official)."
+
+  pseo_design_rules:
+    - "Keep preference block tool-first: numbers + badge + checklist; avoid long prose."
+    - "Do not show a generic agreement list unless it’s tied to the current origin/HS decision."
+    - "Each page should show unique computed preference output for that slug to avoid doorway patterns."
+
+  indexability_gates_update:
+    requirement:
+      - "Count PreferentialRatesPanel as a decision block."
+      - "Indexable pages must still meet existing gates (presets, freshness, internal links)."
+    fail_safe:
+      - "If preference data missing for a slug, do NOT block indexing if other decision blocks exist; show status=unknown with reason."
+
+  conversion_triggers:
+    principle: "Value-first; no paywall for preference numbers."
+    allowed_gates_after_value:
+      - "Export preference decision pack PDF"
+      - "Watch preference changes for HS/origin"
+      - "Save preference evidence checklist"
+    triggers:
+      - id: "export_preference_pack"
+        action: "SignInModal(reason='export_preference_pack')"
+      - id: "watch_preference_changes"
+        action: "SignInModal(reason='watch_preference_changes')"
+
+  analytics:
+    new_events:
+      - name: "preference_panel_viewed"
+        when: "PreferentialRatesPanel enters viewport"
+        props: ["origin_iso","hs_code","status","best_agreement_id","tariff_version_id"]
+      - name: "preference_questions_answered"
+        when: "User toggles proof/registration questions"
+        props: ["has_proof_of_origin","registration_known","status_after"]
+      - name: "preference_audit_link_clicked"
+        when: "User clicks source link"
+        props: ["agreement_id","source_url"]
+
+  acceptance_criteria:
+    correctness_and_honesty:
+      - "When a preferential rate is shown, it includes at least one official SourceRef URL and tariff_version_id."
+      - "If data is missing, UI shows unknown with specific reason; never guesses."
+      - "Eligibility is never marked eligible unless importer_context supports it or rule is explicitly unconditional."
+    decision_support:
+      - "User sees: MFN vs best preference, savings, and what to do to claim it."
+      - "User can understand why they might not qualify (RoO/proof) without leaving page."
+    seo:
+      - "Preferential rate numbers render server-side on indexable pages."
+      - "No increase in boilerplate text; block remains structured and concise."
+    performance:
+      - "PreferenceDecision must be included in /api/calculate response within existing SLA; heavy parsing happens offline in ingestion pipeline."
+
+  implementation_tasks:
+    - id: "TASK_A_build_agreements_catalog"
+      priority: "P0"
+      description: "Create agreements + coverage tables seeded from SARS directory; store refs."
+    - id: "TASK_B_ingestion_pipeline_preference_rates"
+      priority: "P0"
+      description: "Parse official schedules/annexes into PreferenceRateLine with SourceRef; publish tariff versions."
+    - id: "TASK_C_preference_engine"
+      priority: "P0"
+      description: "Implement computation logic to produce PreferenceDecision and AgreementOptions."
+    - id: "TASK_D_api_integration"
+      priority: "P0"
+      description: "Extend /api/calculate to return preference_decision; add /api/preference-options if needed."
+    - id: "TASK_E_ui_preferential_rates_panel"
+      priority: "P0"
+      description: "Implement PreferentialRatesPanel + PreferenceClaimChecklist + audit links + 2-toggle refinement."
+    - id: "TASK_F_indexability_gate_update"
+      priority: "P1"
+      description: "Count preference panel as decision block; keep fail-safe behavior."
+    - id: "TASK_G_telemetry"
+      priority: "P1"
+      description: "Add analytics events for preference interactions and audit clicks."

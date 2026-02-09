@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { CalculationResult } from '@/types/pseo';
+import { getHardcodedPreference } from '@/utils/preferenceEngineStub';
 
 export async function POST(request: Request) {
     try {
@@ -27,7 +28,8 @@ export async function POST(request: Request) {
             summary: {
                 total_taxes_zar: totalTaxes,
                 total_landed_cost_zar: totalLanded,
-                landed_cost_per_unit_zar: totalLanded / (body.quantity || 1)
+                landed_cost_per_unit_zar: totalLanded / (body.quantity || 1),
+                origin_country: body.originCountry || 'CN'
             },
             hs: {
                 confidence_score: 0.95,
@@ -84,6 +86,12 @@ export async function POST(request: Request) {
                         inputs_used: {},
                         rates: { rate: 650 }
                     }
+                },
+                {
+                    key: "freight",
+                    label: "Freight (Est)",
+                    amount_zar: body.freightCost || 0,
+                    audit: { formula: 'User Input', inputs_used: {}, rates: {}, tariff_version: '' }
                 }
             ],
             doc_checklist: {
@@ -100,18 +108,31 @@ export async function POST(request: Request) {
                     { title: "Import Permit", why: "Required for specific controlled goods.", trigger: "If goods are controlled" }
                 ]
             },
-            risk_flags: [
+            risk_flags: (invoiceValue > 50000) ? [
                 {
                     key: "dumping_risk",
-                    severity: "medium",
+                    severity: "high",
                     title: "Anti-Dumping Risk",
-                    summary: "This HS code often attracts anti-dumping duties from CN.",
-                    recommended_action: "Check manufacturer specific rates."
+                    summary: "High risk of anti-dumping duties for this HS code from CN.",
+                    recommended_action: "Verify manufacturer rates."
+                },
+                {
+                    key: "prohibited",
+                    severity: "medium",
+                    title: "Restricted Import",
+                    summary: "Requires specific permit from ITAC.",
+                    recommended_action: "Apply for permit before shipping."
+                }
+            ] : [
+                {
+                    key: "dumping_risk",
+                    severity: "low",
+                    title: "Monitor Anti-Dumping",
+                    summary: "Low risk currently, but sector is volatile.",
+                    recommended_action: "Check monthly."
                 }
             ],
-            preference_summary: {
-                eligible: false
-            }
+            preference_decision: getHardcodedPreference(body.hsCode || "8703", body.originCountry || "CN")
         };
 
         return NextResponse.json(response);

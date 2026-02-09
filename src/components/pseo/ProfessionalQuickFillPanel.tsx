@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HSSelector } from "./HSSelector"; // Assuming HSSelector is built
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 
 export function ProfessionalQuickFillPanel() {
@@ -99,18 +100,23 @@ export function ProfessionalQuickFillPanel() {
                         </Select>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="incoterm">Incoterm</Label>
-                        <Select value={inputs.incoterm} onValueChange={(val) => updateInput('incoterm', val)}>
-                            <SelectTrigger id="incoterm">
-                                <SelectValue placeholder="Select Incoterm" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="FOB">FOB - Free on Board</SelectItem>
-                                <SelectItem value="CIF">CIF - Cost, Insurance, Freight</SelectItem>
-                                <SelectItem value="EXW">EXW - Ex Works</SelectItem>
-                                <SelectItem value="DAP">DAP - Delivered at Place</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <Label>Incoterm</Label>
+                        <div className="grid grid-cols-2 gap-1 rounded-md bg-neutral-100 p-1 dark:bg-neutral-800">
+                            {['FOB', 'CIF', 'EXW', 'DAP'].map(term => (
+                                <button
+                                    key={term}
+                                    onClick={() => { updateInput('incoterm', term); setTimeout(calculate, 0); }}
+                                    className={cn(
+                                        "text-xs font-medium py-1.5 rounded-sm transition-all",
+                                        inputs.incoterm === term
+                                            ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-600 dark:text-neutral-50"
+                                            : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
+                                    )}
+                                >
+                                    {term}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="importer-type">Importer Type</Label>

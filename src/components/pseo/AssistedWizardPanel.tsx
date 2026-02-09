@@ -34,7 +34,11 @@ export function AssistedWizardPanel() {
                 { key: 'duty', label: 'Import Duty', amount_zar: 1000, audit: { formula: '10%', inputs_used: {}, rates: {} } },
                 { key: 'vat', label: 'VAT', amount_zar: 1500, audit: { formula: '15%', inputs_used: {}, rates: {} } }
             ],
-            doc_checklist: { always: ["Invoice"], common: [], conditional: [] },
+            doc_checklist: {
+                always: [{ title: "Invoice", why: "Proof of value" }],
+                common: [],
+                conditional: []
+            },
             risk_flags: []
         });
     };

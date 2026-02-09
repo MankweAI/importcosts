@@ -43,6 +43,7 @@ export interface CalculationResult {
         total_taxes_zar: number;
         total_landed_cost_zar: number;
         landed_cost_per_unit_zar: number;
+        origin_country?: string;
     };
     hs: {
         confidence_score: number;
@@ -61,11 +62,52 @@ export interface CalculationResult {
     line_items: LineItem[];
     doc_checklist: DocChecklistGroup;
     risk_flags: RiskFlag[];
-    preference_summary?: {
-        eligible: boolean;
-        agreement_name?: string;
-        savings_estimate?: number;
+    preference_decision?: PreferenceDecision | null;
+}
+
+export interface PreferenceDecision {
+    mfn_rate: {
+        rate_type: "ad_valorem_pct" | "specific" | "mixed";
+        rate_value: number | null;
+        source_ref: SourceRef | null;
     };
+    applicable_agreements: AgreementOption[];
+    best_option: AgreementOption | null;
+    status: "eligible" | "maybe" | "not_eligible" | "unknown";
+    unknown_or_block_reason: string | null;
+    required_actions: string[];
+    proof_checklist: string[];
+    rate_confidence: "high" | "medium" | "low";
+    tariff_version_id: string;
+}
+
+export interface AgreementOption {
+    agreement_id: string;
+    agreement_name: string;
+    coverage_status: "covered" | "partial" | "unknown" | "not_covered";
+    preferential_rate: {
+        rate_type: string;
+        rate_value: number | null;
+        effective_from: string | null;
+        effective_to: string | null;
+    };
+    savings_vs_mfn: {
+        savings_pct: number | null;
+        notes: string | null;
+    };
+    eligibility_signal: {
+        status: "eligible" | "maybe" | "not_eligible" | "unknown";
+        reason: string | null;
+    };
+    proof_required: string[];
+    source_refs: SourceRef[];
+}
+
+export interface SourceRef {
+    source_type: string;
+    url: string;
+    document_title: string | null;
+    published_date: string | null;
 }
 
 export interface RiskFlag {
@@ -107,7 +149,7 @@ export interface CompareResult {
         originIso: string;
         summary: CalculationResult['summary'];
         risk_flags_top: RiskFlag[];
-        preference_summary: CalculationResult['preference_summary'];
+        preference_decision: CalculationResult['preference_decision'];
     }[];
     deltas: Record<string, any>; // simplified for now
 }

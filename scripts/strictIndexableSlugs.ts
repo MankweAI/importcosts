@@ -57,6 +57,7 @@ const CONFIDENCE_RANK: Record<ConfidenceLabel, number> = {
   LOW: 1,
   MEDIUM: 2,
   HIGH: 3,
+  UNKNOWN: 0
 };
 
 function isNonPlaceholderTitle(title?: string | null): boolean {
@@ -285,7 +286,7 @@ async function main() {
         const presetInput = { quantity: 1 };
         const isComputable = isRateComputable(primaryRate, presetInput);
         if (!isComputable) {
-          reasons.push("Tariff rate not computable with preset inputs (needs weight/volume)" );
+          reasons.push("Tariff rate not computable with preset inputs (needs weight/volume)");
         } else {
           computedScenarios = SCENARIO_VALUES.length > 0;
         }

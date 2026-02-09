@@ -6,6 +6,7 @@ import { calculateVat } from "./vat";
 import { calculateAncillary } from "./ancillary";
 import { getActiveTariffVersion } from "../db/services/tariff.service";
 import { createCalcRun } from "../db/services/calcRun.service";
+import { getHardcodedPreference } from "@/utils/preferenceEngineStub";
 
 export async function calculateLandedCost(
     input: CalcInput,
@@ -244,6 +245,9 @@ export async function calculateLandedCost(
         vatRecoverable: input.importerType === "VAT_REGISTERED"
     };
 
+    // 9. Get Preference Decision (Hardcoded Stub for Phase 1)
+    const preference_decision = getHardcodedPreference(input.hsCode, input.originCountry || "");
+
     return {
         landedCostTotal,
         landedCostExVat,
@@ -256,6 +260,7 @@ export async function calculateLandedCost(
         auditTrace,
         landedCostPerUnit: input.quantity ? landedCostTotal / input.quantity : undefined,
         risks,
-        assumptions
+        assumptions,
+        preference_decision
     };
 }

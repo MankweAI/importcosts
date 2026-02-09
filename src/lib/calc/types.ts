@@ -61,4 +61,5 @@ export interface CalcOutput {
         customsValueCif?: number;
         vatRecoverable?: boolean;
     };
+    preference_decision?: any; // Avoiding circular dependency for now, using any or redefine PreferenceDecision here
 }

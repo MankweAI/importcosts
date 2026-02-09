@@ -53,7 +53,7 @@ export default async function ProductOriginPage({ params }: PageProps) {
             isIndexable={isIndexable}
             canonicalUrl={`https://importcosts.co.za/import-duty-vat-landed-cost/${clusterSlug}/from/${originIso}/to/south-africa`}
             title={`Import Cost: ${clusterSlug} from ${originIso}`} // Fallback props
-            description=""
+
         >
             <ContextHero
                 title={`Import Duty & VAT: ${clusterSlug.replace(/-/g, ' ')} from ${originIso}`}

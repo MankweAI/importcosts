@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { CompareRequest, CompareResult } from '@/types/pseo';
+import { getHardcodedPreference } from '@/utils/preferenceEngineStub';
 
 export async function POST(request: Request) {
     const body: CompareRequest = await request.json();
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
                 landed_cost_per_unit_zar: 150
             },
             risk_flags_top: [],
-            preference_summary: { eligible: false }
+            preference_decision: getHardcodedPreference(body.baseInputs.hsCode, origin)
         })),
         deltas: {
             // simplified delta logic

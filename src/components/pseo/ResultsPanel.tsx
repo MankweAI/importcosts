@@ -9,6 +9,7 @@ import { CashFlowTimeline } from "./CashFlowTimeline";
 import { ForexSensitivity } from "./ForexSensitivity";
 import { DecisionSummaryHeader } from "./DecisionSummaryHeader";
 import { AssumptionsAndFreshnessBox } from "./AssumptionsAndFreshnessBox";
+import { FreightInclusionBanner } from "./FreightInclusionBanner";
 import { HSConfidencePanel } from "./HSConfidencePanel";
 import { RiskFlagsPanel } from "./RiskFlagsPanel";
 import { DocumentChecklistPanel } from "./DocumentChecklistPanel";
@@ -29,6 +30,8 @@ export function ResultsPanel() {
 
             {/* 2. Metadata & Assumptions */}
             <AssumptionsAndFreshnessBox />
+
+            <FreightInclusionBanner />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 

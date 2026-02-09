@@ -1,0 +1,337 @@
+mrf:
+  name: "pseo_decision_support_gap_closure_spec"
+  version: "1.0.0"
+  scope:
+    project: "Project 1 — pSEO pages only (logged-out)"
+    pages_in_scope:
+      - "/import-duty-vat-landed-cost/{clusterSlug}/from/{originIso}/to/south-africa"
+      - "/import-duty-vat-landed-cost/hs/{hs6}/from/{originIso}/to/south-africa"
+    explicitly_out_of_scope:
+      - "SaaS app (signed-in experience)"
+      - "Pricing/billing"
+      - "New auth flows (reuse existing SignInModal behavior)"
+
+  goal:
+    - "Close the remaining gaps blocking 10/10 decision support on pSEO pages."
+    - "Add missing scenario controls (incoterms + freight profiles) and improve preference clarity."
+    - "For HS pages, add optional HS-alternative impact visualization to prevent false certainty."
+
+  remaining_gaps_to_fix:
+    - id: "GAP_1_INCOTERM_TOGGLE"
+      summary: "No explicit incoterm toggle available in the decision-support experience."
+      impact: "Users cannot quickly compare CIF vs FOB vs EXW etc. without manual re-entry; assumptions are less transparent."
+    - id: "GAP_2_FREIGHT_PROFILES_SENSITIVITY"
+      summary: "No freight/transport presets (profiles) and no clear freight sensitivity tool."
+      impact: "Users can't quickly understand cost sensitivity to freight mode/assumptions; planning decisions are weaker."
+    - id: "GAP_3_PREFERENCE_UNKNOWN_REASON"
+      summary: "When preference eligibility is 'unknown', reason and required evidence is not always explicit."
+      impact: "Users can't resolve uncertainty; decision support feels incomplete."
+    - id: "GAP_4_HS_PAGE_ALTERNATIVE_IMPACT"
+      summary: "HS pages assume fixed HS; no optional alternative-HS impact view for educational/risk mitigation."
+      impact: "User may over-trust the HS even when their product description might map to adjacent codes; reduces safety margin."
+
+  non_negotiables:
+    - "Core calculation results remain free."
+    - "All new tools must be tool-first and appear as decision blocks (not generic text)."
+    - "All new controls must clearly display assumptions and changes they introduce."
+    - "Do not break indexability gating; new blocks should help meet/maintain index readiness."
+
+  component_changes:
+    add_or_upgrade_components:
+
+      IncotermToggle:
+        id: "IncotermToggle"
+        purpose: "One-click incoterm scenario comparison without leaving the pSEO page."
+        render_condition: "always_visible"
+        placement:
+          - "Within ScenarioToolkit, above preset value chips"
+          - "Also mirrored in ProfessionalQuickFillPanel as a compact toggle (not only a dropdown)"
+        props:
+          value: "string"
+          options: ["FOB", "CIF", "EXW", "DAP", "DDP", "Other"]
+          showInfo: true
+          infoContent:
+            - "Incoterm affects customs value and what costs are included (freight/insurance)."
+        behavior:
+          - "On change, re-run calculation using current inputs."
+          - "Update AssumptionsAndFreshnessBox immediately to reflect new incoterm."
+          - "If selected incoterm conflicts with provided freight/insurance fields, prompt a non-blocking inline clarification banner (see FreightInclusionBanner)."
+        analytics:
+          event: "incoterm_toggled"
+          props: ["incoterm", "mode", "pageType", "originIso", "clusterSlug_or_hs6"]
+
+      FreightSensitivityControls:
+        id: "FreightSensitivityControls"
+        purpose: "Allow fast freight-mode assumptions + manual overrides; make freight impact explicit."
+        render_condition: "always_visible"
+        placement:
+          - "ScenarioToolkit, below IncotermToggle"
+        modes:
+          - id: "manual"
+            label: "Use my freight"
+            fields:
+              - id: "freight_cost"
+                type: "money"
+                required: true
+              - id: "insurance_cost"
+                type: "money"
+                required: false
+                default: 0
+              - id: "other_charges"
+                type: "money"
+                required: false
+                default: 0
+          - id: "profiles"
+            label: "Use freight profiles"
+            profiles:
+              - id: "sea_conservative"
+                label: "Sea (conservative)"
+                model:
+                  type: "percentage_of_invoice"
+                  freight_pct: 0.12
+                  insurance_pct: 0.01
+                  notes: "Conservative estimate; editable after apply."
+              - id: "air_conservative"
+                label: "Air (conservative)"
+                model:
+                  type: "percentage_of_invoice"
+                  freight_pct: 0.25
+                  insurance_pct: 0.01
+                  notes: "Conservative estimate; editable after apply."
+              - id: "sea_light"
+                label: "Sea (light)"
+                model:
+                  type: "percentage_of_invoice"
+                  freight_pct: 0.08
+                  insurance_pct: 0.005
+              - id: "air_light"
+                label: "Air (light)"
+                model:
+                  type: "percentage_of_invoice"
+                  freight_pct: 0.18
+                  insurance_pct: 0.005
+        required_ui:
+          - "Show a small 'Freight affects VAT base' tooltip next to freight inputs."
+          - "After applying a profile, show a badge: 'Profile applied' with a link: 'See assumptions'."
+          - "Always allow the user to override profile-generated values."
+        behavior:
+          - "Applying a profile sets freight/insurance values, then recalculates."
+          - "AssumptionsAndFreshnessBox must state which profile is applied (or 'manual')."
+          - "If incoterm implies freight/insurance should be excluded/included, show FreightInclusionBanner (below)."
+        analytics:
+          - event: "freight_profile_selected"
+            props: ["profile_id", "mode", "pageType", "originIso", "clusterSlug_or_hs6"]
+          - event: "freight_mode_changed"
+            props: ["mode_type_manual_or_profiles", "mode", "pageType"]
+
+      FreightInclusionBanner:
+        id: "FreightInclusionBanner"
+        purpose: "Prevent silent assumption mismatches between incoterm and provided freight/insurance."
+        render_condition: "calcStatus == success AND (incoterm_requires_freight_handling_mismatch == true)"
+        placement:
+          - "Directly under AssumptionsAndFreshnessBox"
+        props:
+          message: "string"
+          suggestedFixes: "array<{label, action}>"
+        examples:
+          - case: "CIF selected but freight_cost=0"
+            message: "CIF usually includes freight/insurance. Your freight is 0—confirm or apply a profile."
+            suggestedFixes:
+              - label: "Apply Sea (conservative)"
+                action: "apply_profile:sea_conservative"
+              - label: "Keep as-is"
+                action: "dismiss"
+          - case: "FOB selected but freight entered"
+            message: "FOB excludes freight in the supplier price; freight should be entered separately (your entry will be used)."
+            suggestedFixes:
+              - label: "OK"
+                action: "dismiss"
+        analytics:
+          - event: "freight_inclusion_banner_shown"
+            props: ["incoterm", "mode", "pageType"]
+          - event: "freight_inclusion_banner_action"
+            props: ["action", "incoterm", "mode"]
+
+      PreferenceEligibilityPanel_Upgrade:
+        id: "PreferenceEligibilityPanel"
+        purpose: "Make preference eligibility actionable; if unknown, say exactly why and what evidence resolves it."
+        change_type: "upgrade_existing"
+        props_additions:
+          unknown_reason_code: "string|null"
+          unknown_reason_text: "string|null"
+          required_evidence: "array<string>"
+          next_steps: "array<string>"
+        required_states:
+          - status: "eligible"
+            must_show:
+              - "Requirements (e.g., certificate of origin)"
+              - "What to submit at clearance"
+          - status: "not_eligible"
+            must_show:
+              - "Short reason"
+              - "Alternative actions (e.g., consider other origin, verify HS)"
+          - status: "maybe"
+            must_show:
+              - "What is missing"
+              - "How to confirm"
+          - status: "unknown"
+            must_show:
+              - "unknown_reason_text"
+              - "required_evidence checklist"
+              - "CTA links: 'Verify HS' and/or 'Compare origins'"
+        analytics:
+          - event: "preference_panel_viewed"
+            props: ["status", "unknown_reason_code", "pageType", "originIso"]
+
+      HSAlternativeImpactOnHSPage:
+        id: "HSAlternativeImpactOnHSPage"
+        purpose: "On HS pages, optionally show adjacent HS alternatives and their cost impact to reduce false certainty."
+        render_condition: "pageType == hs_origin_money_page"
+        placement:
+          - "Under HSConfidencePanel"
+        props:
+          baseHs6: "string"
+          suggestedAdjacentHs6: "array<{hs6,label,why_suggested}> # <=5"
+          impactPreviewMode: "delta|range"
+          fetchImpactEndpoint: "/api/hs-impact"
+        UI_requirements:
+          - "Collapsed by default with label: 'Not sure this HS fits your product? See nearby codes and cost impact.'"
+          - "When expanded, show 2–5 adjacent HS codes with short labels and 'see impact' button."
+          - "Show delta for total taxes, landed cost, and per-unit cost."
+          - "If deltas exceed threshold, show a warning badge: 'Material difference—verify HS recommended'."
+        thresholds:
+          material_delta_zar: 5000
+          material_delta_pct: 0.05
+        analytics:
+          - event: "hs_alt_impact_expanded"
+            props: ["baseHs6", "pageType", "originIso"]
+          - event: "hs_alt_impact_loaded"
+            props: ["count", "material_delta_flag"]
+
+  api_contract_updates:
+    existing_endpoint_changes:
+      calculate:
+        path: "/api/calculate"
+        additions:
+          - "Return incoterm_used (string) and freight_mode_used ('manual'|'profile')"
+          - "Return freight_profile_id if applied"
+          - "Return preference_summary.unknown_reason_code, unknown_reason_text, required_evidence[], next_steps[] when status is unknown/maybe"
+    new_or_confirmed_endpoints:
+      hs_impact:
+        path: "/api/hs-impact"
+        method: "POST"
+        request_payload:
+          required:
+            - "baseInputs (same as /api/calculate request)"
+            - "hsCandidates: array<string> # HS6 codes"
+        response_payload:
+          required:
+            - "mode: 'delta'|'range'"
+            - "perCandidate: array<{hs6, summary:{total_taxes_zar,total_landed_cost_zar,per_unit_landed_cost_zar}, deltas:{taxes_delta_zar, landed_delta_zar, per_unit_delta_zar}}>"
+            - "material_delta_flag: boolean"
+      compare:
+        path: "/api/compare"
+        note: "If already implemented from earlier spec, reuse; otherwise implement minimal base-vs-one-origin compare."
+        free_limits:
+          max_compare_origins: 1
+
+  ui_wiring_requirements:
+    - "ScenarioToolkit must include IncotermToggle + FreightSensitivityControls + PresetValueChips."
+    - "Any change in incoterm/freight profile must trigger a recalculation and refresh:"
+    - "  - DecisionSummaryHeader"
+    - "  - AssumptionsAndFreshnessBox"
+    - "  - Breakdown + Why drawers"
+    - "  - Risk flags, docs checklist, preference summary"
+    - "HSAlternativeImpactOnHSPage must not change the selected HS unless user explicitly selects a different code; it is informational by default."
+
+  seo_indexing_updates:
+    decision_blocks_count_rule:
+      - "Count ScenarioToolkit (with incoterm+freight) as a decision block."
+      - "Count HSAlternativeImpactOnHSPage as a decision block when present."
+      - "Keep requirement: decision_blocks_present >= 3 for indexable pages."
+
+  analytics:
+    required_new_events:
+      - "incoterm_toggled"
+      - "freight_profile_selected"
+      - "freight_mode_changed"
+      - "freight_inclusion_banner_shown"
+      - "freight_inclusion_banner_action"
+      - "preference_panel_viewed"
+      - "hs_alt_impact_expanded"
+      - "hs_alt_impact_loaded"
+
+  acceptance_criteria:
+    - "Users can toggle incoterms on pSEO pages without leaving the page; results update correctly."
+    - "Users can apply a freight profile (sea/air) and see recalculated totals + updated assumptions."
+    - "If incoterm/freight inputs conflict, FreightInclusionBanner appears with suggested fixes."
+    - "PreferenceEligibilityPanel always explains unknown/maybe status with specific reasons and evidence needed."
+    - "HS pages include an optional HSAlternativeImpact section (collapsed by default) that shows cost deltas for adjacent HS codes."
+    - "All enhancements remain value-first: no paywall for core results; gating only for Save/Export/advanced Compare/Watchlist."
+    - "Indexability gate remains intact; these pages remain indexable and sitemapped only if readiness passes."
+
+  implementation_tasks:
+    - id: "TASK_1_add_incoterm_toggle"
+      priority: "P0"
+      description: "Implement IncotermToggle in ScenarioToolkit and mirror compact version in ProfessionalQuickFillPanel."
+    - id: "TASK_2_add_freight_sensitivity_controls"
+      priority: "P0"
+      description: "Implement FreightSensitivityControls with manual + profiles mode; ensure assumptions update."
+    - id: "TASK_3_add_freight_inclusion_banner"
+      priority: "P1"
+      description: "Add mismatch detection logic + banner with one-click suggested fixes."
+    - id: "TASK_4_upgrade_preference_panel_unknown_reasons"
+      priority: "P0"
+      description: "Extend preference_summary payload and render unknown/maybe reasons + evidence checklist + next steps."
+    - id: "TASK_5_add_hs_alt_impact_on_hs_pages"
+      priority: "P1"
+      description: "Implement informational adjacent HS impact section; add /api/hs-impact if not present."
+    - id: "TASK_6_update_indexability_block_counter"
+      priority: "P0"
+      description: "Ensure decision_blocks_present counts new blocks; keep >=3 requirement."
+    - id: "TASK_7_analytics_events"
+      priority: "P1"
+      description: "Add analytics for incoterm/freight/pref/hs-alt interactions."
+
+  qa_test_matrix:
+    - name: "Incoterm toggle recalculates"
+      steps:
+        - "Open product-origin pSEO page"
+        - "Run calc"
+        - "Toggle incoterm FOB -> CIF -> EXW"
+      expected:
+        - "DecisionSummaryHeader updates each time"
+        - "Assumptions show incoterm used"
+        - "No stale values in breakdown"
+    - name: "Freight profiles apply and are editable"
+      steps:
+        - "Run calc with invoice value"
+        - "Select Freight profiles mode"
+        - "Apply Sea (conservative)"
+        - "Override freight value manually"
+      expected:
+        - "Totals update after profile apply"
+        - "Totals update after manual override"
+        - "Assumptions reflect profile/manual state"
+    - name: "Freight inclusion mismatch banner"
+      steps:
+        - "Set CIF with freight=0"
+        - "Calculate"
+      expected:
+        - "Banner appears with suggested profile"
+        - "Click suggested profile recalculates"
+    - name: "Preference unknown reason clarity"
+      steps:
+        - "Force a case where preference is unknown (missing evidence)"
+        - "Calculate"
+      expected:
+        - "Panel shows explicit reason + evidence list + next steps"
+    - name: "HS page alternative impact"
+      steps:
+        - "Open HS-origin pSEO page"
+        - "Calculate"
+        - "Expand HSAlternativeImpactOnHSPage"
+        - "Load impact for adjacent codes"
+      expected:
+        - "Deltas appear"
+        - "Material-difference warning appears when thresholds exceeded"

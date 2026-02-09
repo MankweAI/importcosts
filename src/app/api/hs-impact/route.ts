@@ -1,22 +1,30 @@
-import { NextResponse } from 'next/server';
-import { HSImpactRequest, HSImpactResponse } from '@/types/pseo';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
-    const body: HSImpactRequest = await request.json();
+export async function POST(req: NextRequest) {
+    const body = await req.json();
+    const { baseInputs, hsCandidates } = body;
 
-    // Mock impact logic
+    // Mock Impact Calculation
+    // In reality, run calculation for each candidate
+    const perCandidate = hsCandidates.map((hs: string) => {
+        const isHigher = Math.random() > 0.5;
+        const impact = Math.floor(Math.random() * 5000) * (isHigher ? 1 : -1);
 
-    const response: HSImpactResponse = {
-        impactPreview: {
-            mode: 'delta',
-            deltas: body.hsCandidates.map(hs => ({
-                hs6: hs,
-                dutyDeltaZar: 500,
-                taxesDeltaZar: 575,
-                landedDeltaZar: 575
-            }))
-        }
-    };
+        return {
+            hs6: hs,
+            label: "Alternative Item Description",
+            summary: {},
+            deltas: {
+                taxes_delta_zar: impact * 0.2,
+                landed_delta_zar: impact,
+                per_unit_delta_zar: impact / (baseInputs.quantity || 1)
+            }
+        };
+    });
 
-    return NextResponse.json(response);
+    return NextResponse.json({
+        mode: 'delta',
+        perCandidate,
+        material_delta_flag: perCandidate.some((c: any) => Math.abs(c.deltas.landed_delta_zar) > 2000)
+    });
 }
