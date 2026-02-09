@@ -6,7 +6,7 @@ import { calculateVat } from "./vat";
 import { calculateAncillary } from "./ancillary";
 import { getActiveTariffVersion } from "../db/services/tariff.service";
 import { createCalcRun } from "../db/services/calcRun.service";
-import { getHardcodedPreference } from "@/utils/preferenceEngineStub";
+
 
 export async function calculateLandedCost(
     input: CalcInput,
@@ -46,41 +46,39 @@ export async function calculateLandedCost(
         include: { hsCode: true },
     });
 
-    // 2b. Check for Preferential Rate (Origin Override)
+    // 2b. Resolve Preference (New File-Based Engine)
+    let preference_decision: any = null; // using any to bypass strict type check if needed, or import PreferenceDecision
+
     if (input.originCountry) {
-        // Find HS Code ID first (efficiently)
-        const hsCode = await prisma.hsCode.findUnique({ where: { hs6: input.hsCode } });
+        // Determine MFN Rate Value for comparison
+        let mfnRateValue = 0.0;
+        if (tariffRate?.dutyType === "AD_VALOREM" && tariffRate.adValoremPct) {
+            mfnRateValue = Number(tariffRate.adValoremPct);
+        }
 
-        if (hsCode) {
-            const preference = await prisma.originPreference.findFirst({
-                where: {
-                    tariffVersionId: activeVersion.id,
-                    hsCodeId: hsCode.id,
-                    originIso2: input.originCountry // Assuming ISO2
-                },
-                include: { agreement: true }
+        // Call Engine
+        const { resolvePreference } = await import("./preferenceEngine");
+        preference_decision = resolvePreference(input.hsCode, input.originCountry, mfnRateValue);
+
+        // Apply Best Rate if Eligible
+        if (preference_decision.status === "eligible" && preference_decision.best_option?.preferential_rate) {
+            const bestRate = preference_decision.best_option.preferential_rate;
+
+            tariffRate = {
+                ...tariffRate,
+                dutyType: bestRate.rate_type === "free" ? "AD_VALOREM" : "AD_VALOREM", // simplified
+                adValoremPct: new Prisma.Decimal(bestRate.rate_value || 0),
+                specificRule: null,
+                compoundRule: null,
+                notes: `Preferential Rate: ${preference_decision.best_option.agreement_name}`
+            } as any;
+
+            auditTrace.push({
+                step: "PREFERENCE_APPLIED",
+                description: `Applied preferential rate from ${preference_decision.best_option.agreement_name}`,
+                value: { rate: bestRate.rate_value, savings: preference_decision.best_option.savings_vs_mfn.savings_pct },
+                timestamp: new Date()
             });
-
-            if (preference) {
-                // Map Preference to TariffRate shape for calculation
-                const override: any = preference.dutyOverride;
-
-                tariffRate = {
-                    ...tariffRate,
-                    dutyType: override.dutyType,
-                    adValoremPct: override.adValoremPct ? new Prisma.Decimal(override.adValoremPct) : null,
-                    specificRule: override.specificRule,
-                    compoundRule: override.compoundRule,
-                    notes: `Preferential Rate: ${preference.agreement.name} (${input.originCountry})`
-                } as any;
-
-                auditTrace.push({
-                    step: "PREFERENCE_APPLIED",
-                    description: `Applied preferential rate for ${input.originCountry} (${preference.agreement.code})`,
-                    value: override,
-                    timestamp: new Date()
-                });
-            }
         }
     }
 
@@ -245,8 +243,14 @@ export async function calculateLandedCost(
         vatRecoverable: input.importerType === "VAT_REGISTERED"
     };
 
-    // 9. Get Preference Decision (Hardcoded Stub for Phase 1)
-    const preference_decision = getHardcodedPreference(input.hsCode, input.originCountry || "");
+    // 10. Compliance Risks (Phase 3)
+    const { assessRisks } = await import("../compliance/complianceEngine");
+    const compliance_risks = assessRisks({
+        hsCode: input.hsCode,
+        originIso: input.originCountry || "CN", // logic for default?
+        usedGoods: input.usedGoods,
+        importerType: input.importerType
+    });
 
     return {
         landedCostTotal,
@@ -261,6 +265,7 @@ export async function calculateLandedCost(
         landedCostPerUnit: input.quantity ? landedCostTotal / input.quantity : undefined,
         risks,
         assumptions,
-        preference_decision
+        preference_decision,
+        compliance_risks
     };
 }

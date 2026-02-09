@@ -12,8 +12,21 @@ export async function POST(request: Request) {
         // Mock Response Logic
         // In a real app, this would query your DB/Tariff engine
         const invoiceValue = body.invoice_value || 0;
-        const dutyRate = 0.15; // 15% placeholder
         const vatRate = 0.15; // 15% standard
+        const dutyRate = 0.15; // 15% placeholder
+
+        // 1. Resolve Preference
+        const { resolvePreference } = await import("@/lib/calc/preferenceEngine");
+        const preference_decision = resolvePreference(body.hsCode || "8703", body.originCountry || "CN", dutyRate);
+
+        // 2. Resolve Compliance Risks
+        const { assessRisks } = await import("@/lib/compliance/complianceEngine");
+        const compliance_decision = assessRisks({
+            hsCode: body.hsCode || "8703",
+            originIso: body.originCountry || "CN",
+            usedGoods: body.usedGoods,
+            importerType: body.importerType
+        });
 
         // Simple ATV Calculation: (Value + 10% uplift + Duty) * VAT? 
         // Simplified:
@@ -108,31 +121,10 @@ export async function POST(request: Request) {
                     { title: "Import Permit", why: "Required for specific controlled goods.", trigger: "If goods are controlled" }
                 ]
             },
-            risk_flags: (invoiceValue > 50000) ? [
-                {
-                    key: "dumping_risk",
-                    severity: "high",
-                    title: "Anti-Dumping Risk",
-                    summary: "High risk of anti-dumping duties for this HS code from CN.",
-                    recommended_action: "Verify manufacturer rates."
-                },
-                {
-                    key: "prohibited",
-                    severity: "medium",
-                    title: "Restricted Import",
-                    summary: "Requires specific permit from ITAC.",
-                    recommended_action: "Apply for permit before shipping."
-                }
-            ] : [
-                {
-                    key: "dumping_risk",
-                    severity: "low",
-                    title: "Monitor Anti-Dumping",
-                    summary: "Low risk currently, but sector is volatile.",
-                    recommended_action: "Check monthly."
-                }
-            ],
-            preference_decision: getHardcodedPreference(body.hsCode || "8703", body.originCountry || "CN")
+            // Legacy risk flags - keeping empty array for type compatibility until frontend is fully migrated
+            risk_flags: [],
+            compliance_risks: compliance_decision,
+            preference_decision: preference_decision
         };
 
         return NextResponse.json(response);

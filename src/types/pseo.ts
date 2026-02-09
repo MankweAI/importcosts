@@ -63,6 +63,7 @@ export interface CalculationResult {
     doc_checklist: DocChecklistGroup;
     risk_flags: RiskFlag[];
     preference_decision?: PreferenceDecision | null;
+    compliance_risks?: RiskAssessment | null;
 }
 
 export interface PreferenceDecision {
@@ -93,7 +94,16 @@ export interface AgreementOption {
     };
     savings_vs_mfn: {
         savings_pct: number | null;
+        savings_amount?: number | null;
         notes: string | null;
+    };
+    rule_of_origin?: { // Made optional to avoid breaking existing code immediately, but engine will populate it
+        summary: string;
+        origin_criteria_code?: string;
+    };
+    documentation?: {
+        proof_type: string;
+        retention_period?: string;
     };
     eligibility_signal: {
         status: "eligible" | "maybe" | "not_eligible" | "unknown";
@@ -101,6 +111,7 @@ export interface AgreementOption {
     };
     proof_required: string[];
     source_refs: SourceRef[];
+    agreement_type?: string; // e.g. EPA, FTA
 }
 
 export interface SourceRef {
@@ -169,4 +180,56 @@ export interface HSImpactResponse {
             landedDeltaZar: number;
         }[];
     };
+}
+
+// Phase 3: Compliance Risk Types
+
+export interface RiskAssessment {
+    overall_risk_score: number; // 0-10
+    top_risks: RiskFinding[];
+    all_risks: RiskFinding[];
+    unknowns: UnknownCoverage[];
+    risk_version_id: string;
+    generated_at: string;
+}
+
+export interface RiskFinding {
+    rule_id: string;
+    authority_id: string;
+    severity: "low" | "medium" | "high";
+    title: string;
+    summary: string;
+    why_triggered: string;
+    required_action_steps: string[];
+    required_documents: string[];
+    official_refs: SourceRef[];
+}
+
+export interface UnknownCoverage {
+    area: string;
+    reason: string;
+    suggested_next_step: string;
+    official_ref: SourceRef | null;
+}
+
+export interface RiskRule {
+    rule_id: string;
+    authority_id: string;
+    rule_type: string;
+    title: string;
+    summary: string;
+    severity: "low" | "medium" | "high";
+    match: {
+        hs_match: string[];
+        // simplified condition match for now
+        condition_match?: {
+            used_goods?: boolean;
+            importer_type?: string;
+        };
+    };
+    required_action: {
+        steps: string[];
+        required_documents: string[];
+    };
+    official_refs: SourceRef[];
 }

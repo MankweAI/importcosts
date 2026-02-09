@@ -1,0 +1,563 @@
+mrf:
+  name: "pseo_compliance_risks_and_alerts_spec"
+  version: "1.0.0"
+  scope:
+    project: "Project 1 — pSEO pages only (logged-out)"
+    pages_in_scope:
+      - "/import-duty-vat-landed-cost/{clusterSlug}/from/{originIso}/to/south-africa"
+      - "/import-duty-vat-landed-cost/hs/{hs6}/from/{originIso}/to/south-africa"
+    destination_iso_fixed: "ZA"
+    explicit_non_goals:
+      - "Automate permit/LoA applications"
+      - "Provide legal advice; only provide structured guidance + official references"
+      - "SaaS workflows post-signin (out of scope; only sign-in gating for alerts/exports)"
+
+  objective:
+    - "Add a 'Compliance Risks & Alerts' system based on actual SA compliance sources, computed per HS × origin × condition."
+    - "Expose actionable, auditable compliance risks on pSEO pages without generic boilerplate."
+    - "Create habit + moat via change-tracked alerts when official sources update."
+
+  principles:
+    data_honesty:
+      - "Never guess: if coverage is incomplete, use status=unknown with a specific reason."
+      - "Every risk shown MUST have at least one authoritative SourceRef (or be explicitly labeled as heuristic)."
+    tool_first_seo_safe:
+      - "Risk output must be structured, computed, and unique per slug (not a templated warning paragraph)."
+      - "Render core risk outputs server-side for indexable pages."
+    value_first_conversion:
+      - "Risk visibility is free."
+      - "Alerts/exports/save are gated after value (SignInModal), never the risk facts."
+
+  authoritative_sources_catalog:
+    # Seed with official sources; ingestion pipeline will attach per-rule SourceRefs with versioning.
+    sources:
+      - id: "SARS_PROHIBITED_RESTRICTED_MAIN"
+        type: "sars_html"
+        url: "https://www.sars.gov.za/customs-and-excise/prohibited-restricted-and-counterfeit-goods/"
+        update_signal: "page_content_changes + linked updates"
+      - id: "SARS_PROHIBITED_RESTRICTED_WHATS_NEW"
+        type: "sars_html"
+        url: "https://www.sars.gov.za/customs-and-excise/prohibited-restricted-and-counterfeit-goods/whats-new-prohibited-and-restricted-imports-and-exports-list/"
+        update_signal: "chronological list of changes"
+      - id: "SARS_LATEST_NEWS_UPDATED_PR_LIST"
+        type: "sars_html"
+        url_pattern: "https://www.sars.gov.za/latest-news/updated-prohibited-and-restricted-imports-and-exports-list-*"
+        update_signal: "new posts"
+      - id: "ITAC_IMPORT_CONTROL"
+        type: "itac_html"
+        url: "https://itac.org.za/import-control/"
+        update_signal: "page_content_changes"
+      - id: "ITAC_IMPORT_EXPORT_CONTROL_PDF"
+        type: "itac_pdf"
+        url: "https://itac.org.za/wp-content/uploads/ImportExportControl.pdf"
+        update_signal: "pdf checksum changes"
+      - id: "GOVZA_IMPORT_PERMIT_GENERAL"
+        type: "govza_html"
+        url: "https://www.gov.za/services/import/import-permit-general-goods"
+        update_signal: "page_content_changes"
+      - id: "NRCS_LOA_ELECTROTECH_PROCEDURE"
+        type: "nrcs_pdf"
+        url: "https://www.nrcs.org.za/Documents/Electrotech/LOA%20Admin%20Procedure/LOA%20ADMIN%20Revised%2012_06%20May%202019.pdf"
+        update_signal: "pdf checksum changes"
+      - id: "SARS_TRADE_REMEDIES_GUIDE"
+        type: "sars_pdf"
+        url: "https://www.sars.gov.za/wp-content/uploads/Ops/Guides/Legal-Pub-Guide-CEQRG01-CE-Quick-Reference-Guide-on-Anti-Dumping-Countervailing-and-Safeguard-Duties.pdf"
+        update_signal: "pdf checksum changes"
+
+  data_model:
+    entities:
+
+      SourceRef:
+        fields:
+          - source_id: "string # maps to authoritative_sources_catalog.sources.id"
+          - url: "string"
+          - source_type: "sars_html|sars_pdf|itac_html|itac_pdf|nrcs_pdf|govza_html|gazette_pdf|other_official"
+          - document_title: "string|null"
+          - published_date: "date|null"
+          - retrieved_at: "datetime"
+          - checksum: "string|null"
+          - page_or_section_hint: "string|null"
+
+      RiskVersion:
+        purpose: "Snapshot of the risk dataset."
+        fields:
+          - risk_version_id: "string"
+          - created_at: "datetime"
+          - sources_used: "array<SourceRef>"
+          - notes: "string|null"
+          - is_active: "boolean"
+
+      RiskAuthority:
+        fields:
+          - authority_id: "string # SARS|ITAC|NRCS|OTHER_DEPT"
+          - display_name: "string"
+          - website: "string|null"
+          - contact_hint: "string|null"
+
+      RiskRule:
+        purpose: "Deterministic rule mapping compliance obligations/risks to HS/origin/conditions."
+        fields:
+          - rule_id: "string"
+          - authority_id: "string"
+          - rule_type: "prohibited|restricted|permit_required|loa_required|trade_remedy|additional_document|inspection_risk|counterfeit_risk|unknown_notice"
+          - title: "string"
+          - summary: "string"
+          - severity: "low|medium|high"
+          - confidence: "high|medium|low"
+          - match:
+              hs_match:
+                type: "HS6|HS8|heading|chapter|prefix|range|any"
+                values: "array<string> # e.g., ['847130'] or ['90'] or ['9018.12']"
+              origin_match:
+                type: "any|include|exclude"
+                values: "array<string> # ISO2/ISO3 based on your app standard"
+              condition_match:
+                used_goods: "any|true|false"
+                importer_type: "any|vat_vendor|non_vendor"
+                incoterm: "any|FOB|CIF|EXW|DAP|DDP"
+              extra_match:
+                keywords: "array<string>|null # optional: product attributes if you have them"
+          - required_action:
+              steps: "array<string>"
+              required_documents: "array<string>"
+              lead_time_hint_days: "number|null"
+          - impact:
+              operational: "array<string> # delays, holds, seizure, extra inspection"
+              financial: "array<string> # extra duties, storage, penalties"
+          - official_refs: "array<SourceRef>"
+          - effective_from: "date|null"
+          - effective_to: "date|null"
+          - last_verified_version_id: "string # RiskVersion.risk_version_id"
+          - tags: "array<string>"
+
+      RiskChangeEvent:
+        purpose: "Diff-friendly change log for alerts + 'What changed recently' UI."
+        fields:
+          - event_id: "string"
+          - detected_at: "datetime"
+          - source_ref: "SourceRef"
+          - change_type: "added|removed|modified"
+          - affected_hs_prefixes: "array<string> # e.g., ['87', '9018']"
+          - affected_hs_codes: "array<string> # optional, if exact"
+          - authority_id: "string"
+          - summary: "string"
+          - details: "string|null"
+          - from_version_id: "string"
+          - to_version_id: "string"
+
+      RiskAssessment:
+        purpose: "Computed output for a given slug calculation."
+        fields:
+          - input:
+              hs6: "string"
+              origin_iso: "string"
+              destination_iso: "ZA"
+              used_goods: "boolean"
+              importer_type: "string"
+              incoterm: "string"
+          - overall_risk_score: "number # 0-10"
+          - top_risks: "array<RiskFinding> # max 3"
+          - all_risks: "array<RiskFinding>"
+          - unknowns: "array<UnknownCoverage>"
+          - recent_changes_relevant: "array<RiskChangeEvent> # max 5"
+          - risk_version_id: "string"
+          - generated_at: "datetime"
+
+      RiskFinding:
+        fields:
+          - rule_id: "string"
+          - authority_id: "string"
+          - severity: "low|medium|high"
+          - confidence: "high|medium|low"
+          - title: "string"
+          - summary: "string"
+          - why_triggered: "string # e.g., 'HS prefix 87 matches restricted list update'"
+          - required_action_steps: "array<string>"
+          - required_documents: "array<string>"
+          - official_refs: "array<SourceRef>"
+          - user_next_click:
+              label: "string"
+              action: "scroll_to_docs|open_modal|open_official_link|toggle_used_goods|verify_hs"
+
+      UnknownCoverage:
+        fields:
+          - area: "prohibited_restricted|itac_control|nrcs_loa|trade_remedies|other"
+          - reason: "string"
+          - suggested_next_step: "string"
+          - official_ref: "SourceRef|null"
+
+    storage:
+      must_have_tables:
+        - "risk_versions"
+        - "risk_rules"
+        - "risk_change_events"
+        - "source_refs"
+        - "risk_authorities"
+      versioning_rule:
+        - "Never overwrite rules in-place; publish new RiskVersion and mark previous inactive."
+      auditability_rule:
+        - "Every RiskRule.official_refs must include at least one SourceRef from authoritative_sources_catalog OR be marked confidence=low and tagged 'heuristic'."
+
+  rules_format:
+    # SWE LLM should implement a rule loader that accepts YAML/JSON rules and compiles match predicates.
+    rule_files:
+      location: "data/compliance_risks/"
+      file_patterns:
+        - "sars_prohibited_restricted_rules.yaml"
+        - "itac_import_control_rules.yaml"
+        - "nrcs_loa_rules.yaml"
+        - "trade_remedy_rules.yaml"
+      schema_validation:
+        - "Validate hs_match patterns"
+        - "Validate ISO codes"
+        - "Validate that every rule has official_refs (or explicitly marked heuristic)"
+    example_rule:
+      yaml:
+        rule_id: "ITAC_USED_GOODS_PERMIT_REQUIRED"
+        authority_id: "ITAC"
+        rule_type: "permit_required"
+        title: "Import permit required for used/second-hand goods"
+        summary: "Used/second-hand imports require ITAC permission."
+        severity: "high"
+        confidence: "high"
+        match:
+          hs_match: { type: "any", values: ["*"] }
+          origin_match: { type: "any", values: [] }
+          condition_match: { used_goods: "true", importer_type: "any", incoterm: "any" }
+          extra_match: { keywords: [] }
+        required_action:
+          steps:
+            - "Confirm if goods are used/second-hand."
+            - "Apply to ITAC for an import permit before shipment."
+          required_documents:
+            - "Commercial invoice"
+            - "Product description"
+            - "HS code"
+          lead_time_hint_days: 7
+        impact:
+          operational: ["Customs delay/hold if permit missing"]
+          financial: ["Storage/demurrage risk if held"]
+        official_refs: ["{SourceRef: ITAC_IMPORT_CONTROL}"]
+        effective_from: null
+        effective_to: null
+        tags: ["itac", "used_goods", "permit"]
+
+  ingestion_update_loop:
+    purpose: "Keep risk rules/data current from official updates and publish diff events for alerts."
+    components:
+      watcher:
+        runs: "daily"
+        checks:
+          - "SARS prohibited/restricted 'what’s new' page"
+          - "SARS latest-news PR-list updates"
+          - "ITAC import control page"
+          - "ITAC ImportExportControl.pdf checksum"
+          - "NRCS LOA procedure PDF checksum (monthly is acceptable if daily too heavy)"
+          - "SARS trade remedies guide checksum (monthly)"
+      extractor:
+        prohibited_restricted_parser:
+          inputs:
+            - "SARS_PROHIBITED_RESTRICTED_MAIN"
+            - "SARS_PROHIBITED_RESTRICTED_WHATS_NEW"
+            - "SARS_LATEST_NEWS_UPDATED_PR_LIST"
+          outputs:
+            - "RiskRules with rule_type: prohibited|restricted|permit_required|loa_required"
+            - "RiskChangeEvents with affected_hs_prefixes/codes where SARS posts explicit headings"
+          parsing_requirements:
+            - "Extract tariff headings/codes mentioned in updates and their requirement (e.g., LoA no longer required)."
+            - "Map each extracted item to a RiskRule with SourceRef pointing to the exact update post."
+        itac_parser:
+          inputs:
+            - "ITAC_IMPORT_CONTROL"
+            - "ITAC_IMPORT_EXPORT_CONTROL_PDF"
+            - "GOVZA_IMPORT_PERMIT_GENERAL"
+          outputs:
+            - "Rules for used goods permit (global) + controlled tariff line list if extractable"
+            - "Coverage notes if list is not machine-readable"
+        nrcs_parser:
+          inputs:
+            - "NRCS_LOA_ELECTROTECH_PROCEDURE"
+          outputs:
+            - "Category-level LOA rules (confidence=medium) until HS mapping exists"
+            - "If future official HS mapping source appears, upgrade to confidence=high"
+        trade_remedy_parser:
+          inputs:
+            - "SARS_TRADE_REMEDIES_GUIDE"
+          outputs:
+            - "General 'monitor schedule 2' rule for relevant chapters (confidence=low/medium)"
+          future_extension:
+            - "If Schedule 2 machine-readable dataset is added, create exact HS+origin trade_remedy rules (confidence=high)."
+      publisher:
+        behavior:
+          - "Build new RiskVersion with all rules + SourceRefs."
+          - "Compute diff vs previous active version and store RiskChangeEvents."
+          - "Promote to active only if validation passes (no missing refs, no schema errors)."
+          - "If validation fails: keep previous active version."
+
+    validation_gates:
+      - ">= 1 SourceRef per non-heuristic rule"
+      - "No duplicate rule_ids"
+      - "No malformed HS code formats"
+      - "Change events must reference both from_version_id and to_version_id"
+
+  computation_engine:
+    name: "compliance_risk_engine"
+    inputs:
+      - hs6: "string"
+      - origin_iso: "string"
+      - destination_iso: "ZA"
+      - used_goods: "boolean"
+      - importer_type: "vat_vendor|non_vendor|unknown"
+      - incoterm: "string"
+      - product_keywords: "array<string>|null # optional"
+    outputs:
+      - risk_assessment: "RiskAssessment"
+    logic:
+      - "Load active RiskVersion and compiled RiskRules."
+      - "Match rules by hs_match + origin_match + conditions."
+      - "Group by authority, prioritize severity high > medium > low."
+      - "Compute overall_risk_score:"
+      - "  - base = sum(weight(severity)) capped at 10"
+      - "  - adjust upward if any high severity with confidence high"
+      - "  - adjust downward if most matches are low confidence"
+      - "Attach unknowns when a coverage area has no applicable rules."
+      - "Attach recent_changes_relevant by matching RiskChangeEvents.affected_hs_prefixes to hs6 prefix (chapter/heading)."
+
+  api_contract:
+    calculate:
+      path: "/api/calculate"
+      change_type: "extend_existing"
+      response_additions:
+        compliance_risks:
+          risk_assessment: "RiskAssessment"
+      requirements:
+        - "Always include compliance_risks in response (even if empty/unknown)."
+        - "Include risk_version_id + generated_at for audit/freshness."
+
+    compliance_risks_only:
+      path: "/api/compliance-risks"
+      method: "POST"
+      purpose: "Allow fetching risk assessment without a full cost calc (used by HS verification flows)."
+      request:
+        hs6: "string"
+        origin_iso: "string"
+        used_goods: "boolean"
+        importer_type: "string"
+        incoterm: "string"
+      response:
+        risk_assessment: "RiskAssessment"
+
+  ui_components:
+    ComplianceRisksAndAlertsPanel:
+      purpose: "Decision-grade compliance risk output + change tracking."
+      placement:
+        - "ResultsPanel, directly below PreferentialRatesPanel (or below Assumptions box if preference absent)."
+      render_condition: "calcStatus == success"
+      must_be_ssr_for_indexable: true
+      props:
+        riskAssessment: "RiskAssessment"
+      structure:
+        - RiskRadarSummary
+        - AuthorityChecklist
+        - RecentChangesCard
+        - UnknownCoverageCard
+        - WatchAlertsCTA
+      tone:
+        - "Concise, structured, actionable. Avoid legal-sounding promises."
+
+    RiskRadarSummary:
+      purpose: "At-a-glance: what can go wrong + how bad."
+      props:
+        overall_risk_score: "number"
+        top_risks: "array<RiskFinding>"
+      UI_rules:
+        - "Show score 0–10 with label: Low/Medium/High."
+        - "Show top 3 risks with severity pills + 1-line impact."
+        - "Each risk has a 'Fix' CTA that scrolls to the relevant checklist item."
+
+    AuthorityChecklist:
+      purpose: "Actionable authority-by-authority to-do list."
+      props:
+        findings: "array<RiskFinding>"
+      grouping:
+        - "Group by authority_id (SARS, ITAC, NRCS, Other)."
+      per_authority_card:
+        must_show:
+          - "Status badge (Triggered / Not triggered / Unknown coverage)"
+          - "Required actions"
+          - "Required documents"
+          - "Official reference links"
+          - "Lead time hint if available"
+      UI_rules:
+        - "Expand/collapse per authority to avoid long pages."
+        - "Inline 'Why?' shows why the rule matched (HS prefix, used flag, origin)."
+
+    RecentChangesCard:
+      purpose: "'What changed recently?' to create habit and justify alerts."
+      props:
+        recent_changes_relevant: "array<RiskChangeEvent>"
+      UI_rules:
+        - "Show max 3 by default, expandable to 5."
+        - "Show detected_at, change_type, short summary, affected HS prefixes/codes, and link to SourceRef."
+
+    UnknownCoverageCard:
+      purpose: "Be honest about gaps; provide next steps."
+      props:
+        unknowns: "array<UnknownCoverage>"
+      UI_rules:
+        - "For each unknown: show reason + suggested_next_step + official_ref if present."
+
+    UsedGoodsToggle:
+      purpose: "Critical context input that changes compliance outcome."
+      placement:
+        - "Inside calculator inputs (both modes) AND inside ComplianceRisksAndAlertsPanel header"
+      behavior:
+        - "Changing used_goods triggers /api/compliance-risks (and optionally full /api/calculate)."
+
+    WatchAlertsCTA:
+      purpose: "Convert via alerts after value; never hide risk info."
+      render_condition: "calcStatus == success"
+      actions:
+        - id: "watch_hs_origin"
+          label: "Watch this HS + origin for compliance changes"
+          gate: "SIGN_IN_REQUIRED"
+        - id: "watch_hs_chapter"
+          label: "Watch this HS chapter for regulatory updates"
+          gate: "SIGN_IN_REQUIRED"
+        - id: "watch_pr_list_updates"
+          label: "Alert me when SARS Prohibited/Restricted list updates affect this item"
+          gate: "SIGN_IN_REQUIRED"
+        - id: "watch_trade_remedy_updates"
+          label: "Alert me about new anti-dumping/safeguard measures for this product category"
+          gate: "SIGN_IN_REQUIRED"
+
+  alerts_system:
+    purpose: "Create user value via compliance-change notifications."
+    storage_entities:
+      WatchSubscription:
+        fields:
+          - subscription_id: "string"
+          - user_id: "string"
+          - watch_type: "hs_origin|hs_chapter|sars_pr_list|itac_control|nrcs_loa|trade_remedy"
+          - hs_prefix_or_code: "string"
+          - origin_iso: "string|null"
+          - created_at: "datetime"
+          - is_active: "boolean"
+          - last_notified_at: "datetime|null"
+    trigger_generation:
+      - "On new RiskVersion publish: compute RiskChangeEvents."
+      - "Match events to subscriptions:"
+      - "  - hs_origin: matches if hs prefix intersects + origin if available"
+      - "  - hs_chapter: matches if chapter prefix intersects"
+      - "  - sars_pr_list: matches if source_id is SARS PR list updates"
+      - "  - trade_remedy: matches if authority_id indicates trade remedy changes"
+    delivery:
+      - "Out of scope for pSEO; for now only create the subscription on sign-in and show confirmation UI."
+
+  conversion_triggers:
+    # Must preserve value-first.
+    rules:
+      - "Compliance facts remain visible without sign-in."
+      - "Only watch/notify/export/saving is gated."
+    triggers:
+      - id: "watch_clicked"
+        action: "Open SignInModal(reason='watch_compliance_changes', returnTo=current_url, serializedInputs=current_calc_inputs)"
+      - id: "export_compliance_pack"
+        action: "Open SignInModal(reason='export_compliance_pack')"
+
+  seo_indexing_rules:
+    decision_blocks_count:
+      - "ComplianceRisksAndAlertsPanel counts as a decision block."
+    ssr_requirement:
+      - "For indexable pages, RiskRadarSummary + top 1–3 findings must be server-rendered."
+    indexing_gate_update:
+      - "Maintain minimum decision blocks >= 3; Compliance panel helps pass this."
+
+  analytics:
+    new_events:
+      - name: "compliance_panel_viewed"
+        when: "ComplianceRisksAndAlertsPanel enters viewport"
+        props: ["hs6","origin_iso","overall_risk_score","risk_version_id"]
+      - name: "risk_fix_clicked"
+        when: "User clicks Fix CTA on a risk"
+        props: ["rule_id","authority_id","severity"]
+      - name: "official_ref_clicked"
+        when: "User clicks a compliance SourceRef"
+        props: ["source_id","url","rule_id|null"]
+      - name: "used_goods_toggled"
+        when: "UsedGoodsToggle changed"
+        props: ["used_goods","hs6","origin_iso"]
+      - name: "watch_alerts_clicked"
+        when: "User clicks a watch CTA"
+        props: ["watch_type","hs_prefix_or_code","origin_iso|null"]
+
+  acceptance_criteria:
+    correctness:
+      - "Every displayed RiskFinding has at least one official reference link OR is explicitly labeled heuristic/unknown."
+      - "Used-goods toggle changes the risk assessment in real-time."
+      - "RecentChangesCard reflects real diffs between RiskVersions."
+    decision_support_quality:
+      - "Top risks are actionable (steps + required documents + authority)."
+      - "Unknown areas are explicitly shown with next steps (no silent gaps)."
+    seo_safety:
+      - "Compliance panel is structured, unique per slug, and SSR renders key outputs on indexable pages."
+      - "No boilerplate paragraphs replacing computed content."
+    conversion_integrity:
+      - "Watching alerts is gated; risk facts are not."
+
+  implementation_tasks:
+    - id: "TASK_1_data_model_tables"
+      priority: "P0"
+      description: "Create DB tables for risk_versions, risk_rules, risk_change_events, source_refs, risk_authorities, watch_subscriptions."
+    - id: "TASK_2_rule_compiler"
+      priority: "P0"
+      description: "Implement YAML/JSON rule loader + predicate compiler for hs/origin/conditions."
+    - id: "TASK_3_ingestion_watchers"
+      priority: "P0"
+      description: "Implement watcher jobs for SARS PR list pages + ITAC pages/PDF + NRCS PDF + trade remedy guide."
+    - id: "TASK_4_parsers_extractors"
+      priority: "P0"
+      description: "Build initial parsers: SARS PR list updates (tariff headings + requirement), ITAC used goods/global permit rule, NRCS category LOA rule, trade remedy monitor rule."
+    - id: "TASK_5_version_publish_and_diff"
+      priority: "P0"
+      description: "Publish RiskVersion; compute RiskChangeEvents; validate before activation."
+    - id: "TASK_6_compute_engine"
+      priority: "P0"
+      description: "Implement compliance_risk_engine producing RiskAssessment per calc."
+    - id: "TASK_7_api_extension"
+      priority: "P0"
+      description: "Extend /api/calculate response with compliance_risks; add /api/compliance-risks."
+    - id: "TASK_8_ui_compliance_panel"
+      priority: "P0"
+      description: "Add ComplianceRisksAndAlertsPanel + subcomponents; SSR top risks."
+    - id: "TASK_9_alerts_subscription_flow"
+      priority: "P1"
+      description: "Create watch subscriptions on sign-in; generate triggers from RiskChangeEvents."
+    - id: "TASK_10_telemetry"
+      priority: "P1"
+      description: "Add analytics events for panel view, ref clicks, toggles, watch clicks."
+
+  qa_test_matrix:
+    - name: "Used goods flips ITAC risk"
+      steps:
+        - "Load slug, compute risk"
+        - "Toggle used_goods=true"
+      expected:
+        - "High severity ITAC permit rule appears with official ref"
+        - "Overall risk score increases"
+    - name: "SARS PR list update reflected"
+      steps:
+        - "Publish new RiskVersion with changed SARS tariff heading requirement"
+      expected:
+        - "RiskChangeEvent created"
+        - "RecentChangesCard shows event for matching hs prefix"
+    - name: "SSR and indexing"
+      steps:
+        - "Fetch HTML for an indexable slug"
+      expected:
+        - "RiskRadarSummary and top findings present in HTML"
+    - name: "Watch CTA gated"
+      steps:
+        - "Click Watch this HS+origin"
+      expected:
+        - "SignInModal opens; results remain visible"

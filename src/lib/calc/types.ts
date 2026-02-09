@@ -17,6 +17,7 @@ export interface CalcInput {
     weightKg?: number; // For specific duties (e.g. heavy goods)
     incoterm?: "FOB" | "CIF" | "EXW"; // Default CIF
     freightInsuranceCost?: number; // If not CIF, add this
+    usedGoods?: boolean;
 }
 
 export interface CalcLineItem {
@@ -62,4 +63,5 @@ export interface CalcOutput {
         vatRecoverable?: boolean;
     };
     preference_decision?: any; // Avoiding circular dependency for now, using any or redefine PreferenceDecision here
+    compliance_risks?: any;
 }
