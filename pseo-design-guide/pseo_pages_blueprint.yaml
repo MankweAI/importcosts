@@ -1,0 +1,137 @@
+project: "pseo_pages"
+goal: "Always-indexed, decision-grade to:contentReference[oaicite:66]{index=66} via activated calculations"
+
+page_types:
+  - id: "product_origin_money_page"
+    index_intent: "high"
+    url_pattern: "/import-duty-vat-landed-cost/{clusterSlug}/from/{originIso}/to/south-africa"
+  - id: "hs_origin_money_page"
+    index_intent: "high"
+    url_pattern: "/import-duty-vat-landed-cost/hs/{hs6}/from/{originIso}/to/south-africa"
+  - id: "hs_hub_page"
+    index_intent: "medium"
+    url_pattern: "/hs-code/{hs6}"
+
+global_pseo_rules:
+  must_capture_both_intents:
+    - "Always show two-mode CTAs: Professional + Assisted"
+    - "Professional CTA prefilled with page context (cluster/hs + origin)"
+    - "Assisted CTA prefilled with product intent/origin"
+  core_results_must_be_free:
+    includes:
+      - "Summary totals (total taxes, total landed cost, per-unit)"
+      - "Full breakdown line items"
+      - "HS confidence + alternatives"
+      - "WhyDrawer audit trail visibility"
+      - "Doc checklist + risk flags"
+  gated_after_value:
+    triggers:
+      - "PDF export"
+      - "CSV export"
+      - "Save"
+      - "Compare"
+      - "Watchlist alerts"
+    behavior:
+      - "Logged out -> sign-in modal"
+      - "Logged in free -> upgrade modal"
+      - "Never degrade core results to force upgrade"
+
+indexation_gating:
+  indexable_only_if_all_true:
+    - "prefilled_calculator_present == true"
+    - "computed_breakdown_non_empty == true  # duty + VAT minimum"
+    - "unique_blocks_count >= 2  # docs, preference, risks, computed scenarios"
+    - "internal_links_count >= 6"
+    - "freshness_metadata_present == true  # tariff_version + last_updated"
+  auto_noindex_if_any_true:
+    - "hs_candidates_empty == true"
+    - "rate_missing_or_unknown == true"
+    - "outputs_degenerate_to_contact_broker == true"
+    - "is_duplicate_of_other_page == true"
+  canonicalization:
+    - "synonyms -> canonical slug"
+    - "product+origin resolves to single HS with high confidence -> canonical to hs_origin page"
+  sitemaps:
+    - "partition by page_type"
+    - "chunk at 10k"
+    - "ONLY include indexable pages in sitemap"
+
+money_page_template:
+  above_fold:
+    header:
+      - "H1 includes product/hs + origin + destination"
+      - "Subtitle: decision in under 30 seconds"
+    calc_card:
+      minimal_inputs:
+        - "invoice_value"
+        - "currency"
+        - "exchange_rate"
+        - "freight_cost"
+        - "insurance_cost (optional)"
+        - "other_charges (optional)"
+        - "quantity (optional)"
+        - "incoterm"
+        - "importer_type"
+        - "hs_code (prefilled or suggested)"
+      hs_selector_behavior:
+        - "Allow direct HS entry"
+        - "Show confidence + top alternatives immediately"
+        - "Verify HS button if confidence < 0.70"
+  immediate_outputs:
+    - "total_taxes_zar"
+    - "total_landed_cost_zar"
+    - "landed_cost_per_unit_zar"
+    - "confidence_badge + warnings"
+  below_fold_blocks_required:
+    - "DocChecklist (grouped: always/common/conditional)"
+    - "Preference eligibility summary"
+    - "Risk flags banner(s)"
+    - "Scenario presets with computed outputs (R10k/R50k/R250k + custom)"
+    - "InternalLinkGrid (origins/products/HS hubs/tools)"
+  auditability:
+    why_drawer_per_line_item:
+      includes:
+        - "formula"
+        - "inputs_used"
+        - "rates"
+        - "tariff_ref pointer"
+        - "tariff_version"
+        - "effective_date"
+
+internal_linking:
+  required_targets:
+    - "same product -> other origins"
+    - "same origin -> other products"
+    - "HS hub (if mapped)"
+    - "HS directory / finder"
+    - "how to classify HS"
+    - "compliance tools (anti-dumping / restricted checks if present)"
+  placement:
+    - "after results (contextual journey, not footer dump)"
+
+analytics:
+  required_events:
+    - "page_view"
+    - "mode_selected (assisted|professional)"
+    - "calc_started"
+    - "calc_completed"
+    - "hs_verify_clicked"
+    - "export_clicked (pdf|csv)"
+    - "save_clicked"
+    - "compare_clicked"
+    - "watchlist_clicked"
+  required_properties:
+    - "page_type"
+    - "clusterSlug_or_hs6"
+    - "origin_country"
+    - "incoterm"
+    - "importer_type"
+    - "hs_confidence_bucket"
+
+ops_and_qa:
+  pre_launch_checks:
+    - "Verify index gating intact (noindex until decision-grade)"
+    - "Verify two-mode CTAs and correct prefill on pSEO pages"
+    - "Verify results render fast and totals are prominent"
+    - "Verify WhyDrawer exists for every line item"
+    - "Verify sitemap includes only indexable URLs"

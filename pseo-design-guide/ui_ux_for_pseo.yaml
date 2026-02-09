@@ -1,0 +1,576 @@
+mrf_spec:
+  name: "pseo_hybrid_mode_page_spec"
+  version: "1.0.0"
+  scope: "Project 1 (pSEO pages only) — logged-out experience"
+  primary_goal: "Maximum market coverage (novices + pros) with two clear entry paths on each pSEO money page"
+  conversion_goal: "Convert after value via gated workflow actions (save/export/compare/watchlist) without restricting core results"
+  seo_goal: "Tool-first pages with unique computed blocks; avoid doorway/thin patterns; only index pages that pass readiness gates"
+
+  page_types:
+    - id: "product_origin_money_page"
+      route_pattern: "/import-duty-vat-landed-cost/{clusterSlug}/from/{originIso}/to/south-africa"
+      context_source:
+        - "clusterSlug from route"
+        - "originIso from route"
+        - "destination is fixed: ZA"
+    - id: "hs_origin_money_page"
+      route_pattern: "/import-duty-vat-landed-cost/hs/{hs6}/from/{originIso}/to/south-africa"
+      context_source:
+        - "hs6 from route"
+        - "originIso from route"
+        - "destination is fixed: ZA"
+
+  non_negotiables:
+    free_must_include:
+      - "calculator inputs (both modes)"
+      - "successful calculation results (summary + breakdown)"
+      - "HS confidence + alternatives display"
+      - "auditability ('Why?' drawer per line item)"
+      - "doc checklist + risk flags"
+      - "scenario preset chips (R10k/R50k/R250k) producing computed outputs"
+    gated_only_after_value:
+      - "save scenario"
+      - "export PDF"
+      - "export CSV"
+      - "compare scenarios (advanced)"
+      - "watchlist / alerts"
+    gating_behavior:
+      logged_out:
+        - "show SignInModal (deep link returnTo current page + serialized calc inputs)"
+        - "do not hide already computed results"
+      signed_in_users:
+        - "out of scope for Project 1; redirect to SaaS app if session exists"
+    mode_coverage:
+      - "must present both entry paths above the fold: Pro Quick-Fill + Assisted Wizard"
+
+  indexing_readiness_gates:
+    evaluated_server_side: true
+    rules:
+      indexable_only_if_all_true:
+        - "prefilled_context_present == true"
+        - "calculator_component_present == true"
+        - "server_computed_presets_present == true  # preset chips render computed outputs"
+        - "computed_blocks_count >= 2  # doc checklist, risk flags, preference summary, etc."
+        - "internal_link_grid_count >= 6"
+        - "freshness_metadata_present == true  # tariff_version + effective_date + last_updated"
+        - "canonical_resolves == true"
+      else:
+        robots: "noindex,follow"
+    sitemap_policy:
+      include_only_indexable: true
+
+  state_model:
+    route_context:
+      clusterSlug: "string | null"
+      hs6: "string | null"
+      originIso: "string"
+      destinationIso: "ZA"
+      pageType: "product_origin_money_page | hs_origin_money_page"
+    ui_state:
+      mode: "professional | assisted"
+      wizard_step: "1 | 2 | 3"
+      calc_status: "idle | editing | calculating | success | error"
+      hs_confidence: "high | medium | low | unknown"
+      show_verify_hs: "boolean"
+      show_signin_modal: "boolean"
+      show_upgrade_modal: "boolean # optional; may redirect to SaaS pricing"
+      results_anchor_id: "results"
+    persistence:
+      mode:
+        - "URL param: ?mode=professional|assisted (highest priority)"
+        - "localStorage: last_mode (fallback)"
+      calc_inputs:
+        - "serialize to URL fragment or localStorage for returnTo after sign-in"
+        - "keep in memory for the session"
+
+  component_tree:
+    - PageShell
+      children:
+        - SeoHead
+        - TopNoticeBar
+        - ContextHero
+        - ModeEntryCards
+        - ModePanel
+        - ResultsPanel
+        - StickyActionBar
+        - RelatedLinksFooter
+
+  components:
+    PageShell:
+      purpose: "Layout container + SSR gate controls"
+      props:
+        pageType: "string"
+        canonicalUrl: "string"
+        robots: "string  # 'index,follow' or 'noindex,follow'"
+        isIndexable: "boolean"
+        routeContext: "object"
+      behavior:
+        - "If isIndexable=false, render robots noindex, but still show full tool UX"
+        - "If user is signed in, optionally show CTA to 'Open in app' (SaaS) (no auth flows in pSEO)"
+      accessibility:
+        - "Skip to calculator link"
+        - "Skip to results link"
+
+    SeoHead:
+      purpose: "SEO meta + structured data"
+      props:
+        title: "string"
+        description: "string"
+        canonical: "string"
+        robots: "string"
+        og: "object"
+        structuredDataJsonLd: "object"
+      requirements:
+        - "Title/H1 must include product/HS + origin + destination"
+        - "Include freshness metadata in visible UI, not only in JSON-LD"
+
+    TopNoticeBar:
+      purpose: "Trust + positioning + legal-friendly disclaimer without reducing utility"
+      props:
+        tariffVersion: "string"
+        effectiveDate: "string"
+        lastUpdated: "string"
+        shortDisclaimer: "string"
+      UI:
+        - "Left: Tariff version + effective date"
+        - "Right: 'How this is calculated' link -> scroll to Auditability section"
+
+    ContextHero:
+      purpose: "Tool-first hero with immediate intent confirmation"
+      props:
+        h1: "string"
+        subtitle: "string"
+        contextChips:
+          - "Origin: {originIso}"
+          - "Destination: ZA"
+          - "Mode hint: 'Estimate' / 'I have inputs'"
+        trustBadges:
+          - "Audit trail included"
+          - "HS confidence shown"
+          - "Decision checklist included"
+      layout:
+        - "No long intro copy; keep under ~3 short lines + chips"
+
+    ModeEntryCards:
+      purpose: "Two obvious entry paths for novices + pros"
+      props:
+        selectedMode: "professional|assisted"
+        cards:
+          - id: "professional"
+            title: "I have my shipment details"
+            subtitle: "Invoice + FX + freight/insurance → calculate precisely"
+            ctaLabel: "Open Pro Quick-Fill"
+            icon: "calculator"
+          - id: "assisted"
+            title: "Help me estimate / compare"
+            subtitle: "Not sure yet → guided steps + presets"
+            ctaLabel: "Start Assisted Wizard"
+            icon: "sparkles"
+      events:
+        - onModeSelected(mode):
+            analytics_event: "mode_selected"
+            payload: ["mode", "pageType", "originIso", "clusterSlug_or_hs6"]
+      behavior:
+        - "Selecting a mode swaps ModePanel content (no navigation required)"
+        - "Persist to URL (?mode=...) and localStorage"
+        - "If calculation already exists, keep results but update inputs panel"
+
+    ModePanel:
+      purpose: "Render ProfessionalQuickFillPanel or AssistedWizardPanel"
+      props:
+        mode: "professional|assisted"
+        initialPrefill: "CalcPrefill"
+      children_by_mode:
+        professional: "ProfessionalQuickFillPanel"
+        assisted: "AssistedWizardPanel"
+
+    ProfessionalQuickFillPanel:
+      purpose: "Fast, spreadsheet-like entry for users with real shipment inputs"
+      props:
+        prefill:
+          originIso: "string"
+          destinationIso: "ZA"
+          clusterSlug: "string|null"
+          hs6: "string|null"
+          suggestedHsCandidates: "array|null"
+        fields:
+          invoiceValue:
+            type: "money"
+            required: true
+          currency:
+            type: "select"
+            required: true
+            options: ["ZAR","USD","EUR","GBP","CNY","Other"]
+          exchangeRate:
+            type: "number"
+            required: true
+            defaultPolicy:
+              - "prefill from page context if available; otherwise set a visible default and mark as editable"
+          freightCost:
+            type: "money"
+            required: true
+          insuranceCost:
+            type: "money"
+            required: false
+            default: 0
+          otherCharges:
+            type: "money"
+            required: false
+            default: 0
+          quantity:
+            type: "number"
+            required: false
+            default: 1
+          incoterm:
+            type: "select"
+            required: true
+            options: ["FOB","CIF","EXW","DAP","DDP","Other"]
+          importerType:
+            type: "select"
+            required: true
+            options:
+              - "VAT-registered (vendor)"
+              - "Non-vendor / private"
+          originCountry:
+            type: "country_select"
+            required: true
+            default: "{originIso}"
+          hsCode:
+            type: "HSSelector"
+            required: true
+      layout:
+        - "Dense grid: 2 columns on desktop, 1 column on mobile"
+        - "Advanced accordion: weight/volume + notes"
+      primary_action:
+        id: "calculate"
+        label: "Calculate (with audit trail)"
+      conversion_microcopy:
+        - "Under button: 'Results are free. Save/export/compare requires an account.'"
+      events:
+        - onCalculateClicked:
+            analytics_event: "calc_started"
+            payload: ["mode","pageType","originIso","clusterSlug_or_hs6"]
+      validation:
+        - "block calculate if required fields missing"
+        - "show inline errors; do not navigate away"
+
+    AssistedWizardPanel:
+      purpose: "Guided 3-step flow for novices (planning, comparing)"
+      props:
+        prefill:
+          originIso: "string"
+          clusterSlug: "string|null"
+          hs6: "string|null"
+      steps:
+        step1_product:
+          title: "What are you importing?"
+          components:
+            - ProductIntentSearch
+            - HSCandidateList
+          outputs:
+            - selectedProductLabel
+            - hsCandidates[]
+            - hsConfidence
+        step2_route_terms:
+          title: "Where from, and what terms?"
+          components:
+            - OriginSelector (prefilled to route origin; allow change for comparison if enabled)
+            - IncotermSelector
+            - ImporterTypeSelector
+            - InputsToggle ("Do you have shipping/insurance details?")
+            - FreightInsuranceInputs (only if toggle yes)
+            - QuickEstimates (only if toggle no; show assumptions clearly)
+        step3_results:
+          title: "Decision summary"
+          components:
+            - ScenarioPresetChips (R10k/R50k/R250k)
+            - CalculateButton
+            - ResultsSummaryPreview (renders after calculation)
+      behavior:
+        - "Stepper visible with progress; allow back without losing selections"
+        - "Wizard defaults should be conservative; always show assumptions"
+      events:
+        - onWizardStepViewed(step):
+            analytics_event: "wizard_step_viewed"
+            payload: ["step","pageType","originIso"]
+        - onProductSelected:
+            analytics_event: "product_selected"
+            payload: ["query","selected","hs_confidence_bucket"]
+        - onWizardCalculateClicked:
+            analytics_event: "calc_started"
+            payload: ["mode","originIso","clusterSlug_or_hs6"]
+
+    HSSelector:
+      purpose: "HS entry + confidence + alternatives + verify flow (core differentiator vs free calculators)"
+      props:
+        mode: "professional|assisted"
+        initialHs6: "string|null"
+        candidates: "array<{hs6, label, confidenceScore}>"
+        confidenceThresholdLow: 0.70
+        maxAlternatives: 3
+      UI_states:
+        - "direct entry field"
+        - "autocomplete dropdown"
+        - "selected state shows badge: confidence (High/Med/Low + %)"
+        - "alternatives list (top 2–3) with 'see impact' toggle"
+        - "Verify HS button (shown when confidence < threshold OR user clicks 'not sure')"
+      VerifyFlow:
+        component: HSVerifyModal
+        maxQuestions: 3
+        questionTypes: ["yes_no","single_select"]
+        outputs:
+          - refinedCandidates
+          - updatedConfidence
+          - optionalRangeMode (if uncertainty remains)
+      events:
+        - onVerifyClicked:
+            analytics_event: "hs_verify_clicked"
+            payload: ["mode","hs_confidence_bucket"]
+        - onVerifyAnswered:
+            analytics_event: "hs_guided_question_answered"
+            payload: ["question_id","answer"]
+
+    ResultsPanel:
+      purpose: "Decision-grade results + supporting blocks (these blocks prevent thin/doorway risk)"
+      anchorId: "results"
+      props:
+        calcStatus: "idle|calculating|success|error"
+        results: "CalcResult|null"
+        routeContext: "object"
+      children:
+        - ResultsSummaryCards
+        - ConfidenceBanner
+        - AssumptionsBox
+        - BreakdownTable
+        - WhyDrawerSystem
+        - ScenarioPresetChips
+        - DocumentChecklist
+        - RiskFlags
+        - PreferenceEligibilitySummary
+        - InternalLinkGrid
+      behavior:
+        - "On success: scroll to #results"
+        - "On error: show actionable error + keep user inputs"
+      requirements:
+        ResultsSummaryCards:
+          must_show:
+            - "Total taxes (ZAR)"
+            - "Total landed cost (ZAR)"
+            - "Per-unit landed cost (ZAR)"
+        ConfidenceBanner:
+          must_show:
+            - "HS confidence bucket + %"
+            - "If low: prompt 'Verify HS recommended' + show alternatives"
+            - "If range mode: show min/max range + explanation"
+        AssumptionsBox:
+          must_show:
+            - "incoterm"
+            - "exchange rate used"
+            - "freight/insurance inclusion"
+            - "importer type"
+            - "tariff version/effective date"
+        BreakdownTable:
+          line_items:
+            - "Duty"
+            - "VAT"
+            - "Any levies/fees returned by engine"
+          each_line_item:
+            - "amount"
+            - "Why? trigger"
+        WhyDrawerSystem:
+          requirements_per_line_item:
+            - "formula"
+            - "inputs used"
+            - "rates"
+            - "tariff reference pointer"
+            - "tariff version + effective date"
+        ScenarioPresetChips:
+          must_have:
+            - "R10k"
+            - "R50k"
+            - "R250k"
+          behavior:
+            - "recompute using same HS/origin/terms"
+        InternalLinkGrid:
+          must_have_min_links: 6
+          recommended_groups:
+            - "Same product, other origins"
+            - "Same origin, other products"
+            - "HS hub / HS finder"
+            - "Import checklist / compliance tools"
+      empty_state:
+        - "Show a compact preview: 'Enter details above to calculate.'"
+      error_state:
+        - "Explain missing rate/HS issue; offer to verify HS / choose alternative candidates"
+
+    StickyActionBar:
+      purpose: "Primary conversion surface after user gets value"
+      visibility_rules:
+        - "Only visible when calcStatus == success"
+      actions:
+        - id: "save"
+          label: "Save this decision"
+          icon: "bookmark"
+          trigger: "SIGN_IN_REQUIRED"
+        - id: "export_pdf"
+          label: "Export PDF"
+          icon: "file"
+          trigger: "SIGN_IN_REQUIRED"
+        - id: "export_csv"
+          label: "Export CSV"
+          icon: "sheet"
+          trigger: "SIGN_IN_REQUIRED"
+        - id: "compare"
+          label: "Compare"
+          icon: "compare"
+          trigger: "SIGN_IN_REQUIRED"
+        - id: "watchlist"
+          label: "Watch HS changes"
+          icon: "bell"
+          trigger: "SIGN_IN_REQUIRED"
+      exact_conversion_triggers:
+        - trigger_id: "post_value_gate"
+          condition: "calcStatus == success"
+          action: "render StickyActionBar + microcopy"
+        - trigger_id: "save_clicked"
+          action: "open SignInModal(returnTo, serializedInputs, reason='save')"
+        - trigger_id: "export_clicked"
+          action: "open SignInModal(returnTo, serializedInputs, reason='export')"
+        - trigger_id: "compare_clicked"
+          action: "open SignInModal(returnTo, serializedInputs, reason='compare')"
+        - trigger_id: "watchlist_clicked"
+          action: "open SignInModal(returnTo, serializedInputs, reason='watchlist')"
+      analytics:
+        - event: "save_clicked"
+        - event: "export_clicked"
+          properties: ["format"]
+        - event: "compare_clicked"
+        - event: "watchlist_clicked"
+
+    SignInModal:
+      purpose: "Convert logged-out user after value without blocking the tool"
+      props:
+        returnToUrl: "string"
+        serializedInputs: "string|object"
+        reason: "save|export|compare|watchlist"
+      UI:
+        - "Headline: 'Create an account to save/export/compare'"
+        - "Bullets: 'Save scenarios', 'Export decision pack', 'Watch tariff changes', 'Compare suppliers'"
+        - "Primary CTA: 'Sign in / Create account'"
+        - "Secondary CTA: 'Not now' (keeps them on page with results visible)"
+      behavior:
+        - "If user completes auth: redirect to SaaS app with restored scenario"
+        - "Do not clear results on modal close"
+
+    RelatedLinksFooter:
+      purpose: "Secondary navigation (avoid footer link dumps)"
+      props:
+        links: "array grouped by type"
+      requirements:
+        - "Keep link count modest; main InternalLinkGrid is the primary linking system"
+
+  calc_api_contract:
+    endpoint: "/api/calculate"
+    method: "POST"
+    request_payload:
+      required:
+        - "hs_code"
+        - "origin_country"
+        - "destination_country: ZA"
+        - "incoterm"
+        - "importer_type"
+        - "invoice_value"
+        - "currency"
+        - "exchange_rate"
+        - "freight_cost"
+        - "insurance_cost"
+        - "other_charges"
+        - "quantity"
+      optional:
+        - "weight"
+        - "volume"
+        - "mode: professional|assisted (telemetry only; should not change math)"
+    response_payload:
+      required:
+        - "summary.total_taxes_zar"
+        - "summary.total_landed_cost_zar"
+        - "summary.landed_cost_per_unit_zar"
+        - "hs.confidence_score"
+        - "hs.confidence_bucket"
+        - "hs.alternatives[] (<=3)"
+        - "tariff.version"
+        - "tariff.effective_date"
+        - "tariff.last_updated"
+        - "line_items[] { key, label, amount_zar, audit{formula, inputs_used, rates, ref_pointer, tariff_version, effective_date} }"
+        - "doc_checklist { always[], common[], conditional[] }"
+        - "risk_flags[]"
+        - "preference_summary (nullable)"
+      optional:
+        - "ranges { duty_min_max?, taxes_min_max?, landed_min_max? }"
+
+  analytics_instrumentation:
+    required_events:
+      - "page_view"
+      - "mode_selected"
+      - "wizard_step_viewed"
+      - "product_selected"
+      - "hs_verify_clicked"
+      - "hs_guided_question_answered"
+      - "calc_started"
+      - "calc_success"
+      - "calc_error"
+      - "save_clicked"
+      - "export_clicked"
+      - "compare_clicked"
+      - "watchlist_clicked"
+      - "signin_modal_opened"
+      - "signin_modal_dismissed"
+    required_properties:
+      - "pageType"
+      - "originIso"
+      - "clusterSlug_or_hs6"
+      - "mode"
+      - "hs_confidence_bucket"
+      - "incoterm"
+      - "importer_type"
+
+  performance_constraints:
+    - "Above-the-fold interactive should be usable < 1.5s on mid devices"
+    - "Calculation response should render summary cards immediately (skeleton states ok)"
+    - "Lazy-load noncritical below-fold blocks after results (but still SSR enough for index pages)"
+
+  accessibility_requirements:
+    - "All inputs labeled; errors announced"
+    - "Wizard stepper keyboard navigable"
+    - "Modal focus trap + escape to close"
+    - "‘Skip to calculator’ and ‘Skip to results’ links"
+
+  qa_acceptance_tests:
+    - name: "pSEO page loads with both entry cards above fold"
+      expected:
+        - "ModeEntryCards visible"
+        - "Default mode chosen from URL/localStorage"
+    - name: "Professional mode quick-fill calculates and shows results"
+      expected:
+        - "ResultsSummaryCards show totals"
+        - "Why drawers available on every line item"
+        - "StickyActionBar appears after success"
+    - name: "Assisted wizard completes 3 steps and calculates"
+      expected:
+        - "Step navigation works"
+        - "Scenario chips recompute"
+        - "Doc checklist + risk flags appear"
+    - name: "HS verify flow triggers under low confidence"
+      expected:
+        - "Verify button visible"
+        - "Questions <=3"
+        - "Alternatives update"
+        - "Range shown if still uncertain"
+    - name: "Conversion triggers do not hide results"
+      expected:
+        - "Click Save/Export/Compare/Watchlist opens SignInModal"
+        - "Closing modal retains results"
+    - name: "Indexability gating works"
+      expected:
+        - "Non-ready pages render noindex"
+        - "Index-ready pages render index,follow and appear in sitemap"

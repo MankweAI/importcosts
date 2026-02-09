@@ -1,0 +1,442 @@
+mrf:
+  name: "pseo_decision_support_upgrade_spec"
+  version: "1.0.0"
+  scope:
+    project: "Project 1 — pSEO pages only (logged-out)"
+    pages_in_scope:
+      - "/import-duty-vat-landed-cost/{clusterSlug}/from/{originIso}/to/south-africa"
+      - "/import-duty-vat-landed-cost/hs/{hs6}/from/{originIso}/to/south-africa"
+    explicitly_out_of_scope:
+      - "SaaS app (signed-in experience)"
+      - "Billing/subscription logic beyond sign-in gating prompts"
+
+  context:
+    baseline:
+      - "Hybrid pSEO page spec is implemented (ModeEntryCards + Professional Quick-Fill + Assisted Wizard + ResultsPanel + StickyActionBar)."
+    evaluation_summary:
+      - "Pages provide basic numbers but are not yet consistently decision-ready."
+      - "Key outputs/assumptions/confidence are sometimes buried or incomplete."
+      - "HS uncertainty is not always clearly communicated (alternatives/range impact not surfaced)."
+      - "Decision aids like scenario compare, risk/compliance visibility, and route-specific doc readiness are not strong enough."
+
+  objectives:
+    primary: "Ensure every pSEO slug page functions as a standalone import decision-support system for South African importers."
+    decision_support_definition:
+      - "User can decide if import is viable (cost + compliance + risk) on-page."
+      - "User can trust the answer (auditability + freshness + explicit assumptions + HS uncertainty transparency)."
+      - "User can explore 'what-if' scenarios quickly (value bands, incoterms, freight sensitivity, origins)."
+      - "User can prepare for clearance (structured route-specific document checklist)."
+    conversion_principle:
+      - "Do not paywall core results."
+      - "Convert after value via Save/Export/Compare/Watchlist triggers."
+
+  non_negotiables:
+    free_must_include:
+      - "Results summary totals (total taxes, total landed cost, per-unit landed cost)"
+      - "Full breakdown line items"
+      - "HS confidence + top alternatives (<=3) visible"
+      - "Auditability: Why drawer per line item"
+      - "Structured document checklist (always/common/conditional)"
+      - "Risk flags with severity"
+      - "Scenario preset chips (R10k/R50k/R250k) producing computed outputs"
+      - "Freshness metadata (tariff version + effective date + last updated)"
+    gated_only_after_value:
+      - "Save scenario"
+      - "Export PDF"
+      - "Export CSV"
+      - "Advanced compare (3+ origins, multi-scenario dashboard)"
+      - "Watchlist alerts"
+
+  seo_safety_requirements:
+    tool_first_page:
+      - "Calculator and decision outputs must be primary content (not long generic copy)."
+      - "Unique data-driven blocks must exist per slug (not templated paragraphs)."
+    indexability_gates:
+      indexable_only_if_all_true:
+        - "prefilled_context_present == true"
+        - "server_computed_presets_present == true  # shows computed outputs for R10k/R50k/R250k"
+        - "decision_blocks_present >= 3  # doc checklist + risk flags + HS confidence + preference summary + scenario compare (any 3)"
+        - "internal_link_grid_count >= 6"
+        - "freshness_metadata_present == true"
+        - "canonical_resolves == true"
+      else:
+        robots: "noindex,follow"
+    sitemap_policy:
+      - "Only include indexable URLs in sitemap."
+
+  ux_layout_targets:
+    - "Make the page feel like a decision instrument, not a content page."
+    - "Above-the-fold: users must see (1) choose mode, (2) enter essentials, (3) big decision numbers after calculation."
+    - "Below-the-fold: structured blocks that complete the decision: HS confidence, assumptions, doc checklist, risks, scenarios, preference."
+
+  component_level_spec:
+    layout:
+      order:
+        - "ContextHero"
+        - "ModeEntryCards"
+        - "ModePanel (ProfessionalQuickFillPanel | AssistedWizardPanel)"
+        - "DecisionSummaryHeader (NEW, above fold after calculation)"
+        - "DecisionSupportBlocks (NEW, structured below summary)"
+        - "BreakdownAndAudit (existing BreakdownTable + WhyDrawerSystem)"
+        - "StickyActionBar"
+        - "InternalLinkGrid"
+      critical_rule:
+        - "Do NOT allow FAQs / long text blocks to appear before DecisionSummaryHeader once results exist."
+
+    new_components:
+      DecisionSummaryHeader:
+        purpose: "Make key decision numbers + confidence unmissable."
+        render_condition: "calcStatus == success"
+        placement: "Top of ResultsPanel; must be visible without scrolling on desktop after auto-scroll."
+        props:
+          totalTaxesZar: "number"
+          totalLandedCostZar: "number"
+          perUnitLandedCostZar: "number"
+          hsConfidenceBucket: "high|medium|low|unknown"
+          hsConfidenceScore: "number|null"
+          rangeMode:
+            enabled: "boolean"
+            taxesMinMax: "object|null  # {min,max}"
+            landedMinMax: "object|null # {min,max}"
+          primaryWarnings: "array<string>  # e.g., HS uncertain, anti-dumping possible"
+          actions:
+            - id: "verify_hs"
+              visible_if: "hsConfidenceBucket in [low,unknown]"
+              label: "Verify HS (recommended)"
+              triggers: "HSVerifyModal"
+        behavior:
+          - "Auto-scroll to DecisionSummaryHeader after successful calc."
+          - "If rangeMode.enabled=true, show min–max range prominently with explanation tooltip."
+
+      AssumptionsAndFreshnessBox:
+        purpose: "Explicitly show all assumptions that affect the output."
+        render_condition: "calcStatus == success"
+        props:
+          originIso: "string"
+          destinationIso: "ZA"
+          incoterm: "string"
+          importerType: "string"
+          exchangeRateUsed: "number"
+          freightIncluded: "boolean"
+          insuranceIncluded: "boolean"
+          tariffVersion: "string"
+          effectiveDate: "string"
+          lastUpdated: "string"
+        UI_requirements:
+          - "Compact key-value grid."
+          - "Link: 'How we calculated this' -> scroll to Auditability section."
+          - "If any defaults were applied (e.g., exchange rate default), mark with '(editable)' note."
+
+      HSConfidencePanel:
+        purpose: "Make HS classification uncertainty transparent and actionable."
+        render_condition: "calcStatus == success"
+        props:
+          selectedHs6: "string"
+          selectedHsLabel: "string|null"
+          hsConfidenceBucket: "high|medium|low|unknown"
+          hsConfidenceScore: "number|null"
+          alternatives: "array<{hs6,label,confidenceScore}> # <=3"
+          showImpactPreview: "boolean"
+          impactPreview:
+            mode: "delta|range"
+            deltas: "array<{hs6, dutyDeltaZar, taxesDeltaZar, landedDeltaZar}>|null"
+            ranges: "object|null  # {duty:{min,max}, taxes:{min,max}, landed:{min,max}}"
+        UI_requirements:
+          - "Always show selected HS + confidence."
+          - "Always show top alternatives (<=3)."
+          - "If confidence low/unknown, show CTA: Verify HS + show range/delta option."
+        interactions:
+          - "Toggle 'Show cost impact of alternatives' -> requests impactPreview if not present."
+          - "Verify HS -> opens HSVerifyModal (existing)."
+
+      RiskFlagsPanel:
+        purpose: "Make compliance and cost risks visible with severity + action."
+        render_condition: "calcStatus == success"
+        props:
+          riskFlags: "array<{key,severity,title,summary,recommendedAction,confidence}>"
+          severity_levels: ["low","medium","high"]
+        UI_requirements:
+          - "Show top 1–3 risks as banners (high severity first)."
+          - "Expandable list for remaining flags."
+          - "Each risk must include recommended action (what user should do next)."
+
+      DocumentChecklistPanel:
+        purpose: "Make clearance readiness actionable and route-specific."
+        render_condition: "calcStatus == success"
+        props:
+          checklist:
+            always: "array<{title,why,notes}>"
+            common: "array<{title,why,notes}>"
+            conditional: "array<{title,why,notes,trigger}>"
+        UI_requirements:
+          - "Render three grouped sections with checkboxes (non-persistent for logged-out)."
+          - "Each item has a short 'why' tooltip."
+          - "Conditional items must show their trigger (e.g., 'If claiming preference', 'If restricted category')."
+
+      PreferenceEligibilityPanel:
+        purpose: "Show trade preference possibility and what is required to claim it."
+        render_condition: "calcStatus == success"
+        props:
+          preferenceSummary:
+            status: "eligible|maybe|note_eligible|unknown"
+            headline: "string"
+            requirements: "array<string>  # e.g., Certificate of Origin required"
+            caveats: "array<string>"
+        UI_requirements:
+          - "If status != unknown, show succinct status label + what user needs to do."
+          - "If unknown, show why (missing origin evidence, HS ambiguity, etc.)."
+
+      ScenarioToolkit:
+        purpose: "Improve cost predictability through fast what-if exploration."
+        render_condition: "always_visible"
+        subcomponents:
+          PresetValueChips:
+            required_presets: ["R10000","R50000","R250000"]
+            behavior:
+              - "Recompute on click using same HS/origin/terms; updates DecisionSummaryHeader + all blocks."
+          IncotermToggle:
+            options: ["FOB","CIF","EXW","DAP","DDP"]
+            behavior:
+              - "Changing incoterm updates assumptions + recalculates."
+          FreightSensitivityControls:
+            purpose: "Replace missing transport modeling with transparent freight scenarios."
+            modes:
+              - id: "manual"
+                label: "Use my freight"
+              - id: "profiles"
+                label: "Use freight profiles"
+                profiles:
+                  - id: "sea_conservative"
+                    label: "Sea (conservative)"
+                    policy: "set freight to % of invoice or fixed band (config-driven); annotate assumption"
+                  - id: "air_conservative"
+                    label: "Air (conservative)"
+                    policy: "set freight higher than sea; annotate assumption"
+            requirement:
+              - "Clearly display freight assumption used and allow override."
+
+      OriginCompareWidget:
+        purpose: "Support supplier/route decision directly on the pSEO page."
+        render_condition: "calcStatus == success"
+        scope:
+          - "Free: allow comparing current origin vs 1 other origin."
+          - "Gated (after value): 3+ origins / saved compare sets."
+        props:
+          baseOrigin: "originIso"
+          compareOptions: "array<originIso> # e.g., top 5 origins"
+          compareMode: "side_by_side"
+          outputs_required_per_origin:
+            - "total_taxes_zar"
+            - "total_landed_cost_zar"
+            - "per_unit_landed_cost_zar"
+            - "top_risk_flags (<=2)"
+            - "preference_status"
+        behavior:
+          - "Selecting compare origin triggers server-side multi-calc (batch) to avoid slow client loops."
+          - "Show deltas vs base (absolute + %)."
+
+      ActionPromptsBlock:
+        purpose: "Add decision-oriented actions besides monetization actions."
+        render_condition: "calcStatus == success"
+        actions:
+          - "Recalculate with another value (jump to ScenarioToolkit)"
+          - "Verify HS (jump to HSConfidencePanel)"
+          - "Check docs needed (jump to DocumentChecklistPanel)"
+          - "Compare origin (jump to OriginCompareWidget)"
+
+    existing_components_to_adjust:
+      ResultsPanel:
+        changes:
+          - "Insert DecisionSummaryHeader as first result block."
+          - "Move AssumptionsAndFreshnessBox directly under summary."
+          - "Ensure HSConfidencePanel, RiskFlagsPanel, DocumentChecklistPanel, PreferenceEligibilityPanel appear BEFORE FAQs."
+      ModeEntryCards:
+        changes:
+          - "Ensure both cards remain visible above fold even on pSEO pages."
+          - "Do not auto-hide cards after first calc; allow switching modes without losing context."
+      StickyActionBar:
+        triggers_must_remain:
+          - "Visible only after calc success."
+          - "Save/Export/Compare/Watchlist open SignInModal without clearing results."
+
+  api_changes:
+    existing_endpoint:
+      calculate:
+        path: "/api/calculate"
+        requirements_additions:
+          - "Return hs.confidence_bucket + confidence_score + alternatives[] consistently for all pSEO calcs."
+          - "Return risk_flags with severity/title/summary/recommended_action consistently."
+          - "Return doc_checklist grouped (always/common/conditional) with why + notes."
+          - "Return preference_summary when possible (or explicit unknown with reason)."
+          - "Return ranges when HS uncertainty remains (optional but recommended)."
+    new_endpoints:
+      compare:
+        path: "/api/compare"
+        method: "POST"
+        purpose: "Batch compute results for multiple origins/incoterms/scenario presets for OriginCompareWidget."
+        request_payload:
+          baseInputs: "CalcInputs"
+          compareOrigins: "array<originIso> # 1 in free mode, up to N when gated"
+          scenarioPresetValuesZar: "array<number> # optional; used for compare"
+        response_payload:
+          perOriginResults: "array<{originIso, summary, risk_flags_top, preference_summary}>"
+          deltas: "object # base vs compare"
+      hs_impact:
+        path: "/api/hs-impact"
+        method: "POST"
+        purpose: "Compute deltas/range between selected HS and alternatives."
+        request_payload:
+          baseInputs: "CalcInputs"
+          hsCandidates: "array<hs6>"
+        response_payload:
+          impactPreview: "object # delta|range"
+
+  conversion_triggers:
+    must_not_change:
+      - "Core numbers remain free."
+    triggers:
+      - id: "post_value_sticky_bar"
+        condition: "calcStatus == success"
+        action: "Render StickyActionBar + microcopy ('Save/export/compare/watchlist requires an account')"
+      - id: "compare_advanced_gate"
+        condition: "User attempts >= 2nd compare origin OR attempts 3+ origin compare"
+        action: "Open SignInModal(reason='compare')"
+      - id: "export_gate"
+        condition: "User clicks Export PDF/CSV"
+        action: "Open SignInModal(reason='export')"
+      - id: "watchlist_gate"
+        condition: "User clicks Watch HS changes"
+        action: "Open SignInModal(reason='watchlist')"
+
+  analytics:
+    new_events:
+      - name: "decision_summary_viewed"
+        fire_when: "calcStatus transitions to success and DecisionSummaryHeader enters viewport"
+        props: ["pageType","mode","originIso","clusterSlug_or_hs6","hs_confidence_bucket"]
+      - name: "hs_impact_toggled"
+        props: ["mode","hs_confidence_bucket"]
+      - name: "origin_compare_selected"
+        props: ["base_origin","compare_origin","mode"]
+      - name: "scenario_preset_clicked"
+        props: ["preset_value","mode"]
+      - name: "incoterm_toggled"
+        props: ["incoterm","mode"]
+      - name: "freight_profile_selected"
+        props: ["profile_id","mode"]
+    required_existing_events:
+      - "mode_selected"
+      - "hs_verify_clicked"
+      - "calc_started"
+      - "calc_success"
+      - "calc_error"
+      - "save_clicked"
+      - "export_clicked"
+      - "compare_clicked"
+      - "watchlist_clicked"
+      - "signin_modal_opened"
+      - "signin_modal_dismissed"
+
+  acceptance_criteria:
+    decision_support_minimum:
+      - "After a successful calc, DecisionSummaryHeader shows total taxes, total landed cost, per-unit cost prominently."
+      - "AssumptionsAndFreshnessBox shows incoterm, importer type, exchange rate used, freight/insurance inclusion, tariff version/effective date/last updated."
+      - "HSConfidencePanel always shows confidence + <=3 alternatives; low/unknown confidence triggers Verify HS CTA."
+      - "RiskFlagsPanel shows severity-labeled risks with recommended actions."
+      - "DocumentChecklistPanel is grouped and actionable (always/common/conditional)."
+      - "PreferenceEligibilityPanel shows eligibility/maybe/not/unknown with requirements."
+      - "ScenarioToolkit provides R10k/R50k/R250k preset recomputes and incoterm toggle; freight sensitivity controls clearly state assumptions."
+      - "OriginCompareWidget supports base vs 1 other origin in free mode with deltas and key outputs."
+      - "WhyDrawer exists for every breakdown line item and includes formula + inputs + rates + reference pointer + tariff version/effective date."
+    seo_safety:
+      - "Indexable pages render >=3 decision blocks (doc checklist, risk flags, HS confidence, preference, scenario compare)."
+      - "Non-ready pages remain noindex,follow and are excluded from sitemap."
+      - "No large generic boilerplate content precedes calculator/results."
+    conversion_integrity:
+      - "Save/export/compare/watchlist triggers open SignInModal without clearing results."
+      - "Compare beyond free limit triggers sign-in after user has already received base compare value."
+
+  implementation_plan:
+    tasks:
+      - id: "add_decision_summary_header"
+        priority: "P0"
+        description: "Add DecisionSummaryHeader to ResultsPanel and ensure auto-scroll."
+      - id: "add_assumptions_and_freshness_box"
+        priority: "P0"
+        description: "Implement AssumptionsAndFreshnessBox with required fields + link to audit section."
+      - id: "hs_confidence_panel_plus_impact"
+        priority: "P0"
+        description: "Implement HSConfidencePanel + toggle for cost impact; add /api/hs-impact if needed."
+      - id: "risk_flags_panel_structured"
+        priority: "P0"
+        description: "Render risk flags with severity and recommended actions; ensure API returns structured fields."
+      - id: "document_checklist_panel_grouped"
+        priority: "P0"
+        description: "Render always/common/conditional checklist with why tooltips and triggers."
+      - id: "preference_eligibility_panel"
+        priority: "P1"
+        description: "Render preference note with requirements/caveats; clarify unknown state reasons."
+      - id: "scenario_toolkit"
+        priority: "P1"
+        description: "Preset chips + incoterm toggle + freight profiles with explicit assumptions."
+      - id: "origin_compare_widget"
+        priority: "P1"
+        description: "Base vs one origin compare free; implement /api/compare batch compute."
+      - id: "reorder_results_vs_faq"
+        priority: "P0"
+        description: "Ensure decision blocks appear before any FAQ/static content once results exist."
+      - id: "indexability_gate_update"
+        priority: "P0"
+        description: "Update readiness logic to require >=3 decision blocks and computed presets for indexing."
+      - id: "analytics_extension"
+        priority: "P1"
+        description: "Add new events for decision-support interactions (compare, presets, hs impact)."
+
+  qa_test_matrix:
+    - name: "Decision summary prominence"
+      steps:
+        - "Load pSEO page"
+        - "Run calc"
+      expected:
+        - "DecisionSummaryHeader visible above fold after auto-scroll"
+        - "Totals and confidence displayed"
+    - name: "HS low confidence path"
+      steps:
+        - "Use ambiguous HS/product mapping"
+        - "Run calc"
+      expected:
+        - "HSConfidencePanel shows low/unknown"
+        - "Verify HS CTA visible"
+        - "Impact toggle shows deltas/range"
+    - name: "Compliance readiness"
+      steps:
+        - "Run calc"
+      expected:
+        - "RiskFlagsPanel renders severity + recommended actions"
+        - "DocumentChecklistPanel grouped and actionable"
+        - "PreferenceEligibilityPanel renders status or explicit unknown reason"
+    - name: "Scenario exploration"
+      steps:
+        - "Click R10k/R50k/R250k chips"
+        - "Toggle incoterm"
+        - "Select freight profile"
+      expected:
+        - "Recalculation updates DecisionSummaryHeader and assumptions"
+    - name: "Origin compare"
+      steps:
+        - "Run calc"
+        - "Select compare origin"
+      expected:
+        - "Compare table shows base vs compare + deltas"
+        - "Attempt to add 2nd compare origin triggers SignInModal (after value)"
+    - name: "SEO readiness"
+      steps:
+        - "Check pages that fail required blocks"
+      expected:
+        - "robots noindex,follow"
+        - "excluded from sitemap"
+    - name: "Gating does not hide value"
+      steps:
+        - "After success, click Save/Export/Watchlist"
+        - "Close modal"
+      expected:
+        - "Results remain visible and unchanged"
