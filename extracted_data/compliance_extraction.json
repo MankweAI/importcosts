@@ -1,0 +1,394 @@
+[
+    {
+        "hs_code": "87032190",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87032290",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87032390",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87032490",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87033190",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87033290",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87033390",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87034090",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87035090",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87036090",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87037090",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.18,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87038090",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.25,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "87039090",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.25,
+            "SACUM_UK_EPA": 0.25,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.25
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85171310",
+        "hs_description": "Designed for use when carried in the hand or on the person, with a value for duty purposes exceeding R2 500",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85171390",
+        "hs_description": "Other",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85171410",
+        "hs_description": "Designed for use when carried in the hand or on the person, with a value for duty purposes exceeding R2 500",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "84713010",
+        "hs_description": "Having a screen with any side exceeding 45 cm",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "84713090",
+        "hs_description": "Other",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "852842",
+        "hs_description": "Capable of directly connecting to and designed for use with an automatic data processing machine of heading 84.71",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85284910",
+        "hs_description": "Colour, with a screen size not exceeding 3 m x 4 m",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85284990",
+        "hs_description": "Other",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85285210",
+        "hs_description": "Colour, with a screen with no side exceeding 45 cm",
+        "mfn_rate": 0.00,
+        "rate_type": "free",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.00
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85285290",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85285990",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85287110",
+        "hs_description": "With a value for duty purposes not exceeding R5 000",
+        "mfn_rate": 0.15,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.06
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85287220",
+        "hs_description": "Incorporating a cathode-ray tube (CRT)",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85287290",
+        "hs_description": "Other",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.00,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    },
+    {
+        "hs_code": "85287320",
+        "hs_description": "Incorporating a cathode-ray tube (CRT)",
+        "mfn_rate": 0.25,
+        "rate_type": "ad_valorem",
+        "rates": {
+            "SADC_EU_EPA": 0.00,
+            "SACUM_UK_EPA": 0.00,
+            "SADC_PROTOCOL": 0.25,
+            "EFTA": 0.00,
+            "MERCOSUR": 0.10
+        },
+        "notes": null
+    }
+]

@@ -92,6 +92,9 @@ export async function calculateLandedCost(
         }
 
         // If HS exists but no rate in this version -> assume FREE? or Missing?
+        // DEBUG: Log the specifics
+        console.error(`[RateLookupFail] Version: ${activeVersion.label} (${activeVersion.id}) | HS: ${input.hsCode} (${hsCode.id})`);
+
         // MVP: Throw error "Rate not defined for this version"
         throw new Error(`Rate for HS ${input.hsCode} not defined in tariff version ${activeVersion.label}`);
     }
@@ -204,17 +207,20 @@ export async function calculateLandedCost(
     });
 
     // 8. Persist Run
-    try {
-        await createCalcRun({
-            userId,
-            tariffVersionId: activeVersion.id,
-            inputs: input as any, // Cast for Prisma JSON
-            outputs: { breakdown, total: landedCostTotal } as any,
-            confidence: "HIGH",
-            explain: { auditTrace } as any
-        });
-    } catch (e) {
-        console.error("Failed to persist calculation run", e);
+    // Skip persistence for SSR/System runs to avoid FK errors and DB bloat
+    if (userId && !userId.startsWith("ssr-")) {
+        try {
+            await createCalcRun({
+                userId,
+                tariffVersionId: activeVersion.id,
+                inputs: input as any, // Cast for Prisma JSON
+                outputs: { breakdown, total: landedCostTotal } as any,
+                confidence: "HIGH",
+                explain: { auditTrace } as any
+            });
+        } catch (e) {
+            console.error("Failed to persist calculation run", e);
+        }
     }
 
 

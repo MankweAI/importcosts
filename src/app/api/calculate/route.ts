@@ -6,129 +6,96 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
 
-        // Simulate processing delay
+        // Simulate processing delay (UX)
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Mock Response Logic
-        // In a real app, this would query your DB/Tariff engine
-        const invoiceValue = body.invoice_value || 0;
-        const vatRate = 0.15; // 15% standard
-        const dutyRate = 0.15; // 15% placeholder
+        // Import the real calculation engine
+        const { calculateLandedCost } = await import("@/lib/calc/landedCost");
+        const { ConfidenceLabel } = await import("@prisma/client"); // Ensure we have this
 
-        // 1. Resolve Preference
-        const { resolvePreference } = await import("@/lib/calc/preferenceEngine");
-        const preference_decision = resolvePreference(body.hsCode || "8703", body.originCountry || "CN", dutyRate);
+        // Map Request to CalcInput
+        const exchangeRate = body.exchangeRate || 18.50; // Default or from body
+        const invoiceValue = Number(body.invoice_value) || 0;
 
-        // 2. Resolve Compliance Risks
-        const { assessRisks } = await import("@/lib/compliance/complianceEngine");
-        const compliance_decision = assessRisks({
-            hsCode: body.hsCode || "8703",
-            originIso: body.originCountry || "CN",
-            usedGoods: body.usedGoods,
-            importerType: body.importerType
-        });
+        // Calculate Customs Value (ZAR)
+        // If currency is USD, multiply by rate. If ZAR, rate is 1. 
+        // Assuming input is foreign currency if not ZAR.
+        const customsValue = invoiceValue * exchangeRate;
 
-        // Simple ATV Calculation: (Value + 10% uplift + Duty) * VAT? 
-        // Simplified:
-        const dutyAmount = invoiceValue * dutyRate;
-        const vatAmount = (invoiceValue + dutyAmount) * vatRate; // Very simplified
-        const totalTaxes = dutyAmount + vatAmount;
-        const forexCost = invoiceValue * 0.008;
-        const disbursement = 650;
-        const totalLanded = invoiceValue + totalTaxes + (body.freight_cost || 0) + (body.insurance_cost || 0) + forexCost + disbursement;
+        const calcInput = {
+            hsCode: body.hsCode || "87032390", // Default to a valid one if missing (or throw)
+            customsValue: customsValue,
+            invoiceValue: invoiceValue,
+            exchangeRate: exchangeRate,
+            originCountry: body.originCountry || "CN",
+            destinationCountry: "ZA",
+            importerType: body.importerType as "VAT_REGISTERED" | "NON_VENDOR",
+            freightCost: Number(body.freight_cost) || 0,
+            insuranceCost: Number(body.insurance_cost) || 0,
+            freightInsuranceCost: (Number(body.freight_cost) || 0) + (Number(body.insurance_cost) || 0),
+            quantity: Number(body.quantity) || 1,
+            incoterm: body.incoterm || "FOB", // Default
+            usedGoods: body.usedGoods
+        };
 
+        // Perform Calculation
+        const result = await calculateLandedCost(calcInput, "anonymous");
+
+        // Map CalcOutput to API Response (CalculationResult)
         const response: CalculationResult = {
             summary: {
-                total_taxes_zar: totalTaxes,
-                total_landed_cost_zar: totalLanded,
-                landed_cost_per_unit_zar: totalLanded / (body.quantity || 1),
+                total_taxes_zar: result.breakdown
+                    .filter(i => ["duty", "vat", "excise"].includes(i.id))
+                    .reduce((sum, i) => sum + i.amount, 0),
+                total_landed_cost_zar: result.landedCostTotal,
+                landed_cost_per_unit_zar: result.landedCostPerUnit || result.landedCostTotal,
                 origin_country: body.originCountry || 'CN'
             },
             hs: {
                 confidence_score: 0.95,
                 confidence_bucket: 'high',
-                alternatives: [
-                    { hs6: "8471.49", label: "Other Data Processing Machines", confidence_score: 0.85 },
-                    { hs6: "8517.62", label: "Machines for reception/transmission", confidence_score: 0.60 }
-                ]
+                alternatives: [] // TODO: Add if needed
             },
             tariff: {
-                version: "2024.02.01",
-                effective_date: "2024-02-01",
-                last_updated: "2024-02-08"
+                version: result.tariffVersionLabel,
+                effective_date: result.tariffVersionEffectiveFrom || new Date().toISOString(),
+                last_updated: new Date().toISOString()
             },
-            line_items: [
-                {
-                    key: "duty",
-                    label: "Customs Duty",
-                    amount_zar: dutyAmount,
-                    audit: {
-                        formula: `${(dutyRate * 100).toFixed(0)}% of Customs Value`,
-                        inputs_used: { val: invoiceValue },
-                        rates: { rate: dutyRate },
-                        tariff_version: "2024.02.01"
-                    }
-                },
-                {
-                    key: "vat",
-                    label: "VAT",
-                    amount_zar: vatAmount,
-                    audit: {
-                        formula: "15% of (ATV)",
-                        inputs_used: { val: invoiceValue + dutyAmount },
-                        rates: { rate: vatRate },
-                        tariff_version: "2024.02.01"
-                    }
-                },
-                {
-                    key: "forex_spread",
-                    label: "Bank Forex Spread & Fees",
-                    amount_zar: invoiceValue * 0.008, // 0.8% typical spread
-                    audit: {
-                        formula: "0.80% estimated spread on Forex",
-                        inputs_used: { val: invoiceValue },
-                        rates: { rate: 0.008 }
-                    }
-                },
-                {
-                    key: "disbursement",
-                    label: "Agent Disbursement Fee",
-                    amount_zar: 650.00, // Flat estimate
-                    audit: {
-                        formula: "Fixed agency fee estimate",
-                        inputs_used: {},
-                        rates: { rate: 650 }
-                    }
-                },
-                {
-                    key: "freight",
-                    label: "Freight (Est)",
-                    amount_zar: body.freightCost || 0,
-                    audit: { formula: 'User Input', inputs_used: {}, rates: {}, tariff_version: '' }
+            line_items: result.breakdown.map(item => ({
+                key: item.id,
+                label: item.label,
+                amount_zar: item.amount,
+                audit: {
+                    formula: item.formula || "",
+                    inputs_used: {},
+                    rates: { rate: item.rateApplied },
+                    tariff_version: result.tariffVersionId
                 }
-            ],
+            })),
             doc_checklist: {
                 always: [
                     { title: "Commercial Invoice", why: "Proof of value for customs." },
                     { title: "Bill of Lading / Airway Bill", why: "Proof of shipment contract." },
                     { title: "SAD500", why: "Customs declaration form." }
                 ],
-                common: [
-                    { title: "Packing List", why: "Details package contents." }
-                ],
-                conditional: [
-                    { title: "Certificate of Origin", why: "Required to claim EUR1/SADC preference.", trigger: "If claiming preference" },
-                    { title: "Import Permit", why: "Required for specific controlled goods.", trigger: "If goods are controlled" }
-                ]
+                common: [],
+                conditional: result.preference_decision?.proof_checklist?.map((p: string) => ({
+                    title: p,
+                    why: "Required for Preferential Rate",
+                    trigger: "Preference Claimed"
+                })) || []
             },
-            // Legacy risk flags - keeping empty array for type compatibility until frontend is fully migrated
-            risk_flags: [],
-            compliance_risks: compliance_decision,
-            preference_decision: preference_decision
+            risk_flags: [], // Legacy
+            compliance_risks: result.compliance_risks,
+            preference_decision: result.preference_decision
         };
 
         return NextResponse.json(response);
     } catch (error) {
-        return NextResponse.json({ error: 'Calculation failed' }, { status: 500 });
+        console.error("Calculation API Error:", error);
+        return NextResponse.json({
+            error: 'Calculation failed',
+            details: error instanceof Error ? error.message : "Unknown error"
+        }, { status: 500 });
     }
 }

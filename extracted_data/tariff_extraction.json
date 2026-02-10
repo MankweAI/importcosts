@@ -1,0 +1,130 @@
+[
+    {
+        "rule_id": "ITAC_USED_GOODS_GLOBAL",
+        "hs_codes": [
+            "*"
+        ],
+        "authority": "ITAC",
+        "rule_type": "permit_required",
+        "title": "Import Permit Required for All Used or Second‑hand Goods",
+        "summary": "All second-hand or used goods, including waste and scrap, require an ITAC import permit unless specifically exempted in Schedule 4.",
+        "severity": "high",
+        "conditions": {
+            "used_goods": true,
+            "excluded_schedule_4_headings": [
+                "49.02",
+                "49.03",
+                "49.04",
+                "49.05",
+                "49.06",
+                "49.09",
+                "49.10",
+                "49.11",
+                "92.01",
+                "92.02",
+                "92.03",
+                "92.04",
+                "92.06",
+                "92.07"
+            ]
+        },
+        "required_documents": [
+            "ITAC Import Permit"
+        ],
+        "source_ref": "ITAC R.91, Government Gazette No. 35007 of 10 Feb 2012, para I(b) and Schedule 4"
+    },
+    {
+        "rule_id": "ITAC_SCHEDULE1_USED_CLOTHING_63_09",
+        "hs_codes": [
+            "63.09"
+        ],
+        "authority": "ITAC",
+        "rule_type": "permit_required",
+        "title": "Import Permit Required for Worn Clothing and Other Worn Articles",
+        "summary": "Worn clothing and other worn articles classified under tariff heading 63.09 may only be imported with an ITAC import permit.",
+        "severity": "high",
+        "conditions": {
+            "used_goods": true
+        },
+        "required_documents": [
+            "ITAC Import Permit"
+        ],
+        "source_ref": "ITAC R.91, Government Gazette No. 35007 of 10 Feb 2012, Schedule 1 (Worn clothing and other worn articles 63.09)"
+    },
+    {
+        "rule_id": "ITAC_SCHEDULE1_ROAD_WHEELS_8708_70_2_8716_90_20",
+        "hs_codes": [
+            "8708.70.2",
+            "8716.90.20"
+        ],
+        "authority": "ITAC",
+        "rule_type": "permit_required",
+        "title": "Import Permit Required for Road Wheels and Wheel Rims Fitted with Tyres",
+        "summary": "Road wheels fitted with tyres and wheel rims fitted with tyres under tariff headings 8708.70.2 and 8716.90.20 require an ITAC import permit.",
+        "severity": "high",
+        "conditions": null,
+        "required_documents": [
+            "ITAC Import Permit"
+        ],
+        "source_ref": "ITAC R.91 as amended by Notice R.1290, Government Gazette No. 39567 of 31 Dec 2015, Schedule 1 insertion"
+    },
+    {
+        "rule_id": "SARS_NRCS_INSPECTION_8471_COMPUTERS_20230607",
+        "hs_codes": [
+            "84.71",
+            "8471.3",
+            "8471.41",
+            "8471.49",
+            "8471.50",
+            "8471.60",
+            "8471.70",
+            "8471.80",
+            "8471.90"
+        ],
+        "authority": "NRCS",
+        "rule_type": "inspection_risk",
+        "title": "NRCS Border Detention Risk for Computers and Data Processing Machines",
+        "summary": "Goods classified under the listed computer and automatic data processing machine tariff headings are to be detained for NRCS at the border.",
+        "severity": "medium",
+        "conditions": {
+            "detained_for_NRCS": true
+        },
+        "required_documents": [],
+        "source_ref": "SARS Prohibited and Restricted Imports and Exports list, update of 7 June 2023 (\"The below tariff headings are to be detained for NRCS ... 84.71, 8471.3, 8471.41, 8471.49, 8471.50, 8471.60, 8471.70, 8471.80, 8471.90\")"
+    },
+    {
+        "rule_id": "SARS_NRCS_INSPECTION_8517_TELECOM_20230607",
+        "hs_codes": [
+            "8517.62",
+            "8517.62.10",
+            "8517.62.90",
+            "8517.69"
+        ],
+        "authority": "NRCS",
+        "rule_type": "inspection_risk",
+        "title": "NRCS Border Detention Risk for Telephone and Network Apparatus",
+        "summary": "Telephone and other communication apparatus under the listed tariff headings are to be detained for NRCS at the border.",
+        "severity": "medium",
+        "conditions": {
+            "detained_for_NRCS": true
+        },
+        "required_documents": [],
+        "source_ref": "SARS Prohibited and Restricted Imports and Exports list, update of 7 June 2023 (\"The below tariff headings are to be detained for NRCS ... 8517.62, 8517.62.10, 8517.62.90, 8517.69\")"
+    },
+    {
+        "rule_id": "SARS_NRCS_LOA_8701_91_TO_8701_95_20221017",
+        "hs_codes": [
+            "8701.91-8701.95"
+        ],
+        "authority": "NRCS",
+        "rule_type": "loa_required",
+        "title": "NRCS Letter of Authority Required for Certain Tractors",
+        "summary": "Tractors classified under tariff headings 8701.91 to 8701.95 require a Letter of Authority from NRCS.",
+        "severity": "high",
+        "conditions": null,
+        "required_documents": [
+            "NRCS Letter of Authority"
+        ],
+        "source_ref": "SARS Prohibited and Restricted Imports and Exports list, update of 17 October 2022 (\"Tariff Heading 8701.91 – 8701.95 Letter of Authority required from NRCS\")"
+    }
+]

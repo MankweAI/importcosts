@@ -1,7 +1,7 @@
 import { PreferenceDecision, AgreementOption, SourceRef } from '@/types/pseo';
 import { AGREEMENTS, TradeAgreement } from '@/data/preferences/agreements';
 import { PREFERENCE_RATES } from '@/data/preferences/rates';
-import { RULES_OF_ORIGIN } from '@/data/preferences/rules';
+import { findRuleOfOrigin } from '@/data/preferences/rules';
 
 /**
  * Finds all trade agreements that cover the given origin country.
@@ -53,9 +53,8 @@ export function resolvePreference(
         const rateDef = PREFERENCE_RATES[agreement.id]?.[hsCode.substring(0, 6)]
             || PREFERENCE_RATES[agreement.id]?.[hsCode.substring(0, 4)];
 
-        // 2. Look up rule (try chapter)
-        const chapter = hsCode.substring(0, 2);
-        const ruleDef = RULES_OF_ORIGIN[agreement.id]?.[chapter];
+        // 2. Look up rule using the helper function
+        const ruleDef = findRuleOfOrigin(hsCode, agreement.id);
 
         if (rateDef) {
             const savings = Math.max(0, mfnRateValue - (rateDef.value || 0));
@@ -77,21 +76,21 @@ export function resolvePreference(
                     notes: null
                 },
                 rule_of_origin: {
-                    summary: ruleDef?.summary || "Standard rules apply.",
+                    summary: ruleDef?.ruleText || "Standard rules apply.",
                     origin_criteria_code: "P"
                 },
                 documentation: {
-                    proof_type: ruleDef?.proofs[0] || "Certificate of Origin",
+                    proof_type: "Certificate of Origin (Form EUR.1 or EUR-MED COO)",
                     retention_period: "5 years"
                 },
                 eligibility_signal: {
                     status: "eligible",
                     reason: null
                 },
-                proof_required: ruleDef?.proofs || [],
+                proof_required: ["Certificate of Origin", "Supplier's Declaration"],
                 source_refs: [{
                     source_type: "agreement_text",
-                    url: "#",
+                    url: ruleDef?.sourceRef || "#",
                     document_title: agreement.shortName,
                     published_date: "2024-01-01"
                 }]

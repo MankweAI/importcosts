@@ -221,10 +221,13 @@ export interface RiskRule {
     severity: "low" | "medium" | "high";
     match: {
         hs_match: string[];
-        // simplified condition match for now
+        // condition match for rule applicability
         condition_match?: {
             used_goods?: boolean;
             importer_type?: string;
+            detained_for_NRCS?: boolean;
+            excluded_schedule_4_headings?: string[];
+            [key: string]: unknown; // Allow additional conditions
         };
     };
     required_action: {
@@ -232,4 +235,5 @@ export interface RiskRule {
         required_documents: string[];
     };
     official_refs: SourceRef[];
+    source_ref?: string; // Original source reference from extraction
 }

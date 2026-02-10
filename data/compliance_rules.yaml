@@ -1,0 +1,802 @@
+[
+  {
+    "hs_code": "01",
+    "description": "Live animals",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "All the animals of Chapter 1 used must be wholly obtained",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 90:contentReference[oaicite:0]{index=0}"
+  },
+  {
+    "hs_code": "02",
+    "description": "Meat and edible meat offal",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials of Chapters 1 and 2 used must be wholly obtained",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 90:contentReference[oaicite:1]{index=1}"
+  },
+  {
+    "hs_code": "0304",
+    "description": "Fish fillets and other fish meat, fresh, chilled or frozen",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of any materials of Chapter 3 used does not exceed 15% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 90:contentReference[oaicite:2]{index=2}"
+  },
+  {
+    "hs_code": "0403",
+    "description": "Buttermilk, curdled milk and cream, yoghurt, kephir and other fermented or acidified milk and cream",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which:\n- all the materials of Chapter 4 used must be wholly obtained;\n- any fruit juice (except those of pineapple, lime or grapefruit) of heading No 2009 used must already be originating;\n- the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 92:contentReference[oaicite:3]{index=3}"
+  },
+  {
+    "hs_code": "0611",
+    "description": "Plants, cuttings and slips",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials of Chapter 6 used must be wholly obtained; the value of all the materials used does not exceed 50% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 92:contentReference[oaicite:4]{index=4}"
+  },
+  {
+    "hs_code": "08",
+    "description": "Edible fruit and nuts; peel of citrus fruits or melons",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which:\n- all the fruit and nuts used must be wholly obtained;\n- the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 93:contentReference[oaicite:5]{index=5}"
+  },
+  {
+    "hs_code": "0901",
+    "description": "Coffee, whether or not roasted or decaffeinated; coffee husks and skins; coffee substitutes",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 93:contentReference[oaicite:6]{index=6}"
+  },
+  {
+    "hs_code": "1106",
+    "description": "Flour, meal and powder of the dried, shelled leguminous vegetables",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Drying and milling of leguminous vegetables of heading No 0708",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 93:contentReference[oaicite:7]{index=7}"
+  },
+  {
+    "hs_code": "12",
+    "description": "Oil seeds and oleaginous fruits; miscellaneous grains, seeds and fruit; industrial or medicinal plants; straw and fodder",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials of Chapter 12 used must be wholly obtained",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 94:contentReference[oaicite:8]{index=8}"
+  },
+  {
+    "hs_code": "1301",
+    "description": "Lac; natural gums, resins, gum-resins and oleoresins (for example, balsams)",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of any materials of heading No 1301 used may not exceed 50% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 94:contentReference[oaicite:9]{index=9}"
+  },
+  {
+    "hs_code": "14",
+    "description": "Vegetable plaiting materials; vegetable products not elsewhere specified or included",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials of Chapter 14 used must be wholly obtained",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 94:contentReference[oaicite:10]{index=10}"
+  },
+  {
+    "hs_code": "1501",
+    "description": "Pig fat (including lard) and poultry fat, other than that of heading No 0209 or 1503",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Fats from bones or waste: Manufacture from materials of any heading except those of heading Nos 0203, 0206 or 0207 or bones of heading No 0506; Other: Manufacture from meat or edible offal of swine of heading No 0203 or 0206 or of meat and edible offal of poultry of heading No 0207",
+    "has_alternative_rule": true,
+    "alternative_rule_text": "Other: Manufacture from meat or edible offal of swine of heading No 0203 or 0206 or of meat and edible offal of poultry of heading No 0207",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 95:contentReference[oaicite:11]{index=11}"
+  },
+  {
+    "hs_code": "1502",
+    "description": "Fats of bovine animals, sheep or goats, other than those of heading No 1503",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Fats from bones or waste: Manufacture from materials of any heading except those of heading Nos 0201, 0202, 0204 or 0206 or bones of heading No 0506; Other: Manufacture in which all the materials of Chapter 2 used must be wholly obtained",
+    "has_alternative_rule": true,
+    "alternative_rule_text": "Other: Manufacture in which all the materials of Chapter 2 used must be wholly obtained",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 95:contentReference[oaicite:12]{index=12}"
+  },
+  {
+    "hs_code": "1504",
+    "description": "Fats and oils and their fractions, of fish or marine mammals, whether or not refined, but not chemically modified",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Solid fractions: Manufacture from materials of any heading including other materials of heading No 1504; Other: Manufacture in which all the materials of Chapters 2 and 3 used must be wholly obtained",
+    "has_alternative_rule": true,
+    "alternative_rule_text": "Other: Manufacture in which all the materials of Chapters 2 and 3 used must be wholly obtained",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 95:contentReference[oaicite:13]{index=13}"
+  },
+  {
+    "hs_code": "1506",
+    "description": "Other animal fats and oils and their fractions, whether or not refined, but not chemically modified",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Solid fractions: Manufacture from materials of any heading including other materials of heading No 1506; Other: Manufacture in which all the materials of Chapter 2 used must be wholly obtained",
+    "has_alternative_rule": true,
+    "alternative_rule_text": "Other: Manufacture in which all the materials of Chapter 2 used must be wholly obtained",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 96:contentReference[oaicite:14]{index=14}"
+  },
+  {
+    "hs_code": "1507",
+    "description": "Vegetable oils and their fractions: soya, ground nut, palm, copra, palm kernel, babassu, tung and oiticica oil, myrtle wax and Japan wax, fractions of jojoba oil and oils for technical or industrial uses",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials used are classified within a heading other than that of the product",
+    "has_alternative_rule": true,
+    "alternative_rule_text": "Solid fractions (except jojoba) – Manufacture from other materials of heading Nos 1507 to 1515; Other – Manufacture in which all the vegetable materials used must be wholly obtained",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 96:contentReference[oaicite:15]{index=15}"
+  },
+  {
+    "hs_code": "1516",
+    "description": "Animal or vegetable fats and oils and their fractions, partly or wholly hydrogenated, inter-esterified, re-esterified or elaidinised, whether or not refined, but not further prepared",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all the materials of Chapter 2 used must be wholly obtained; all the vegetable materials used must be wholly obtained (materials of headings 1507, 1508, 1511 and 1513 may be used)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 97:contentReference[oaicite:16]{index=16}"
+  },
+  {
+    "hs_code": "1517",
+    "description": "Margarine; edible mixtures or preparations of animal or vegetable fats or oils, other than edible fats or oils of heading No 1516",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all the materials of Chapters 2 and 4 used must be wholly obtained; all the vegetable materials used must be wholly obtained (materials of headings 1507, 1508, 1511 and 1513 may be used)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 97:contentReference[oaicite:17]{index=17}"
+  },
+  {
+    "hs_code": "16",
+    "description": "Preparations of meat, of fish or of crustaceans, molluscs or other aquatic invertebrates",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from animals of Chapter 1 (except Prepared or preserved fish, caviar and caviar substitutes and crustaceans, molluscs and other aquatic invertebrates, prepared or preserved – for these, value of materials of Chapter 3 does not exceed 15% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 97:contentReference[oaicite:18]{index=18}"
+  },
+  {
+    "hs_code": "17",
+    "description": "Sugars and sugar confectionery",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials used are classified within a heading other than that of the product (except Cane or beet sugar and chemically pure sucrose, flavoured or coloured – value of Chapter 17 materials ≤30%; Others – value of Chapter 17 materials ≤30%; Other – all materials must already be originating)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 97:contentReference[oaicite:19]{index=19}"
+  },
+  {
+    "hs_code": "1701",
+    "description": "Cane or beet sugar and chemically pure sucrose, in solid form, flavoured or coloured",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 98:contentReference[oaicite:20]{index=20}"
+  },
+  {
+    "hs_code": "1702",
+    "description": "Other sugars, including lactose, maltose, glucose and fructose, in solid form; sugar syrups not containing added flavouring or colouring matter; artificial honey; caramel",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Chemically pure maltose and fructose – Manufacture from materials of any heading including other materials of heading No 1702; Other sugars in solid form – Manufacture in which value of Chapter 17 materials ≤30% of ex-works price; Other – Manufacture in which all the materials used must already be originating",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 98:contentReference[oaicite:21]{index=21}"
+  },
+  {
+    "hs_code": "1703",
+    "description": "Molasses resulting from the extraction or refining of sugar, flavoured or coloured",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 98:contentReference[oaicite:22]{index=22}"
+  },
+  {
+    "hs_code": "1704",
+    "description": "Sugar confectionery (including white chocolate), not containing cocoa",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all materials used are classified within a heading other than that of the product; the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 99:contentReference[oaicite:23]{index=23}"
+  },
+  {
+    "hs_code": "18",
+    "description": "Cocoa and cocoa preparations",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all materials used are classified within a heading other than that of the product; the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 99:contentReference[oaicite:24]{index=24}"
+  },
+  {
+    "hs_code": "1901",
+    "description": "Malt extract; food preparations of flour, groats, meal, starch or malt extract, not containing cocoa (excl. maltose/fructose sulphates), not elsewhere specified or included",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Malt extract – Manufacture from cereals of Chapter 10; Other – Manufacture in which: all the materials used are classified within a heading other than that of the product; the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": true,
+    "alternative_rule_text": "Other – Manufacture in which: all materials used are classified within a heading other than that of the product; value of Chapter 17 materials ≤30% of ex-works price",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 99:contentReference[oaicite:25]{index=25}"
+  },
+  {
+    "hs_code": "1902",
+    "description": "Pasta, whether or not cooked or stuffed, such as spaghetti, macaroni, noodles, lasagne, gnocchi, ravioli, cannelloni; couscous",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "If containing ≤20% by weight meat/seafood: Manufacture in which all cereals and derivatives (except durum wheat) used must be wholly obtained; If containing >20% by weight meat/seafood: Manufacture in which: all cereals and derivatives (except durum wheat) used must be wholly obtained; all materials of Chapters 2 and 3 used must be wholly obtained",
+    "has_alternative_rule": true,
+    "alternative_rule_text": "If >20% meat: additionally all materials of Chapters 2 and 3 must be wholly obtained",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 100:contentReference[oaicite:26]{index=26}:contentReference[oaicite:27]{index=27}"
+  },
+  {
+    "hs_code": "1903",
+    "description": "Tapioca and substitutes thereof prepared from starch",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading except potato starch of heading No 1108",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 100:contentReference[oaicite:28]{index=28}"
+  },
+  {
+    "hs_code": "1904",
+    "description": "Prepared foods obtained by swelling or roasting of cereals or cereal products (e.g., corn flakes); cereals in grain form or flakes (except maize), pre-cooked or otherwise prepared, not elsewhere specified",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture: from materials not classified within heading No 1806; in which all cereals and flour (except durum wheat and its derivatives and Zea indurata maize) used must be wholly obtained; value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 101:contentReference[oaicite:29]{index=29}"
+  },
+  {
+    "hs_code": "1905",
+    "description": "Bread, pastry, cakes, biscuits and other bakers' wares, whether or not containing cocoa",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading except those of Chapter 11",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 101:contentReference[oaicite:30]{index=30}"
+  },
+  {
+    "hs_code": "20",
+    "description": "Preparations of vegetables, fruit, nuts or other parts of plants",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the fruit, nuts or vegetables used must be wholly obtained",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 101:contentReference[oaicite:31]{index=31}"
+  },
+  {
+    "hs_code": "2006",
+    "description": "Vegetables, fruit, nuts, fruit-peel and other parts of plants, preserved by sugar (drained, glacé or crystallised)",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 102:contentReference[oaicite:32]{index=32}"
+  },
+  {
+    "hs_code": "2007",
+    "description": "Jams, fruit jellies, marmalades, fruit or nut purée and pastes, obtained by cooking, whether or not containing added sugar",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all the materials used are classified within a heading other than that of the product; the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 102:contentReference[oaicite:33]{index=33}"
+  },
+  {
+    "hs_code": "ex2008",
+    "description": "Nuts, not containing added sugar or spirit; Peanut butter; mixtures based on cereals; palm hearts; maize (corn) flowers and groats; Other except fruit and nuts cooked otherwise than by steaming or boiling, not containing added sugar, frozen",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Nuts: Manufacture in which value of originating nuts and oil seeds (heading Nos 0801, 0802, 1202–1207) exceeds 60% of ex-works price; Peanut butter/cereals/palm hearts/maize: Manufacture in which all materials are classified in heading other than that of product; Other: Manufacture in which: all materials are classified within a heading other than that of product; value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 102:contentReference[oaicite:34]{index=34}:contentReference[oaicite:35]{index=35}"
+  },
+  {
+    "hs_code": "2009",
+    "description": "Fruit juices (including grape must) and vegetable juices, unfermented and not containing added spirit",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all materials used are classified within a heading other than that of the product; value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 103:contentReference[oaicite:36]{index=36}"
+  },
+  {
+    "hs_code": "ex2104",
+    "description": "Soups and broths and preparations therefor",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading except prepared or preserved vegetables of heading Nos 2002 to 2005",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 104:contentReference[oaicite:37]{index=37}"
+  },
+  {
+    "hs_code": "2106",
+    "description": "Food preparations not elsewhere specified or included",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all materials used are classified within a heading other than that of the product; the value of any materials of Chapter 17 used does not exceed 30% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 104:contentReference[oaicite:38]{index=38}"
+  },
+  {
+    "hs_code": "ex2208",
+    "description": "Undenatured ethyl alcohol of an alcoholic strength by volume of less than 80%; spirits, liqueurs and other spirituous beverages",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials not classified within heading Nos 2207 or 2208; all grapes or any material derived from grapes used must be wholly obtained or, if all other materials used are already originating, arrack may be used up to 5% by volume",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 105:contentReference[oaicite:39]{index=39}"
+  },
+  {
+    "hs_code": "ex2301",
+    "description": "Whale meal; flours, meals and pellets of fish or crustaceans, unfit for human consumption",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials of Chapters 2 and 3 used must be wholly obtained",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 106:contentReference[oaicite:40]{index=40}"
+  },
+  {
+    "hs_code": "2309",
+    "description": "Preparations of a kind used in animal feeding",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which: all cereals, sugar or molasses, meat or milk used must already be originating; all materials of Chapter 3 used must be wholly obtained",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 106:contentReference[oaicite:41]{index=41}"
+  },
+  {
+    "hs_code": "2402",
+    "description": "Cigars, cheroots, cigarillos and cigarettes of tobacco or of tobacco substitutes",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which at least 70% by weight of the unmanufactured tobacco or tobacco refuse of heading No 2401 used must already be originating",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 107:contentReference[oaicite:42]{index=42}"
+  },
+  {
+    "hs_code": "2403",
+    "description": "Smoking tobacco",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which at least 70% by weight of the unmanufactured tobacco or tobacco refuse of heading No 2401 used must already be originating",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 107:contentReference[oaicite:43]{index=43}"
+  },
+  {
+    "hs_code": "2504",
+    "description": "Natural crystalline graphite, with enriched carbon content, purified and ground",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Enriching of the carbon content, purifying and grinding of crude crystalline graphite",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 107:contentReference[oaicite:44]{index=44}"
+  },
+  {
+    "hs_code": "2515",
+    "description": "Marble, merely cut, by sawing or otherwise, into blocks or slabs of a rectangular shape, of a thickness not exceeding 25 cm",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Cutting, by sawing or otherwise, of marble of a thickness exceeding 25 cm",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 107:contentReference[oaicite:45]{index=45}"
+  },
+  {
+    "hs_code": "2516",
+    "description": "Granite, porphyry, basalt, sandstone and other monumental and building stone, merely cut into blocks or slabs of a rectangular shape, thickness not exceeding 25 cm",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Cutting, by sawing or otherwise, of stone (even if already sawn) of a thickness exceeding 25 cm",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:46]{index=46}"
+  },
+  {
+    "hs_code": "2518",
+    "description": "Calcined dolomite",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Calcination of dolomite not calcined",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:47]{index=47}"
+  },
+  {
+    "hs_code": "2519",
+    "description": "Crushed natural magnesium carbonate (magnesite), in hermetically-sealed containers, and magnesium oxide (not fused or sintered)",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all materials used are classified within a heading other than that of the product; natural magnesium carbonate (magnesite) may be used",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:48]{index=48}"
+  },
+  {
+    "hs_code": "2520",
+    "description": "Plasters specially prepared for dentistry",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of all the materials used does not exceed 50% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:49]{index=49}"
+  },
+  {
+    "hs_code": "2524",
+    "description": "Natural asbestos fibres",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from asbestos concentrate",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:50]{index=50}"
+  },
+  {
+    "hs_code": "2525",
+    "description": "Mica powder",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Grinding of mica or mica waste",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:51]{index=51}"
+  },
+  {
+    "hs_code": "2530",
+    "description": "Earth colours, calcined or powdered",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Calcination or grinding of earth colours",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:52]{index=52}"
+  },
+  {
+    "hs_code": "26",
+    "description": "Ores, slag and ash",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all the materials used are classified within a heading other than that of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 108:contentReference[oaicite:53]{index=53}"
+  },
+  {
+    "hs_code": "2707",
+    "description": "Oils in which aromatic constituents exceed non-aromatic, obtained from distillation of high temperature coal tar",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 109:contentReference[oaicite:54]{index=54}"
+  },
+  {
+    "hs_code": "2709",
+    "description": "Crude oils obtained from bituminous minerals",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Destructive distillation of bituminous materials",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 109:contentReference[oaicite:55]{index=55}"
+  },
+  {
+    "hs_code": "2710",
+    "description": "Petroleum oils and oils obtained from bituminous materials, other than crude; preparations containing ≥70% petroleum oils as basic constituents",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 109:contentReference[oaicite:56]{index=56}"
+  },
+  {
+    "hs_code": "2711",
+    "description": "Petroleum gases and other gaseous hydrocarbons",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 110:contentReference[oaicite:57]{index=57}"
+  },
+  {
+    "hs_code": "2712",
+    "description": "Petroleum jelly; paraffin wax, microcrystalline petroleum wax, slack wax, ozokerite, lignite wax, peat wax, other mineral waxes and similar products obtained by synthesis or other processes, whether or not coloured",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 110:contentReference[oaicite:58]{index=58}"
+  },
+  {
+    "hs_code": "2713",
+    "description": "Petroleum coke, petroleum bitumen and other residues of petroleum oils or oils obtained from bituminous materials",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 111:contentReference[oaicite:59]{index=59}"
+  },
+  {
+    "hs_code": "2714",
+    "description": "Bitumen and asphalt, natural; bituminous or oil shale and tar sands; asphaltites and asphaltic rocks",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 111:contentReference[oaicite:60]{index=60}"
+  },
+  {
+    "hs_code": "2715",
+    "description": "Bituminous mixtures based on natural asphalt, on natural bitumen, on petroleum bitumen, on mineral tar or mineral tar pitch",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 112:contentReference[oaicite:61]{index=61}"
+  },
+  {
+    "hs_code": "28",
+    "description": "Inorganic chemicals; organic or inorganic compounds of precious or rare-earth metals; radioactive elements; except for:",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 20% of ex-works price); Or manufacture in which value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 112:contentReference[oaicite:62]{index=62}"
+  },
+  {
+    "hs_code": "2805",
+    "description": "\"Mischmetall\"",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture by electrolytic or thermal treatment in which the value of all the materials used does not exceed 50% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 112:contentReference[oaicite:63]{index=63}"
+  },
+  {
+    "hs_code": "2811",
+    "description": "Sulphur trioxide",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from sulphur dioxide",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 112:contentReference[oaicite:64]{index=64}"
+  },
+  {
+    "hs_code": "2833",
+    "description": "Aluminium sulphate",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of all the materials used does not exceed 50% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 113:contentReference[oaicite:65]{index=65}"
+  },
+  {
+    "hs_code": "2840",
+    "description": "Sodium perborate",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from disodium tetraborate pentahydrate; value of all materials used does not exceed 40% of ex-works price of product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 113:contentReference[oaicite:66]{index=66}"
+  },
+  {
+    "hs_code": "284210",
+    "description": "Non-chemically defined aluminosilicates",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "All materials used are classified within a heading other than that of the product (materials in same heading may be used up to 20% of ex-works price); value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 113:contentReference[oaicite:67]{index=67}"
+  },
+  {
+    "hs_code": "2852",
+    "description": "Mercury compounds of diagnostic or laboratory reagents on a backing, prepared reagents; nucleic acids and their salts; other heterocyclic compounds; mercury compounds of chemical products",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Each category: manufacture in which the value of all materials used does not exceed 50% of the ex-works price of the product (with restrictions on percentage of certain headings as specified)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 114:contentReference[oaicite:68]{index=68}:contentReference[oaicite:69]{index=69}"
+  },
+  {
+    "hs_code": "29",
+    "description": "Organic chemicals; except for:",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "All materials used are classified within a heading other than that of the product (materials in same heading may be used up to 20% of ex-works price); value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 114:contentReference[oaicite:70]{index=70}"
+  },
+  {
+    "hs_code": "2901",
+    "description": "Acyclic hydrocarbons for use as power or heating fuels",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 115:contentReference[oaicite:71]{index=71}"
+  },
+  {
+    "hs_code": "2902",
+    "description": "Cyclanes and cyclenes (other than azulenes), benzene, toluene, xylenes, for use as power or heating fuels",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Operations of refining and/or one or more specific processes; Other operations in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 50% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 115:contentReference[oaicite:72]{index=72}"
+  },
+  {
+    "hs_code": "2905",
+    "description": "Metal alcoholates of alcohols of this heading and of ethanol",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading (including other materials of heading No 2905); metal alcoholates of this heading may be used up to 20% of ex-works price; Manufacture in which value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 115:contentReference[oaicite:73]{index=73}"
+  },
+  {
+    "hs_code": "2915",
+    "description": "Saturated acyclic monocarboxylic acids and their derivatives",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading (heads 2915 and 2916 used ≤20% of ex-works price); Manufacture in which value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 116:contentReference[oaicite:74]{index=74}"
+  },
+  {
+    "hs_code": "2932",
+    "description": "Internal ethers and their derivatives (in specified forms)",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading (heading 2909 used ≤20% of ex-works price); Manufacture in which value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 116:contentReference[oaicite:75]{index=75}"
+  },
+  {
+    "hs_code": "2933",
+    "description": "Heterocyclic compounds with nitrogen hetero-atom(s) only",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading (heads 2932 and 2933 used ≤20% of ex-works price); Manufacture in which value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 116:contentReference[oaicite:76]{index=76}"
+  },
+  {
+    "hs_code": "2934",
+    "description": "Nucleic acids and their salts; other heterocyclic compounds",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading (heads 2932-2934 used ≤20% of ex-works price); Manufacture in which value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 116:contentReference[oaicite:77]{index=77}"
+  },
+  {
+    "hs_code": "2937",
+    "description": "Hormones, prostaglandins, thromboxanes and leukotrienes; derivatives and structural analogues used primarily as hormones",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Heterocyclic compounds with nitrogen hetero-atom(s) only: Manufacture from materials of any heading (heads 2932, 2933 used ≤20% of ex-works price); Manufacture in which value of all materials used does not exceed 40% of ex-works price; Nucleic acids and other heterocyclic: Manufacture from materials of any heading (heads 2932-2934 used ≤20% of ex-works price); Manufacture in which value of all materials used does not exceed 40% of ex-works price",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 117:contentReference[oaicite:78]{index=78}:contentReference[oaicite:79]{index=79}"
+  },
+  {
+    "hs_code": "2939",
+    "description": "Concentrates of poppy straw containing ≥50% by weight of alkaloids",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which the value of all materials used does not exceed 50% of the ex-works price of the product",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 117:contentReference[oaicite:80]{index=80}"
+  },
+  {
+    "hs_code": "30",
+    "description": "Pharmaceutical products; except for:",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture in which all materials used are classified within a heading other than that of the product (materials in the same heading may be used up to 20% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": true,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 118:contentReference[oaicite:81]{index=81}"
+  },
+  {
+    "hs_code": "3002",
+    "description": "Human blood; animal blood prepared for therapeutic, prophylactic or diagnostic uses; antisera; other blood fractions and immunological products; vaccines, toxins, cultures of microorganisms; etc.",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Products consisting of two or more constituents for therapeutic or prophylactic uses, put up in measured doses or retail forms: Manufacture from materials of any heading (including heading 3002 materials, up to 20% of ex-works price); Other: Manufacture from materials of any heading (including heading 3002 materials, up to 20% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 119:contentReference[oaicite:82]{index=82}:contentReference[oaicite:83]{index=83}"
+  },
+  {
+    "hs_code": "other",
+    "description": "Human blood products not covered above",
+    "agreement_id": "SADC_EU_EPA",
+    "rule_text": "Manufacture from materials of any heading (including heading 3002 materials, up to 20% of ex-works price)",
+    "has_alternative_rule": false,
+    "alternative_rule_text": "",
+    "is_chapter_rule": false,
+    "source_ref": "SADC-EU Protocol 1, Annex II, p. 119:contentReference[oaicite:84]{index=84}"
+  }
+]

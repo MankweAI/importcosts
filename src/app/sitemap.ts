@@ -1,8 +1,8 @@
 /**
  * sitemap.ts
- * 
- * Dynamic sitemap generation - only includes pages with indexStatus=INDEX.
- * For now returns static pages; will be extended to query database for SEO pages.
+ *
+ * Dynamic sitemap generation — includes static pages and all
+ * indexable pSEO pages from the database.
  */
 
 import { MetadataRoute } from "next";
@@ -40,21 +40,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ];
 
-    // Dynamic SEO pages will be added in Phase 5
-    // For now, we return only static pages
-    // 
-    // Future implementation:
-    // const indexablePages = await prisma.seoPage.findMany({
-    //   where: { indexStatus: "INDEX" },
-    //   select: { slug: true, lastBuiltAt: true, pageType: true },
-    // });
-    // 
-    // const seoPages = indexablePages.map((page) => ({
-    //   url: `${BASE_URL}${page.slug}`,
-    //   lastModified: page.lastBuiltAt?.toISOString() || now,
-    //   changeFrequency: "weekly" as const,
-    //   priority: 0.8,
-    // }));
+    // Dynamic pSEO pages from the database
+    let seoPages: MetadataRoute.Sitemap = [];
+    try {
+        const { getIndexablePages } = await import("@/lib/db/services/seoPage.service");
+        const indexablePages = await getIndexablePages();
 
-    return [...staticPages];
+        seoPages = indexablePages.map((page) => ({
+            url: `${BASE_URL}${page.slug}`,
+            lastModified: page.lastBuiltAt?.toISOString() || now,
+            changeFrequency: "weekly" as const,
+            priority: 0.8,
+        }));
+    } catch (error) {
+        console.error("[Sitemap] Failed to fetch pSEO pages:", error);
+    }
+
+    return [...staticPages, ...seoPages];
 }
