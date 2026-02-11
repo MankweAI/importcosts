@@ -4,9 +4,14 @@ import { ResultsPanel } from "@/components/pseo/ResultsPanel";
 import { FAQSection } from "@/components/pseo/FAQSection";
 import { InternalLinksGrid } from "@/components/pseo/InternalLinksGrid";
 import { JsonLdSchema } from "@/components/pseo/JsonLdSchema";
-import { DealOverviewSection } from "@/components/pseo/DealOverviewSection";
+import { DealSummaryCard } from "@/components/pseo/DealSummaryCard";
+import { VATFormulaExplainer } from "@/components/pseo/VATFormulaExplainer";
+import { ComplianceTimeline } from "@/components/pseo/ComplianceTimeline";
 import { ExampleScenariosTable } from "@/components/pseo/ExampleScenariosTable";
 import { RiskBullets } from "@/components/pseo/RiskBullets";
+import { AssumptionsAndFreshnessBox } from "@/components/pseo/AssumptionsAndFreshnessBox";
+import { DisclaimerBanner } from "@/components/pseo/DisclaimerBanner";
+import { StickyActionBar } from "@/components/pseo/StickyActionBar";
 import { RouteContext } from "@/types/pseo";
 import { StoreHydrator } from "@/components/pseo/StoreHydrator";
 import { Metadata } from "next";
@@ -190,14 +195,18 @@ export default async function HSOriginPage({ params }: PageProps) {
                 bestHs6={hs6}
             />
 
-            {/* H2: Duty & VAT Example */}
+            {/* GAP-01: Deal Summary Card */}
             {ssrResult && (
-                <DealOverviewSection
+                <DealSummaryCard
                     invoiceValue={5000}
                     dutyAmount={dutyAmount}
                     vatAmount={vatAmount}
                     freightCost={775}
                     landedCost={ssrResult.summary.total_landed_cost_zar}
+                    landedCostPerUnit={ssrResult.summary.landed_cost_per_unit_zar}
+                    verdict={ssrResult.verdict}
+                    grossMarginPct={ssrResult.grossMarginPercent}
+                    breakEvenPrice={ssrResult.breakEvenPrice}
                     productName={productName}
                     originName={originCountryName}
                 />
@@ -205,6 +214,13 @@ export default async function HSOriginPage({ params }: PageProps) {
 
             <StoreHydrator initialResult={ssrResult} initialInputs={defaultInputs} />
             <ResultsPanel />
+
+            {/* GAP-06: VAT Formula Explainer */}
+            <VATFormulaExplainer
+                customsValue={5000}
+                dutyAmount={dutyAmount}
+                vatAmount={vatAmount}
+            />
 
             {/* H2: Duty Scenarios — vary value and compare codes */}
             <ExampleScenariosTable
@@ -220,12 +236,27 @@ export default async function HSOriginPage({ params }: PageProps) {
                 subtitle={`Key risks when importing HS ${hs6} goods from ${originCountryName}.`}
             />
 
+            {/* Compliance Journey */}
+            <ComplianceTimeline />
+
+            {/* GAP-08: Data Freshness */}
+            <AssumptionsAndFreshnessBox />
+
             <FAQSection faqs={faqs} productName={productName} />
             <InternalLinksGrid
                 data={relatedPages}
                 originCountryName={originCountryName}
                 productName={productName}
             />
+
+            {/* GAP-08: Legal Disclaimer */}
+            <DisclaimerBanner
+                tariffVersion={ssrResult?.tariff?.version}
+                lastUpdated={ssrResult?.tariff?.last_updated}
+            />
+
+            {/* GAP-03: Save / Export */}
+            <StickyActionBar />
         </PageShell>
     );
 }

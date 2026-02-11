@@ -4,12 +4,17 @@ import { ResultsPanel } from "@/components/pseo/ResultsPanel";
 import { FAQSection } from "@/components/pseo/FAQSection";
 import { InternalLinksGrid } from "@/components/pseo/InternalLinksGrid";
 import { JsonLdSchema } from "@/components/pseo/JsonLdSchema";
-import { DealOverviewSection } from "@/components/pseo/DealOverviewSection";
+import { DealSummaryCard } from "@/components/pseo/DealSummaryCard";
+import { VATFormulaExplainer } from "@/components/pseo/VATFormulaExplainer";
+import { SensitivityAnalysis } from "@/components/pseo/SensitivityAnalysis";
 import { MarketPriceBenchmark } from "@/components/pseo/MarketPriceBenchmark";
 import { ImportTimeline } from "@/components/pseo/ImportTimeline";
 import { ComplianceTimeline } from "@/components/pseo/ComplianceTimeline";
 import { ExampleScenariosTable } from "@/components/pseo/ExampleScenariosTable";
 import { RiskBullets } from "@/components/pseo/RiskBullets";
+import { AssumptionsAndFreshnessBox } from "@/components/pseo/AssumptionsAndFreshnessBox";
+import { DisclaimerBanner } from "@/components/pseo/DisclaimerBanner";
+import { StickyActionBar } from "@/components/pseo/StickyActionBar";
 import { RouteContext, CalculationResult } from "@/types/pseo";
 import { StoreHydrator } from "@/components/pseo/StoreHydrator";
 import { Metadata } from "next";
@@ -204,14 +209,19 @@ export default async function ProductOriginPage({ params }: PageProps) {
                 bestHs6={bestHs6}
             />
 
-            {/* H2: Deal Overview — cost vs selling price summary */}
+            {/* GAP-01: Deal Summary Card — verdict + margin + break-even + risk score */}
             {ssrResult && (
-                <DealOverviewSection
+                <DealSummaryCard
                     invoiceValue={10000}
                     dutyAmount={dutyAmount}
                     vatAmount={vatAmount}
                     freightCost={1550}
                     landedCost={ssrResult.summary.total_landed_cost_zar}
+                    landedCostPerUnit={ssrResult.summary.landed_cost_per_unit_zar}
+                    verdict={ssrResult.verdict}
+                    grossMarginPct={ssrResult.grossMarginPercent}
+                    breakEvenPrice={ssrResult.breakEvenPrice}
+                    riskScore={ssrResult.compliance_risks?.overall_risk_score ? ssrResult.compliance_risks.overall_risk_score * 10 : undefined}
                     productName={productName}
                     originName={originCountryName}
                 />
@@ -220,10 +230,29 @@ export default async function ProductOriginPage({ params }: PageProps) {
             <StoreHydrator initialResult={ssrResult} initialInputs={defaultInputs} />
             <ResultsPanel />
 
-            {/* New Importer POV Section: Market Benchmark */}
+            {/* GAP-06: VAT Formula Explainer — shows SARS ATV calculation */}
+            <VATFormulaExplainer
+                customsValue={10000}
+                dutyAmount={dutyAmount}
+                vatAmount={vatAmount}
+            />
+
+            {/* GAP-07: Sensitivity Analysis — FX and duty what-ifs */}
+            {ssrResult && (
+                <SensitivityAnalysis
+                    landedCost={ssrResult.summary.total_landed_cost_zar}
+                    customsValue={10000}
+                    dutyRate={dutyPct}
+                    dutyAmount={dutyAmount}
+                    exchangeRate={defaultInputs.exchangeRate}
+                    invoiceValue={10000}
+                />
+            )}
+
+            {/* Importer POV: Market Benchmark */}
             <MarketPriceBenchmark />
 
-            {/* New Importer POV Section: Timeline & Cashflow */}
+            {/* Importer POV: Timeline & Cashflow */}
             <ImportTimeline />
 
             {/* H2: Example Scenarios — 3 pre-computed deals */}
@@ -240,8 +269,11 @@ export default async function ProductOriginPage({ params }: PageProps) {
                 subtitle={`Key factors that could impact your ${productName} import from ${originCountryName}.`}
             />
 
-            {/* New Importer POV Section: Compliance Journey (replaces DocumentChecklistPanel) */}
+            {/* Importer POV: Compliance Journey */}
             <ComplianceTimeline />
+
+            {/* GAP-08: Data Freshness + Assumptions */}
+            <AssumptionsAndFreshnessBox />
 
             <InternalLinksGrid
                 data={relatedPages}
@@ -250,6 +282,15 @@ export default async function ProductOriginPage({ params }: PageProps) {
             />
 
             <FAQSection faqs={faqs} productName={productName} />
+
+            {/* GAP-08: Legal Disclaimer */}
+            <DisclaimerBanner
+                tariffVersion={ssrResult?.tariff?.version}
+                lastUpdated={ssrResult?.tariff?.last_updated}
+            />
+
+            {/* GAP-03: Save / Export / Compare / Watch */}
+            <StickyActionBar />
         </PageShell>
     );
 }
