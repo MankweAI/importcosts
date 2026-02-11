@@ -14,28 +14,29 @@ export async function POST(request: Request) {
         const { ConfidenceLabel } = await import("@prisma/client"); // Ensure we have this
 
         // Map Request to CalcInput
-        const exchangeRate = body.exchangeRate || 18.50; // Default or from body
-        const invoiceValue = Number(body.invoice_value) || 0;
+        const exchangeRate = body.exchangeRate || 18.50;
+        const invoiceValue = Number(body.invoiceValue) || Number(body.invoice_value) || 0;
 
         // Calculate Customs Value (ZAR)
-        // If currency is USD, multiply by rate. If ZAR, rate is 1. 
-        // Assuming input is foreign currency if not ZAR.
         const customsValue = invoiceValue * exchangeRate;
 
         const calcInput = {
-            hsCode: body.hsCode || "87032390", // Default to a valid one if missing (or throw)
+            hsCode: body.hsCode || "87032390",
             customsValue: customsValue,
             invoiceValue: invoiceValue,
             exchangeRate: exchangeRate,
             originCountry: body.originCountry || "CN",
             destinationCountry: "ZA",
             importerType: body.importerType as "VAT_REGISTERED" | "NON_VENDOR",
-            freightCost: Number(body.freight_cost) || 0,
-            insuranceCost: Number(body.insurance_cost) || 0,
-            freightInsuranceCost: (Number(body.freight_cost) || 0) + (Number(body.insurance_cost) || 0),
+            freightCost: Number(body.freightCost) || Number(body.freight_cost) || 0,
+            insuranceCost: Number(body.insuranceCost) || Number(body.insurance_cost) || 0,
+            freightInsuranceCost: (Number(body.freightCost) || Number(body.freight_cost) || 0) + (Number(body.insuranceCost) || Number(body.insurance_cost) || 0),
             quantity: Number(body.quantity) || 1,
-            incoterm: body.incoterm || "FOB", // Default
-            usedGoods: body.usedGoods
+            incoterm: body.incoterm || "FOB",
+            usedGoods: body.usedGoods,
+            clusterSlug: body.clusterSlug,
+            targetSellingPrice: Number(body.targetSellingPrice) || undefined,
+            targetMarginPercent: Number(body.targetMarginPercent) || undefined,
         };
 
         // Perform Calculation
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
             hs: {
                 confidence_score: 0.95,
                 confidence_bucket: 'high',
-                alternatives: [] // TODO: Add if needed
+                alternatives: []
             },
             tariff: {
                 version: result.tariffVersionLabel,
@@ -85,9 +86,15 @@ export async function POST(request: Request) {
                     trigger: "Preference Claimed"
                 })) || []
             },
-            risk_flags: [], // Legacy
+            risk_flags: [],
             compliance_risks: result.compliance_risks,
-            preference_decision: result.preference_decision
+            preference_decision: result.preference_decision,
+
+            // Decision Fields
+            verdict: result.verdict,
+            grossMarginPercent: result.grossMarginPercent,
+            breakEvenPrice: result.breakEvenPrice,
+            detailedRisks: result.detailedRisks,
         };
 
         return NextResponse.json(response);

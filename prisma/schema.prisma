@@ -375,3 +375,39 @@ model ApiKey {
   org  Org?  @relation(fields: [orgId], references: [id])
   user User? @relation(fields: [userId], references: [id])
 }
+
+enum RiskTriggerType {
+  HS_CODE_PREFIX
+  CLUSTER_SLUG
+  ORIGIN_ISO
+  GENERIC
+}
+
+enum RiskSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RiskCategory {
+  COMPLIANCE
+  ANTIDUMPING
+  LOGISTICS
+  OTHER
+}
+
+model RiskRule {
+  id           String          @id @default(cuid())
+  triggerType  RiskTriggerType
+  triggerValue String          // e.g. "85", "solar-panels", "CN"
+  severity     RiskSeverity
+  category     RiskCategory
+  title        String
+  description  String
+  mitigation   String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([triggerType, triggerValue])
+}

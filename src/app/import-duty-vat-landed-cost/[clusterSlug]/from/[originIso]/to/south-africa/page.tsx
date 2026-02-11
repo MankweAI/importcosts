@@ -4,11 +4,19 @@ import { ResultsPanel } from "@/components/pseo/ResultsPanel";
 import { FAQSection } from "@/components/pseo/FAQSection";
 import { InternalLinksGrid } from "@/components/pseo/InternalLinksGrid";
 import { JsonLdSchema } from "@/components/pseo/JsonLdSchema";
+import { DealOverviewSection } from "@/components/pseo/DealOverviewSection";
+import { MarketPriceBenchmark } from "@/components/pseo/MarketPriceBenchmark";
+import { ImportTimeline } from "@/components/pseo/ImportTimeline";
+import { ComplianceTimeline } from "@/components/pseo/ComplianceTimeline";
+import { ExampleScenariosTable } from "@/components/pseo/ExampleScenariosTable";
+import { RiskBullets } from "@/components/pseo/RiskBullets";
 import { RouteContext, CalculationResult } from "@/types/pseo";
 import { StoreHydrator } from "@/components/pseo/StoreHydrator";
 import { Metadata } from "next";
 import { generateFAQs, getCountryName } from "@/lib/seo/faqData";
 import { getRelatedPages } from "@/lib/seo/interlinking.service";
+import { generateProductScenarios } from "@/lib/seo/scenarioData";
+import { generateProductRiskBullets } from "@/lib/seo/riskBulletData";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://importcosts.co.za";
 
@@ -28,15 +36,13 @@ export async function generateMetadata(
     const originName = getCountryName(originIso);
     const canonicalUrl = `${BASE_URL}/import-duty-vat-landed-cost/${clusterSlug}/from/${originIso.toLowerCase()}/to/south-africa`;
 
-    const title = `Import Duty & VAT for ${productName} from ${originName} to South Africa | ImportCosts`;
-    const description = `Calculate the exact landed cost for importing ${productName} from ${originName} to South Africa. Instant customs duty rates, 15% VAT, freight estimates, and preferential trade agreement checks using the latest SARS tariff schedule.`;
+    const title = `Import ${productName} from ${originName}: Profitability, Costs & Risks | ImportCosts`;
+    const description = `Determine if importing ${productName} from ${originName} makes financial sense. Enter your unit price, quantity, and shipping terms to see the full landed cost (duties + 15% VAT + freight). We'll highlight margin pitfalls and necessary documents.`;
 
     return {
         title,
         description,
-        alternates: {
-            canonical: canonicalUrl,
-        },
+        alternates: { canonical: canonicalUrl },
         robots: "index, follow",
         openGraph: {
             title,
@@ -46,9 +52,7 @@ export async function generateMetadata(
             type: "website",
             locale: "en_ZA",
         },
-        other: {
-            "geo.region": "ZA",
-        },
+        other: { "geo.region": "ZA" },
     };
 }
 
@@ -68,14 +72,12 @@ export default async function ProductOriginPage({ params }: PageProps) {
     const { getClusterWithHsCodes } = await import("@/lib/db/services/productCluster.service");
     const { calculateLandedCost } = await import("@/lib/calc/landedCost");
 
-    // 1. Resolve the cluster slug to its best HS code
     const cluster = await getClusterWithHsCodes(clusterSlug);
-    const bestHsMap = cluster?.hsMaps?.[0]; // Ordered by confidence DESC
+    const bestHsMap = cluster?.hsMaps?.[0];
     const bestHs6 = bestHsMap?.hsCode?.hs6;
 
-    // 2. Build default inputs for a R10,000 scenario
     const defaultInputs = {
-        hsCode: bestHs6 || "87032390", // Fallback to a known vehicle code
+        hsCode: bestHs6 || "87032390",
         customsValue: 10000,
         invoiceValue: 10000,
         exchangeRate: 1,
@@ -90,13 +92,25 @@ export default async function ProductOriginPage({ params }: PageProps) {
         quantity: 1,
         incoterm: "FOB" as const,
         usedGoods: false,
+        clusterSlug,
     };
 
-    // 3. Run the calculation server-side
+    // Run SSR calculation
     let ssrResult: CalculationResult | undefined = undefined;
+    let dutyAmount = 0;
+    let vatAmount = 0;
+    let dutyPct = 20;
+
     if (bestHs6) {
         try {
             const rawResult = await calculateLandedCost(defaultInputs, "ssr-pseo");
+
+            // Extract duty and VAT amounts from breakdown
+            const dutyLine = rawResult.breakdown.find(i => i.id === "duty");
+            const vatLine = rawResult.breakdown.find(i => i.id === "vat");
+            dutyAmount = dutyLine?.amount || 0;
+            vatAmount = vatLine?.amount || 0;
+            if (dutyLine?.rateApplied) dutyPct = Number(dutyLine.rateApplied);
 
             ssrResult = {
                 summary: {
@@ -144,22 +158,27 @@ export default async function ProductOriginPage({ params }: PageProps) {
                 risk_flags: [],
                 compliance_risks: rawResult.compliance_risks,
                 preference_decision: rawResult.preference_decision,
+                verdict: rawResult.verdict,
+                grossMarginPercent: rawResult.grossMarginPercent,
+                breakEvenPrice: rawResult.breakEvenPrice,
+                detailedRisks: rawResult.detailedRisks,
             };
         } catch (e) {
             console.error("SSR Calculation Failed for cluster:", clusterSlug, e);
         }
     }
 
-    // ─── SEO Data ───
+    // ─── SEO & Content Data ───
     const productName = clusterSlug.replace(/-/g, " ");
     const originCountryName = getCountryName(originIso);
     const canonicalUrl = `${BASE_URL}/import-duty-vat-landed-cost/${clusterSlug}/from/${originIso.toLowerCase()}/to/south-africa`;
 
-    // Generate FAQs from route context + SSR result
     const faqs = generateFAQs(routeContext, ssrResult);
-
-    // Fetch related pages for interlinking (gracefully returns empty if no data)
     const relatedPages = await getRelatedPages(routeContext);
+
+    // Generate scenario & risk content
+    const scenarios = generateProductScenarios(productName, dutyPct, 10000);
+    const riskBullets = generateProductRiskBullets(productName, originIso.toUpperCase(), dutyPct);
 
     return (
         <PageShell
@@ -185,8 +204,45 @@ export default async function ProductOriginPage({ params }: PageProps) {
                 bestHs6={bestHs6}
             />
 
+            {/* H2: Deal Overview — cost vs selling price summary */}
+            {ssrResult && (
+                <DealOverviewSection
+                    invoiceValue={10000}
+                    dutyAmount={dutyAmount}
+                    vatAmount={vatAmount}
+                    freightCost={1550}
+                    landedCost={ssrResult.summary.total_landed_cost_zar}
+                    productName={productName}
+                    originName={originCountryName}
+                />
+            )}
+
             <StoreHydrator initialResult={ssrResult} initialInputs={defaultInputs} />
             <ResultsPanel />
+
+            {/* New Importer POV Section: Market Benchmark */}
+            <MarketPriceBenchmark />
+
+            {/* New Importer POV Section: Timeline & Cashflow */}
+            <ImportTimeline />
+
+            {/* H2: Example Scenarios — 3 pre-computed deals */}
+            <ExampleScenariosTable
+                scenarios={scenarios}
+                title="Structuring Your Order"
+                subtitle={`See how volume and shipping mode affect profitability when importing ${productName} from ${originCountryName}.`}
+            />
+
+            {/* H2: Risk Bullets — product-specific risks */}
+            <RiskBullets
+                bullets={riskBullets}
+                title="Top Risks to Monitor"
+                subtitle={`Key factors that could impact your ${productName} import from ${originCountryName}.`}
+            />
+
+            {/* New Importer POV Section: Compliance Journey (replaces DocumentChecklistPanel) */}
+            <ComplianceTimeline />
+
             <InternalLinksGrid
                 data={relatedPages}
                 originCountryName={originCountryName}
@@ -194,7 +250,6 @@ export default async function ProductOriginPage({ params }: PageProps) {
             />
 
             <FAQSection faqs={faqs} productName={productName} />
-
         </PageShell>
     );
 }

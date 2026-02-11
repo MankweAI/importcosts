@@ -4,7 +4,7 @@
  */
 
 import "dotenv/config";
-import { PrismaClient, PageType, IndexStatus } from "@prisma/client";
+import { PrismaClient, PageType, IndexStatus, RiskTriggerType, RiskSeverity, RiskCategory } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import * as fs from "fs";
@@ -14,6 +14,69 @@ import * as path from "path";
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
+
+const riskRules = [
+    {
+        triggerType: RiskTriggerType.CLUSTER_SLUG,
+        triggerValue: "solar-panels",
+        severity: RiskSeverity.HIGH,
+        category: RiskCategory.ANTIDUMPING,
+        title: "Potential Anti-Dumping Duties",
+        description: "Solar panels from certain origins may be subject to anti-dumping range duties. Verify exact manufacturer rates.",
+        mitigation: "Check if your supplier has a specific dumping rate or falls under the general rate."
+    },
+    {
+        triggerType: RiskTriggerType.HS_CODE_PREFIX,
+        triggerValue: "85",
+        severity: RiskSeverity.MEDIUM,
+        category: RiskCategory.COMPLIANCE,
+        title: "NRCS LOA Likely Required",
+        description: "Electrical goods under Chapter 85 often require a Letter of Authority (LOA) from NRCS to ensure safety standards.",
+        mitigation: "Request valid NRCS LOA from supplier or apply before shipping."
+    },
+    {
+        triggerType: RiskTriggerType.HS_CODE_PREFIX,
+        triggerValue: "7306",
+        severity: RiskSeverity.CRITICAL,
+        category: RiskCategory.ANTIDUMPING,
+        title: "Steel Products Anti-Dumping",
+        description: "Steel tubes and pipes are under heavy anti-dumping protection.",
+        mitigation: "Confirm if exact HS code is listed in ITAC schedule."
+    },
+    {
+        triggerType: RiskTriggerType.ORIGIN_ISO,
+        triggerValue: "CN",
+        severity: RiskSeverity.LOW,
+        category: RiskCategory.LOGISTICS,
+        title: "General China Import Delay",
+        description: "Sea freight from China can experience congestion-related delays at Durban port.",
+        mitigation: "Plan for 14-day buffer on estimated arrival."
+    }
+];
+
+async function seedRiskRules() {
+    console.log("Seeding risk rules...");
+    for (const rule of riskRules) {
+        // Simple update or create based on title + triggerValue generic uniqueness for seeding
+        // Since we don't have a unique constraint on those, we'll just delete and recreate or just create if not exists
+        // For simplicity in this seed script, let's just create if it doesn't exist matching all fields, or we can use findFirst
+
+        const exists = await prisma.riskRule.findFirst({
+            where: {
+                triggerType: rule.triggerType,
+                triggerValue: rule.triggerValue,
+                title: rule.title
+            }
+        });
+
+        if (!exists) {
+            await prisma.riskRule.create({
+                data: rule
+            });
+        }
+    }
+    console.log(`✓ Seeded ${riskRules.length} risk rules`);
+}
 
 // Country data - 10 origin countries + South Africa (destination)
 const countries = [
@@ -145,6 +208,7 @@ async function main() {
         await seedCountries();
         await seedClusters();
         await seedPages();
+        await seedRiskRules();
 
         console.log("\n✅ Seed completed successfully!");
 

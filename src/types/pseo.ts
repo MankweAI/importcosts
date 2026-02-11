@@ -22,6 +22,9 @@ export interface CalculationInputs {
     importerType: 'VAT_REGISTERED' | 'PRIVATE';
     originCountry: string;
     hsCode: string;
+    clusterSlug?: string;
+    targetSellingPrice?: number;
+    targetMarginPercent?: number;
 }
 
 export interface LineItem {
@@ -64,6 +67,18 @@ export interface CalculationResult {
     risk_flags: RiskFlag[];
     preference_decision?: PreferenceDecision | null;
     compliance_risks?: RiskAssessment | null;
+
+    // Phase 1 Pivot: Decision Metrics
+    verdict?: "GO" | "CAUTION" | "NOGO";
+    grossMarginPercent?: number;
+    breakEvenPrice?: number;
+    detailedRisks?: {
+        title: string;
+        description: string;
+        severity: string;
+        category: string;
+        mitigation?: string | null;
+    }[];
 }
 
 export interface PreferenceDecision {

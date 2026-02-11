@@ -33,6 +33,8 @@ const DEFAULT_INPUTS: CalculationInputs = {
     importerType: 'VAT_REGISTERED',
     originCountry: '',
     hsCode: '',
+    targetSellingPrice: 0,
+    targetMarginPercent: 0,
 };
 
 export const usePSEOCalculatorStore = create<PSEOCalculatorState>((set) => ({

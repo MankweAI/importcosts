@@ -18,6 +18,9 @@ export interface CalcInput {
     incoterm?: "FOB" | "CIF" | "EXW"; // Default CIF
     freightInsuranceCost?: number; // If not CIF, add this
     usedGoods?: boolean;
+    clusterSlug?: string; // Phase 1: Context for Risk Rules
+    targetSellingPrice?: number; // ZAR per unit
+    targetMarginPercent?: number; // e.g. 25 for 25%
 }
 
 export interface CalcLineItem {
@@ -54,6 +57,19 @@ export interface CalcOutput {
     landedCostPerUnit?: number;
 
     // Decision Support
+    // Decision Support (New)
+    verdict?: "GO" | "CAUTION" | "NOGO";
+    grossMarginPercent?: number;
+    breakEvenPrice?: number;
+    detailedRisks?: {
+        title: string;
+        description: string;
+        severity: string; // "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
+        category: string;
+        mitigation?: string | null;
+    }[];
+
+    // Deprecated?
     risks?: string[]; // e.g., "Permit Required", "Anti-dumping duty"
     assumptions?: {
         exchangeRate: number;

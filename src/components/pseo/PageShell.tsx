@@ -31,7 +31,7 @@ export function PageShell({
         : "noindex, follow";
 
     return (
-        <div className={cn("min-h-screen bg-neutral-50 dark:bg-neutral-950", className)}>
+        <div className={cn("min-h-screen bg-white text-neutral-900", className)}>
             {/* 
           Note: In Next.js App Router, Metadata is usually handled in proper generatesMetadata.
           However, for component-level control or if used in Pages router transition, we might keep this structure.

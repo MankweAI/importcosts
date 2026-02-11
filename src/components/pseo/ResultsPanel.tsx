@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePSEOCalculatorStore } from "@/store/usePSEOCalculatorStore";
-import { CircleHelp } from "lucide-react";
-import { DecisionSummaryHeader } from "./DecisionSummaryHeader";
 import { FreightInclusionBanner } from "./FreightInclusionBanner";
 import { RiskFlagsPanel } from "./RiskFlagsPanel";
 import { DocumentChecklistPanel } from "./DocumentChecklistPanel";
@@ -13,6 +11,11 @@ import { SourcingRecommendations } from "./SourcingRecommendations";
 import type { SmartRateResult } from "@/lib/calc/smartRateHunter";
 
 import { ImporterCalculator } from "./ImporterCalculator";
+
+import { ViabilityDashboard } from "@/components/pivot/ViabilityDashboard";
+import { RiskRadar } from "@/components/pivot/RiskRadar";
+import { DealActions } from "@/components/pivot/DealActions";
+import { BrokerHandoffCTA } from "@/components/pivot/BrokerHandoffCTA";
 
 export function ResultsPanel() {
     const { result, status, inputs } = usePSEOCalculatorStore();
@@ -43,38 +46,53 @@ export function ResultsPanel() {
     }, [status, result, inputs]);
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             {/* 0. CALCULATOR — Always visible */}
             <ImporterCalculator />
 
             {/* Loading state */}
             {status === 'calculating' && (
-                <div className="p-8 rounded-xl border-2 border-dashed border-neutral-200 dark:border-neutral-800 text-center animate-pulse">
-                    <p className="text-sm text-neutral-500">Calculating your landed cost...</p>
+                <div className="p-8 rounded-2xl border-2 border-dashed border-neutral-200 text-center animate-pulse">
+                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-neutral-100 mb-3">
+                        <div className="w-5 h-5 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                    <p className="text-sm text-neutral-500 font-medium">Scanning deal viability...</p>
+                    <p className="text-xs text-neutral-400 mt-1">Checking tariffs, risks, and trade agreements</p>
                 </div>
             )}
 
             {/* Results — only when calculation is done */}
             {status === 'success' && result && (
-                <div id="results" className="space-y-8 scroll-mt-20">
+                <div id="results" className="space-y-6 scroll-mt-20">
 
-                    {/* 1. THE NUMBER */}
-                    <DecisionSummaryHeader />
+                    {/* 1. VERDICT — The Hero (Viability Dashboard) */}
+                    <div className="relative">
+                        <div className="absolute top-5 right-5 z-10">
+                            <DealActions />
+                        </div>
+                        <ViabilityDashboard />
+                    </div>
 
-                    {/* 2. Sourcing Insight — Could I do better? */}
+                    {/* 2. RISK RADAR — Top 3 Margin Killers */}
+                    <RiskRadar />
+
+                    {/* 3. BROKER HANDOFF CTA — Lead Gen */}
+                    <BrokerHandoffCTA />
+
+                    {/* 4. SOURCING — Could I do better? */}
                     {rateHunterResult ? (
                         <SourcingRecommendations rateHunterResult={rateHunterResult} />
                     ) : rateHunterLoading ? (
-                        <div className="p-6 rounded-xl border-2 border-dashed border-neutral-200 dark:border-neutral-800 text-center animate-pulse">
+                        <div className="p-6 rounded-2xl border-2 border-dashed border-neutral-200 text-center animate-pulse">
                             <p className="text-sm text-neutral-500">Analyzing sourcing options across 5 global origins...</p>
                         </div>
                     ) : null}
 
-                    {/* 3. Contextual Warning — Freight mismatch? */}
+                    {/* 5. Freight Mismatch Warning */}
                     <FreightInclusionBanner />
 
-                    {/* 4. Two-column: Compliance (left) + Checklist (right) */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* 6. Two-column: Compliance + Checklist */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2 space-y-6">
                             <RiskFlagsPanel />
                             <PreferenceEligibilityPanel />
@@ -84,7 +102,7 @@ export function ResultsPanel() {
                         </div>
                     </div>
 
-                    {/* 5. Fine Print — Assumptions & data freshness */}
+                    {/* 7. Fine Print */}
                     <AssumptionsAndFreshnessBox />
                 </div>
             )}

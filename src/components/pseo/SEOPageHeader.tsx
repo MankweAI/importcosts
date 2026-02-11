@@ -1,10 +1,10 @@
 /**
  * SEOPageHeader.tsx
  *
- * Redesigned hero section for pSEO pages with:
+ * Redesigned hero section with:
  * - Breadcrumb navigation
- * - Keyword-dense H1
- * - Contextual intro paragraph (unique per route)
+ * - Decision-tool H1 ("Business Viability Guide")
+ * - Contextual intro paragraph (decision-language)
  * - Trust signal badges
  */
 
@@ -45,7 +45,7 @@ function Breadcrumbs({
 }) {
     const crumbs: { label: string; href?: string }[] = [
         { label: "Home", href: "/" },
-        { label: "Import Duties", href: "/import-duty-vat-landed-cost" },
+        { label: "Import Viability", href: "/import-duty-vat-landed-cost" },
     ];
 
     if (routeContext.pageType === "product_origin_money_page" && routeContext.clusterSlug) {
@@ -58,21 +58,21 @@ function Breadcrumbs({
 
     return (
         <nav aria-label="Breadcrumb" className="mb-5">
-            <ol className="flex flex-wrap items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+            <ol className="flex flex-wrap items-center gap-1 text-xs text-neutral-400">
                 {crumbs.map((crumb, i) => (
                     <li key={i} className="flex items-center gap-1">
                         {i > 0 && (
-                            <ChevronRight className="h-3 w-3 text-neutral-300 dark:text-neutral-600 flex-shrink-0" />
+                            <ChevronRight className="h-3 w-3 text-neutral-300 flex-shrink-0" />
                         )}
                         {crumb.href ? (
                             <a
                                 href={crumb.href}
-                                className="hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors"
+                                className="hover:text-neutral-700 transition-colors"
                             >
                                 {crumb.label}
                             </a>
                         ) : (
-                            <span className="text-neutral-700 dark:text-neutral-300 font-medium">
+                            <span className="text-neutral-600 font-medium">
                                 {crumb.label}
                             </span>
                         )}
@@ -92,12 +92,12 @@ function buildIntroText(
 ): string {
     if (routeContext.pageType === "product_origin_money_page") {
         const hsNote = bestHs6
-            ? ` Our calculator automatically maps ${productName} to HS code ${bestHs6} for accurate duty rate lookup.`
+            ? ` We auto-match ${productName} to HS code ${bestHs6} for precise duty lookup.`
             : "";
-        return `Calculate the exact customs duty, 15% VAT, and total landed cost for importing ${productName} from ${originCountryName} into South Africa. Our calculator uses the latest SARS tariff schedule and checks applicable preferential trade agreements to ensure you pay the lowest legal rate.${hsNote}`;
+        return `Should you import ${productName} from ${originCountryName}? Enter your numbers below to instantly see your landed cost, gross margin, and a Go/Caution/No-Go verdict. Our engine uses the latest SARS tariff schedule and checks applicable trade agreements to find your lowest legal rate.${hsNote}`;
     }
 
-    return `Get accurate duty rates, VAT, and total landed cost for goods classified under Harmonized System code ${routeContext.hs6} imported from ${originCountryName} to South Africa. This calculator applies the current SARS tariff book rates, checks preferential trade agreement eligibility, and generates your customs documentation checklist.`;
+    return `Is this deal worth it? See the true landed cost, margin impact, and risk profile for goods classified under HS ${routeContext.hs6} from ${originCountryName} to South Africa. Get a data-backed verdict before you commit capital.`;
 }
 
 export function SEOPageHeader({
@@ -111,8 +111,8 @@ export function SEOPageHeader({
     const flag = countryFlag(routeContext.originIso);
 
     const h1 = isClusterPage
-        ? `Import Duty & VAT Calculator: ${productName} from ${originCountryName} to South Africa`
-        : `Import Duty Calculator: HS ${routeContext.hs6} from ${originCountryName} to South Africa`;
+        ? `Import ${productName} from ${originCountryName}: Business Viability Guide`
+        : `HS ${routeContext.hs6} from ${originCountryName}: Import Viability Assessment`;
 
     const introText = buildIntroText(routeContext, productName, originCountryName, bestHs6);
 
@@ -127,13 +127,13 @@ export function SEOPageHeader({
                 originCountryName={originCountryName}
             />
 
-            {/* H1 */}
-            <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-4xl lg:text-[2.75rem] lg:leading-tight">
+            {/* H1 — Decision Language */}
+            <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 md:text-4xl lg:text-[2.75rem] lg:leading-tight">
                 {h1}
             </h1>
 
             {/* Contextual Intro */}
-            <p className="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl leading-relaxed">
+            <p className="text-base text-neutral-600 max-w-3xl leading-relaxed">
                 {introText}
             </p>
 
@@ -141,7 +141,7 @@ export function SEOPageHeader({
             <div className="flex flex-wrap items-center gap-2 pt-1">
                 <Badge
                     variant="secondary"
-                    className="text-xs gap-1.5 py-1 px-2.5 bg-neutral-100 dark:bg-neutral-800"
+                    className="text-xs gap-1.5 py-1 px-2.5 bg-neutral-100"
                 >
                     <span className="text-sm leading-none">{flag}</span>
                     {originCountryName} → South Africa
@@ -159,15 +159,15 @@ export function SEOPageHeader({
 
                 <Badge
                     variant="secondary"
-                    className="text-xs gap-1.5 py-1 px-2.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+                    className="text-xs gap-1.5 py-1 px-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200"
                 >
                     <Shield className="h-3 w-3" />
-                    Based on SARS Tariff Book
+                    SARS Tariff Book
                 </Badge>
 
                 <Badge
                     variant="secondary"
-                    className="text-xs gap-1.5 py-1 px-2.5 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
+                    className="text-xs gap-1.5 py-1 px-2.5 bg-blue-50 text-blue-700 border border-blue-200"
                 >
                     <Calendar className="h-3 w-3" />
                     Updated {monthYear}

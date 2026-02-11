@@ -36,12 +36,28 @@ export async function calculateLandedCost(
     });
 
     // 2. Resolve HS Code Rate
-    // Find the rate in the active version
+    // Normalize HS code to 6 digits (DB stores hs6)
+    const hs6 = input.hsCode.replace(/\D/g, "").substring(0, 6);
+
+    // Try exact hs6, then fallback to shorter prefixes
+    let hsCodeRecord = await prisma.hsCode.findUnique({ where: { hs6 } });
+    if (!hsCodeRecord) {
+        // Try 4-digit heading match (some tariff schedules use chapter-level codes)
+        const candidates = await prisma.hsCode.findMany({
+            where: { hs6: { startsWith: hs6.substring(0, 4) } },
+            take: 1,
+        });
+        if (candidates.length > 0) hsCodeRecord = candidates[0];
+    }
+    if (!hsCodeRecord) {
+        throw new Error(`HS Code ${hs6} (from input ${input.hsCode}) not found in database`);
+    }
+
     let tariffRate = await prisma.tariffRate.findFirst({
         where: {
             tariffVersionId: activeVersion.id,
-            hsCodeId: (await prisma.hsCode.findUnique({ where: { hs6: input.hsCode } }))?.id || "MISSING",
-            dutyType: { not: "ANTI_DUMPING" } // Exclude AD for base rate lookup, handle separately?
+            hsCodeId: hsCodeRecord.id,
+            dutyType: { not: "ANTI_DUMPING" }
         },
         include: { hsCode: true },
     });
@@ -224,39 +240,94 @@ export async function calculateLandedCost(
     }
 
 
-    const risks: string[] = [];
+    // 9. Risk & Viability (Phase 1 Pivot)
+    const { getRiskFlags } = await import("../risk/risk.service");
 
-    // Compliance / Risk Flags
-    if (input.hsCode.startsWith("85")) {
-        risks.push("Electronics: NRCS Letter of Authority (LOA) likely required.");
+    // Risks from Database Rule Engine
+    const riskFlags = await getRiskFlags({
+        hsCode: input.hsCode,
+        clusterSlug: input.clusterSlug,
+        originIso: input.originCountry
+    });
+
+    // ── Margin-Based Verdict Logic (PRD §6 Module A) ──
+    // Compute per-unit cost basis for margin calculation
+    const effectiveCostPerUnit = input.importerType === "VAT_REGISTERED"
+        ? (landedCostExVat || landedCostTotal) / (input.quantity || 1)
+        : landedCostTotal / (input.quantity || 1);
+
+    let grossMarginPercent: number | undefined = undefined;
+    let verdict: "GO" | "CAUTION" | "NOGO" = "GO";
+
+    const hasCritical = riskFlags.some(r => r.severity === "CRITICAL");
+    const hasHigh = riskFlags.some(r => r.severity === "HIGH");
+
+    if (input.targetSellingPrice && input.targetSellingPrice > 0) {
+        // Margin = (Selling - Cost) / Selling * 100
+        grossMarginPercent = ((input.targetSellingPrice - effectiveCostPerUnit) / input.targetSellingPrice) * 100;
+
+        // PRD thresholds:
+        //   Go:      margin ≥ 25% AND no critical risks
+        //   Caution: margin 12-24% OR high risk
+        //   NoGo:    margin < 12% OR critical risk
+        if (grossMarginPercent < 12 || hasCritical) {
+            verdict = "NOGO";
+        } else if (grossMarginPercent < 25 || hasHigh) {
+            verdict = "CAUTION";
+        } else {
+            verdict = "GO";
+        }
+    } else if (input.targetMarginPercent && input.targetMarginPercent > 0) {
+        // Derive selling price from target margin
+        const impliedSellingPrice = effectiveCostPerUnit / (1 - input.targetMarginPercent / 100);
+        grossMarginPercent = input.targetMarginPercent;
+
+        if (grossMarginPercent < 12 || hasCritical) {
+            verdict = "NOGO";
+        } else if (grossMarginPercent < 25 || hasHigh) {
+            verdict = "CAUTION";
+        } else {
+            verdict = "GO";
+        }
+    } else {
+        // No selling price → risk-only verdict (backward compatible)
+        if (hasCritical) {
+            verdict = "NOGO";
+        } else if (hasHigh) {
+            verdict = "CAUTION";
+        }
     }
-    if (input.hsCode.startsWith("64")) {
-        risks.push("Footwear: High risk of stop-and-inspect for anti-dumping checks.");
-    }
-    if (input.hsCode.startsWith("61") || input.hsCode.startsWith("62")) {
-        risks.push("Textiles: Declare 100% correct composition to avoid seizure.");
-    }
-    if (landedCostTotal > 500000) {
-        risks.push("High Value: Customs inspection probability increased.");
-    }
+
+    // Mapping to Output format (string severity)
+    const detailedRisks = riskFlags.map(r => ({
+        title: r.title,
+        description: r.description,
+        severity: r.severity,
+        category: r.category,
+        mitigation: r.mitigation
+    }));
+
+    const legacyRisks = detailedRisks.map(r => `${r.severity}: ${r.title}`);
 
     // Assumptions
     const assumptions = {
-        exchangeRate: input.exchangeRate || 18.50, // indicative
+        exchangeRate: input.exchangeRate || 18.50,
         dutyRateUsed: dutyResult.lineItem.rateApplied || "0%",
         customsValueBase: fobValue,
         customsValueCif: cifValue,
         vatRecoverable: input.importerType === "VAT_REGISTERED"
     };
 
-    // 10. Compliance Risks (Phase 3)
+    // Compliance Risks
     const { assessRisks } = await import("../compliance/complianceEngine");
     const compliance_risks = assessRisks({
         hsCode: input.hsCode,
-        originIso: input.originCountry || "CN", // logic for default?
+        originIso: input.originCountry || "CN",
         usedGoods: input.usedGoods,
         importerType: input.importerType
     });
+
+    const breakEvenPrice = effectiveCostPerUnit;
 
     return {
         landedCostTotal,
@@ -269,7 +340,14 @@ export async function calculateLandedCost(
         confidence: "HIGH",
         auditTrace,
         landedCostPerUnit: input.quantity ? landedCostTotal / input.quantity : undefined,
-        risks,
+
+        // Decision Fields
+        verdict,
+        grossMarginPercent,
+        detailedRisks,
+        breakEvenPrice,
+
+        risks: legacyRisks,
         assumptions,
         preference_decision,
         compliance_risks
