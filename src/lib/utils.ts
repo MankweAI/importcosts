@@ -12,3 +12,11 @@ export function formatCurrency(amount: number) {
         minimumFractionDigits: 2,
     }).format(amount);
 }
+
+export function formatZAR(amount: number): string {
+    return new Intl.NumberFormat("en-ZA", {
+        style: "currency",
+        currency: "ZAR",
+        maximumFractionDigits: 0,
+    }).format(amount);
+}

@@ -6,6 +6,8 @@ import { CalcInput, CalcOutput } from "@/lib/calc/types";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/db/prisma";
 import { checkGate, type Feature } from "@/lib/auth/permissions";
+import { CalculationResult } from "@/types/pseo";
+import { calculateLandedCost } from "@/lib/calc/landedCost";
 
 export async function saveCalculation(input: CalcInput, result: CalcOutput) {
     const { userId } = await auth();
@@ -68,3 +70,58 @@ export async function checkFeatureGate(feature: Feature) {
     return permission;
 }
 
+export async function calculateAction(input: CalcInput) {
+    try {
+        const result = await calculateLandedCost(input, "client-calculation");
+
+        // Map result to CalculationResult (Frontend Type)
+        const mappedResult: CalculationResult = {
+            summary: {
+                total_taxes_zar: result.breakdown
+                    .filter(i => ["duty", "vat", "excise"].includes(i.id))
+                    .reduce((sum, i) => sum + i.amount, 0),
+                total_landed_cost_zar: result.landedCostTotal,
+                landed_cost_per_unit_zar: result.landedCostPerUnit || result.landedCostTotal,
+                origin_country: input.originCountry,
+            },
+            hs: {
+                confidence_score: 0.95,
+                confidence_bucket: "high",
+                alternatives: []
+            },
+            tariff: {
+                version: result.tariffVersionLabel,
+                effective_date: result.tariffVersionEffectiveFrom || new Date().toISOString(),
+                last_updated: new Date().toISOString(),
+            },
+            line_items: result.breakdown.map((item: any) => ({
+                key: item.id,
+                label: item.label,
+                amount_zar: item.amount,
+                audit: {
+                    formula: item.formula || "",
+                    inputs_used: {},
+                    rates: { rate: item.rateApplied },
+                    tariff_version: result.tariffVersionId,
+                },
+            })),
+            doc_checklist: {
+                always: [],
+                common: [],
+                conditional: []
+            },
+            risk_flags: [],
+            compliance_risks: result.compliance_risks,
+            preference_decision: result.preference_decision,
+            verdict: result.verdict,
+            grossMarginPercent: result.grossMarginPercent,
+            breakEvenPrice: result.breakEvenPrice,
+            detailedRisks: result.detailedRisks,
+        };
+
+        return { success: true, result: mappedResult };
+    } catch (error) {
+        console.error("Calculation failed:", error);
+        return { success: false, error: "Calculation failed" };
+    }
+}

@@ -54,7 +54,7 @@ export function ViabilityDashboard() {
     return (
         <Card className={`overflow-hidden border-2 ${config.border} shadow-sm`}>
             {/* Verdict Banner */}
-            <div className={`bg-gradient-to-r ${config.gradient} px-6 py-5`}>
+            <div className={`bg-red-500 px-6 py-5`}>
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                         <div className={`flex items-center justify-center w-12 h-12 rounded-2xl ${config.badge} shadow-lg`}>

@@ -4,7 +4,7 @@
  * Handles canonical URL generation and synonym deduplication.
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.importcosts.co.za";
+export const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.importcosts.co.za";
 
 export type CanonicalInput = {
     slug: string;

@@ -40,7 +40,7 @@ export async function POST(request: Request) {
         };
 
         // Perform Calculation
-        const result = await calculateLandedCost(calcInput, "anonymous");
+        const result = await calculateLandedCost(calcInput, undefined);
 
         // Map CalcOutput to API Response (CalculationResult)
         const response: CalculationResult = {

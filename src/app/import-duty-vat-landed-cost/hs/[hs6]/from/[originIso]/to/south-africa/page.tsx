@@ -1,11 +1,16 @@
+
 import { PageShell } from "@/components/pseo/PageShell";
-import { SEOPageHeader } from "@/components/pseo/SEOPageHeader";
-import { ResultsPanel } from "@/components/pseo/ResultsPanel";
+import { DocumentContainer } from "@/components/pseo/DocumentContainer";
+// Removed SEOPageHeader import
 import { FAQSection } from "@/components/pseo/FAQSection";
 import { InternalLinksGrid } from "@/components/pseo/InternalLinksGrid";
 import { JsonLdSchema } from "@/components/pseo/JsonLdSchema";
 import { DealSummaryCard } from "@/components/pseo/DealSummaryCard";
+import { InvoiceCalculator } from "@/components/pseo/InvoiceCalculator";
 import { VATFormulaExplainer } from "@/components/pseo/VATFormulaExplainer";
+import { SensitivityAnalysis } from "@/components/pseo/SensitivityAnalysis";
+import { MarketPriceBenchmark } from "@/components/pseo/MarketPriceBenchmark";
+import { ImportTimeline } from "@/components/pseo/ImportTimeline";
 import { ComplianceTimeline } from "@/components/pseo/ComplianceTimeline";
 import { ExampleScenariosTable } from "@/components/pseo/ExampleScenariosTable";
 import { RiskBullets } from "@/components/pseo/RiskBullets";
@@ -13,7 +18,6 @@ import { AssumptionsAndFreshnessBox } from "@/components/pseo/AssumptionsAndFres
 import { DisclaimerBanner } from "@/components/pseo/DisclaimerBanner";
 import { StickyActionBar } from "@/components/pseo/StickyActionBar";
 import { RouteContext } from "@/types/pseo";
-import { StoreHydrator } from "@/components/pseo/StoreHydrator";
 import { Metadata } from "next";
 import { generateFAQs, getCountryName } from "@/lib/seo/faqData";
 import { getRelatedPages } from "@/lib/seo/interlinking.service";
@@ -37,8 +41,8 @@ export async function generateMetadata(
     const originName = getCountryName(originIso);
     const canonicalUrl = `${BASE_URL}/import-duty-vat-landed-cost/hs/${hs6}/from/${originIso.toLowerCase()}/to/south-africa`;
 
-    const title = `Import Duty Guide: HS ${hs6} from ${originName} to South Africa | ImportCosts`;
-    const description = `Calculate duties and VAT for HS ${hs6} goods imported from ${originName} into South Africa. Compute the duty rate plus 15% VAT, flag classification risks, and check compliance requirements using the latest SARS tariff schedule.`;
+    const title = `Pro Forma Invoice: HS ${hs6} from ${originName}`;
+    const description = `Generate a free pro forma invoice for importing commodities under HS Code ${hs6} from ${originName} to South Africa. Calculate duties, VAT, and estimated landed cost.`;
 
     return {
         title,
@@ -76,7 +80,7 @@ export default async function HSOriginPage({ params }: PageProps) {
         hsCode: hs6,
         customsValue: 5000,
         invoiceValue: 5000,
-        exchangeRate: 1,
+        exchangeRate: 18.5,
         currency: "ZAR",
         originCountry: originIso.toUpperCase(),
         destinationCountry: "ZA",
@@ -93,7 +97,7 @@ export default async function HSOriginPage({ params }: PageProps) {
     let ssrResult: import("@/types/pseo").CalculationResult | undefined = undefined;
     let dutyAmount = 0;
     let vatAmount = 0;
-    let dutyPct = 20;
+    let dutyPct = 0;
 
     try {
         const rawResult = await calculateLandedCost(defaultInputs, "ssr-pseo");
@@ -123,7 +127,7 @@ export default async function HSOriginPage({ params }: PageProps) {
                 effective_date: rawResult.tariffVersionEffectiveFrom || new Date().toISOString(),
                 last_updated: new Date().toISOString(),
             },
-            line_items: rawResult.breakdown.map(item => ({
+            line_items: rawResult.breakdown.map((item: any) => ({
                 key: item.id,
                 label: item.label,
                 amount_zar: item.amount,
@@ -164,10 +168,8 @@ export default async function HSOriginPage({ params }: PageProps) {
     const originCountryName = getCountryName(originIso);
     const canonicalUrl = `${BASE_URL}/import-duty-vat-landed-cost/hs/${hs6}/from/${originIso.toLowerCase()}/to/south-africa`;
 
-    const faqs = generateFAQs(routeContext, ssrResult);
     const relatedPages = await getRelatedPages(routeContext);
-
-    // Generate scenario & risk content
+    const faqs = generateFAQs(routeContext, ssrResult);
     const scenarios = generateHsScenarios(hs6, dutyPct, 5000);
     const riskBullets = generateHsRiskBullets(hs6, originIso.toUpperCase(), dutyPct);
 
@@ -176,7 +178,7 @@ export default async function HSOriginPage({ params }: PageProps) {
             routeContext={routeContext}
             isIndexable={true}
             canonicalUrl={canonicalUrl}
-            title={`Import Duty Guide: HS ${hs6} from ${originIso}`}
+            title={`Pro Forma Invoice: HS ${hs6} from ${originCountryName}`}
         >
             <JsonLdSchema
                 routeContext={routeContext}
@@ -187,75 +189,109 @@ export default async function HSOriginPage({ params }: PageProps) {
                 originCountryName={originCountryName}
             />
 
-            <SEOPageHeader
-                routeContext={routeContext}
-                productName={productName}
-                originCountryName={originCountryName}
-                tariffVersionLabel={ssrResult?.tariff?.version}
-                bestHs6={hs6}
-            />
+            {/* ── THE INVOICE UI ───────────────────────────────────────────── */}
+            <DocumentContainer className="mb-20">
+                {/* 1. HEADER (Static Invoice Meta) */}
+                {ssrResult && (
+                    <DealSummaryCard
+                        invoiceValue={defaultInputs.invoiceValue}
+                        dutyAmount={0}
+                        vatAmount={0}
+                        freightCost={defaultInputs.freightCost}
+                        landedCost={ssrResult.summary.total_landed_cost_zar}
+                        landedCostPerUnit={ssrResult.summary.landed_cost_per_unit_zar}
+                        units={defaultInputs.quantity}
+                        verdict={ssrResult.verdict}
+                        grossMarginPct={ssrResult.grossMarginPercent}
+                        breakEvenPrice={ssrResult.breakEvenPrice}
+                        riskScore={50}
+                        productName={productName}
+                        originName={originCountryName}
+                    />
+                )}
 
-            {/* GAP-01: Deal Summary Card */}
-            {ssrResult && (
-                <DealSummaryCard
-                    invoiceValue={5000}
-                    dutyAmount={dutyAmount}
-                    vatAmount={vatAmount}
-                    freightCost={775}
-                    landedCost={ssrResult.summary.total_landed_cost_zar}
-                    landedCostPerUnit={ssrResult.summary.landed_cost_per_unit_zar}
-                    verdict={ssrResult.verdict}
-                    grossMarginPct={ssrResult.grossMarginPercent}
-                    breakEvenPrice={ssrResult.breakEvenPrice}
-                    productName={productName}
-                    originName={originCountryName}
+                {/* 2. BODY (Editable Line Items) */}
+                <InvoiceCalculator
+                    initialResult={ssrResult}
+                    initialInputs={defaultInputs}
                 />
-            )}
 
-            <StoreHydrator initialResult={ssrResult} initialInputs={defaultInputs} />
-            <ResultsPanel />
+                {/* 3. ATTACHMENTS (Deep Content / The "Curtain") */}
+                <div className="border-t-4 border-double border-neutral-200 pt-12 px-8 pb-12 bg-neutral-50/50">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-neutral-400 mb-8 flex items-center gap-2">
+                        <span>Attached Reports & Analysis</span>
+                        <div className="h-px bg-neutral-200 flex-1"></div>
+                    </h3>
 
-            {/* GAP-06: VAT Formula Explainer */}
-            <VATFormulaExplainer
-                customsValue={5000}
-                dutyAmount={dutyAmount}
-                vatAmount={vatAmount}
-            />
+                    {/* Attachment A: Risks */}
+                    <section className="mb-12">
+                        <h4 className="font-bold text-neutral-900 mb-4">A. Compliance & Risk Assessment</h4>
+                        <RiskBullets
+                            bullets={riskBullets}
+                            title="Classification & Compliance Risks"
+                            subtitle={`Key risks when importing HS ${hs6} goods from ${originCountryName}.`}
+                        />
+                    </section>
 
-            {/* H2: Duty Scenarios — vary value and compare codes */}
-            <ExampleScenariosTable
-                scenarios={scenarios}
-                title="Duty & VAT Scenarios"
-                subtitle={`See how invoice value and code classification affect total duties for HS ${hs6} imports from ${originCountryName}.`}
-            />
+                    {/* Attachment B: Sensitivity */}
+                    <section className="mb-12">
+                        <h4 className="font-bold text-neutral-900 mb-4">B. Sensitivity Analysis (FX Volatility)</h4>
+                        {ssrResult && (
+                            <SensitivityAnalysis
+                                landedCost={ssrResult.summary.total_landed_cost_zar}
+                                customsValue={5000}
+                                dutyRate={dutyPct}
+                                dutyAmount={dutyAmount}
+                                exchangeRate={defaultInputs.exchangeRate}
+                                invoiceValue={5000}
+                            />
+                        )}
+                    </section>
 
-            {/* H2: Classification Risks */}
-            <RiskBullets
-                bullets={riskBullets}
-                title="Classification & Compliance Risks"
-                subtitle={`Key risks when importing HS ${hs6} goods from ${originCountryName}.`}
-            />
+                    {/* Attachment C: Scenarios */}
+                    <section className="mb-12">
+                        <h4 className="font-bold text-neutral-900 mb-4">C. Optimization Scenarios</h4>
+                        <ExampleScenariosTable
+                            scenarios={scenarios}
+                        />
+                    </section>
 
-            {/* Compliance Journey */}
-            <ComplianceTimeline />
+                    {/* Attachment D: VAT Formula */}
+                    <section className="mb-12">
+                        <h4 className="font-bold text-neutral-900 mb-4">D. VAT Calculation Formula</h4>
+                        <VATFormulaExplainer
+                            customsValue={5000}
+                            dutyAmount={dutyAmount}
+                            vatAmount={vatAmount}
+                        />
+                    </section>
+                </div>
+            </DocumentContainer>
 
-            {/* GAP-08: Data Freshness */}
-            <AssumptionsAndFreshnessBox />
+            {/* ── FOOTER CONTENT (Below the Invoice) ────────────────────── */}
+            <div className="max-w-4xl mx-auto px-4 mb-20 space-y-20">
+                <section>
+                    <h2 className="text-2xl font-bold mb-8">Importer Playbook</h2>
+                    <ComplianceTimeline />
+                </section>
 
-            <FAQSection faqs={faqs} productName={productName} />
-            <InternalLinksGrid
-                data={relatedPages}
-                originCountryName={originCountryName}
-                productName={productName}
-            />
+                <section>
+                    <h2 className="text-2xl font-bold mb-8">Frequently Asked Questions</h2>
+                    <FAQSection faqs={faqs} productName={productName} />
+                </section>
 
-            {/* GAP-08: Legal Disclaimer */}
-            <DisclaimerBanner
-                tariffVersion={ssrResult?.tariff?.version}
-                lastUpdated={ssrResult?.tariff?.last_updated}
-            />
+                <InternalLinksGrid
+                    data={relatedPages}
+                    originCountryName={originCountryName}
+                    productName={productName}
+                />
 
-            {/* GAP-03: Save / Export */}
+                <DisclaimerBanner
+                    tariffVersion={ssrResult?.tariff?.version}
+                    lastUpdated={ssrResult?.tariff?.last_updated}
+                />
+            </div>
+
             <StickyActionBar />
         </PageShell>
     );
