@@ -5,18 +5,15 @@ import { DocumentContainer } from "@/components/pseo/DocumentContainer";
 import { FAQSection } from "@/components/pseo/FAQSection";
 import { InternalLinksGrid } from "@/components/pseo/InternalLinksGrid";
 import { JsonLdSchema } from "@/components/pseo/JsonLdSchema";
-import { DealSummaryCard } from "@/components/pseo/DealSummaryCard";
+
 import { InvoiceCalculator } from "@/components/pseo/InvoiceCalculator";
-import { VATFormulaExplainer } from "@/components/pseo/VATFormulaExplainer";
-import { SensitivityAnalysis } from "@/components/pseo/SensitivityAnalysis";
-import { MarketPriceBenchmark } from "@/components/pseo/MarketPriceBenchmark";
+import { StickyActionBar } from "@/components/pseo/StickyActionBar";
 import { ImportTimeline } from "@/components/pseo/ImportTimeline";
 import { ComplianceTimeline } from "@/components/pseo/ComplianceTimeline";
-import { ExampleScenariosTable } from "@/components/pseo/ExampleScenariosTable";
-import { RiskBullets } from "@/components/pseo/RiskBullets";
-import { AssumptionsAndFreshnessBox } from "@/components/pseo/AssumptionsAndFreshnessBox";
-import { DisclaimerBanner } from "@/components/pseo/DisclaimerBanner";
-import { StickyActionBar } from "@/components/pseo/StickyActionBar";
+import { AssumptionsDrawer } from "@/components/pseo/AssumptionsDrawer";
+import { CashTimelinePlanner } from "@/components/pseo/CashTimelinePlanner";
+import { ScenarioStrip } from "@/components/pseo/ScenarioStrip";
+import { RiskRadarPanel, ImportReadinessChecklist } from "@/components/pseo/Decisions";
 import { RouteContext } from "@/types/pseo";
 import { Metadata } from "next";
 import { generateFAQs, getCountryName } from "@/lib/seo/faqData";
@@ -191,24 +188,7 @@ export default async function HSOriginPage({ params }: PageProps) {
 
             {/* ── THE INVOICE UI ───────────────────────────────────────────── */}
             <DocumentContainer className="mb-20">
-                {/* 1. HEADER (Static Invoice Meta) */}
-                {ssrResult && (
-                    <DealSummaryCard
-                        invoiceValue={defaultInputs.invoiceValue}
-                        dutyAmount={0}
-                        vatAmount={0}
-                        freightCost={defaultInputs.freightCost}
-                        landedCost={ssrResult.summary.total_landed_cost_zar}
-                        landedCostPerUnit={ssrResult.summary.landed_cost_per_unit_zar}
-                        units={defaultInputs.quantity}
-                        verdict={ssrResult.verdict}
-                        grossMarginPct={ssrResult.grossMarginPercent}
-                        breakEvenPrice={ssrResult.breakEvenPrice}
-                        riskScore={50}
-                        productName={productName}
-                        originName={originCountryName}
-                    />
-                )}
+
 
                 {/* 2. BODY (Editable Line Items) */}
                 <InvoiceCalculator
@@ -223,48 +203,66 @@ export default async function HSOriginPage({ params }: PageProps) {
                         <div className="h-px bg-neutral-200 flex-1"></div>
                     </h3>
 
-                    {/* Attachment A: Risks */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">A. Compliance & Risk Assessment</h4>
-                        <RiskBullets
-                            bullets={riskBullets}
-                            title="Classification & Compliance Risks"
-                            subtitle={`Key risks when importing HS ${hs6} goods from ${originCountryName}.`}
-                        />
-                    </section>
-
-                    {/* Attachment B: Sensitivity */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">B. Sensitivity Analysis (FX Volatility)</h4>
-                        {ssrResult && (
-                            <SensitivityAnalysis
-                                landedCost={ssrResult.summary.total_landed_cost_zar}
-                                customsValue={5000}
-                                dutyRate={dutyPct}
-                                dutyAmount={dutyAmount}
-                                exchangeRate={defaultInputs.exchangeRate}
-                                invoiceValue={5000}
+                    {/* NEW: Component Grid for Decisions */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                        {/* A. Risk Radar */}
+                        <div className="space-y-4">
+                            <RiskRadarPanel
+                                risks={riskBullets.map(r => ({
+                                    title: r.title,
+                                    description: r.detail,
+                                    severity: r.icon === "compliance" || r.icon === "dumping" ? "high" : "medium",
+                                }))}
                             />
-                        )}
-                    </section>
+                        </div>
 
-                    {/* Attachment C: Scenarios */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">C. Optimization Scenarios</h4>
-                        <ExampleScenariosTable
-                            scenarios={scenarios}
-                        />
-                    </section>
+                        {/* B. Checklist */}
+                        <div className="space-y-4">
+                            <ImportReadinessChecklist
+                                items={[
+                                    { label: "Commercial Invoice", owner: "Supplier", when: "Pre-shipment" },
+                                    { label: "Bill of Lading", owner: "Supplier", when: "Pre-shipment" },
+                                    { label: "SAD500 Declaration", owner: "Agent", when: "Clearance" },
+                                    { label: "Import Permit (if applicable)", owner: "Importer", when: "Pre-shipment" },
+                                ]}
+                            />
+                        </div>
+                    </div>
 
-                    {/* Attachment D: VAT Formula */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">D. VAT Calculation Formula</h4>
-                        <VATFormulaExplainer
-                            customsValue={5000}
+                    {/* C. Cash Flow (Full Width) */}
+                    <div className="mb-12">
+                        <CashTimelinePlanner
+                            totalLandedCost={ssrResult?.summary.total_landed_cost_zar || 0}
                             dutyAmount={dutyAmount}
                             vatAmount={vatAmount}
+                            freightAmount={defaultInputs.freightCost}
                         />
-                    </section>
+                    </div>
+
+                    {/* D. Scenarios (Strip) */}
+                    <div className="mb-12">
+                        <h4 className="font-bold text-neutral-900 mb-4">Optimization Scenarios</h4>
+                        <ScenarioStrip
+                            scenarios={scenarios.map((s, idx) => ({
+                                label: s.label,
+                                mode: s.freightMode === "Sea" ? "SEA" : "AIR",
+                                incoterm: "FOB",
+                                quantity: s.quantity,
+                                totalLandedCost: s.landedCostPerUnit,
+                                perUnit: s.landedCostPerUnit,
+                                isBaseline: idx === 0
+                            }))}
+                        />
+                    </div>
+
+                    {/* E. Assumptions Drawer (Bottom) */}
+                    <AssumptionsDrawer
+                        tariffVersion={ssrResult?.tariff?.version}
+                        lastUpdated={ssrResult?.tariff?.last_updated}
+                        exchangeRate={defaultInputs.exchangeRate}
+                        dutyRateUsed={`${dutyPct}%`}
+                    />
+
                 </div>
             </DocumentContainer>
 
@@ -286,10 +284,7 @@ export default async function HSOriginPage({ params }: PageProps) {
                     productName={productName}
                 />
 
-                <DisclaimerBanner
-                    tariffVersion={ssrResult?.tariff?.version}
-                    lastUpdated={ssrResult?.tariff?.last_updated}
-                />
+
             </div>
 
             <StickyActionBar />

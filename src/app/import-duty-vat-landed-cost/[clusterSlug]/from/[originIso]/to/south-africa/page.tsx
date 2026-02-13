@@ -1,274 +1,328 @@
-
-import { PageShell } from "@/components/pseo/PageShell"; // Keeping PageShell for SEO structure, but content wrapped in DocumentContainer
-import { DocumentContainer } from "@/components/pseo/DocumentContainer";
-// SEOPageHeader removed
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { PageShell } from "@/components/pseo/PageShell";
 import { FAQSection } from "@/components/pseo/FAQSection";
-import { InternalLinksGrid } from "@/components/pseo/InternalLinksGrid";
 import { JsonLdSchema } from "@/components/pseo/JsonLdSchema";
-import { DealSummaryCard } from "@/components/pseo/DealSummaryCard";
 import { InvoiceCalculator } from "@/components/pseo/InvoiceCalculator";
-import { VATFormulaExplainer } from "@/components/pseo/VATFormulaExplainer";
 import { SensitivityAnalysis } from "@/components/pseo/SensitivityAnalysis";
 import { MarketPriceBenchmark } from "@/components/pseo/MarketPriceBenchmark";
 import { ImportTimeline } from "@/components/pseo/ImportTimeline";
-import { ComplianceTimeline } from "@/components/pseo/ComplianceTimeline";
 import { ExampleScenariosTable } from "@/components/pseo/ExampleScenariosTable";
 import { RiskBullets } from "@/components/pseo/RiskBullets";
-import { AssumptionsAndFreshnessBox } from "@/components/pseo/AssumptionsAndFreshnessBox";
 import { DisclaimerBanner } from "@/components/pseo/DisclaimerBanner";
 import { StickyActionBar } from "@/components/pseo/StickyActionBar";
 import { RouteContext, CalculationResult } from "@/types/pseo";
-import { Metadata } from "next";
 import { generateFAQs, getCountryName } from "@/lib/seo/faqData";
-import { getRelatedPages } from "@/lib/seo/interlinking.service";
 import { generateProductScenarios } from "@/lib/seo/scenarioData";
-import { generateProductRiskBullets } from "@/lib/seo/riskBulletData";
 import { BASE_URL } from "@/lib/seo/canonical";
 import { calculateLandedCost } from "@/lib/calc/landedCost";
+import { CalcInput } from "@/lib/calc/types";
 import { getClusterWithHsCodes } from "@/lib/db/services/productCluster.service";
+import { ScenarioSelector } from "@/components/pivot/ScenarioSelector";
+import { SOLAR_PANEL_GOLDEN_DATA } from "@/data/golden-scenarios/solar-panels";
 
 interface PageProps {
-    params: Promise<RouteContext>;
+  params: Promise<RouteContext>;
 }
 
-// 1. Generate SEO Metadata
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { clusterSlug, originIso } = await params;
-    if (!clusterSlug) return { title: "Error" }; // Should never happen in this route
-    const productName = clusterSlug.replace(/-/g, " ");
-    const originCountryName = getCountryName(originIso);
+function isChinaInput(value: string): boolean {
+  const normalized = value.toLowerCase();
+  return normalized === "china" || normalized === "cn";
+}
 
+function normalizeOrigin(value: string): "CN" {
+  if (!isChinaInput(value)) {
+    return "CN";
+  }
+  return "CN";
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { clusterSlug, originIso } = await params;
+  if (clusterSlug !== "solar-panels" || !isChinaInput(originIso)) {
     return {
-        title: `Import Duty on ${productName} (2026): Calculator & Invoice`,
-        description: `How much does it cost to import ${productName} from ${originCountryName} to South Africa? Generate a free pro forma invoice with customs duties and VAT.`,
-        alternates: {
-            canonical: `${BASE_URL}/import-duty-vat-landed-cost/${clusterSlug}/from/${originIso.toLowerCase()}/to/south-africa`,
-        },
+      title: "ImportCosts MVP",
+      robots: "noindex, nofollow",
     };
+  }
+
+  const canonical = `${BASE_URL}/import-duty-vat-landed-cost/solar-panels/from/china/to/south-africa`;
+  return {
+    title:
+      "Import Solar Panels from China: Profitability & Duty Calculator (2026)",
+    description:
+      "Calculate landed cost, margin, duties, VAT, and import risks for solar panels from China to South Africa.",
+    alternates: { canonical },
+  };
 }
 
 export default async function Page({ params }: PageProps) {
-    const routeContext = await params;
-    const { clusterSlug, originIso } = routeContext;
-    if (!clusterSlug) return null; // Should never happen
-    const originCountryName = getCountryName(originIso);
+  const routeContext = await params;
+  const { clusterSlug, originIso } = routeContext;
 
-    // ─── Data Fetching ───
-    const cluster = await getClusterWithHsCodes(clusterSlug);
-    // Moved getRelatedPages call down to use routeContext
-    const bestHsMap = cluster?.hsMaps?.[0];
-    const bestHs6 = bestHsMap?.hsCode?.hs6;
+  if (clusterSlug !== "solar-panels" || !isChinaInput(originIso)) {
+    notFound();
+  }
 
-    const defaultInputs = {
-        hsCode: bestHs6 || "87032390",
-        customsValue: 10000,
-        invoiceValue: 10000,
-        exchangeRate: 18.5, // Good default
-        currency: "ZAR",
-        originCountry: originIso.toUpperCase(),
-        destinationCountry: "ZA",
-        importerType: "VAT_REGISTERED" as const,
-        freightCost: 1500,
-        insuranceCost: 50,
-        freightInsuranceCost: 1550,
-        otherCharges: 0,
-        quantity: 1,
-        incoterm: "FOB" as const, // Standard for imports
-        usedGoods: false,
-        clusterSlug,
+  const normalizedOrigin = normalizeOrigin(originIso);
+  const originCountryName = getCountryName(normalizedOrigin);
+
+  const cluster = await getClusterWithHsCodes(clusterSlug);
+  const bestHsMap = cluster?.hsMaps?.[0];
+  const bestHs6 = bestHsMap?.hsCode?.hs6;
+
+  const defaultInputs = {
+    hsCode: SOLAR_PANEL_GOLDEN_DATA.hsCode || bestHs6 || "854143",
+    customsValue: 120000,
+    invoiceValue: 120000,
+    exchangeRate: 18.5,
+    currency: "ZAR",
+    originCountry: normalizedOrigin,
+    destinationCountry: "ZA",
+    importerType: "VAT_REGISTERED" as const,
+    freightCost: 15000,
+    insuranceCost: 1200,
+    freightInsuranceCost: 16200,
+    otherCharges: 2500,
+    quantity: 100,
+    incoterm: "FOB" as const,
+    usedGoods: false,
+    clusterSlug,
+    targetSellingPrice: 220000,
+  };
+
+  let ssrResult: CalculationResult | undefined = undefined;
+  let dutyPct = 0;
+
+  try {
+    const seededInputs = {
+      ...defaultInputs,
+      ...SOLAR_PANEL_GOLDEN_DATA.scenarios[1].inputs,
+      originCountry: normalizedOrigin,
     };
 
-    // Run SSR calculation
-    let ssrResult: CalculationResult | undefined = undefined;
-    let dutyPct = 0;
+    const incoterm: "FOB" | "CIF" | "EXW" =
+      seededInputs.incoterm === "CIF" || seededInputs.incoterm === "EXW"
+        ? seededInputs.incoterm
+        : "FOB";
 
-    if (bestHs6) {
-        try {
-            const rawResult = await calculateLandedCost(defaultInputs, "ssr-pseo");
-
-            // Extract duty %
-            const dutyLine = rawResult.breakdown.find(i => i.id === "duty");
-            if (dutyLine?.rateApplied) dutyPct = Number(dutyLine.rateApplied);
-
-            ssrResult = {
-                summary: {
-                    total_taxes_zar: rawResult.breakdown
-                        .filter(i => ["duty", "vat", "excise"].includes(i.id))
-                        .reduce((sum, i) => sum + i.amount, 0),
-                    total_landed_cost_zar: rawResult.landedCostTotal,
-                    landed_cost_per_unit_zar: rawResult.landedCostPerUnit || rawResult.landedCostTotal,
-                    origin_country: originIso.toUpperCase(),
-                },
-                hs: {
-                    confidence_score: 0.95,
-                    confidence_bucket: "high",
-                    alternatives: []
-                },
-                tariff: {
-                    version: rawResult.tariffVersionLabel,
-                    effective_date: rawResult.tariffVersionEffectiveFrom || new Date().toISOString(),
-                    last_updated: new Date().toISOString(),
-                },
-                line_items: rawResult.breakdown.map((item: any) => ({
-                    key: item.id,
-                    label: item.label,
-                    amount_zar: item.amount,
-                    audit: {
-                        formula: item.formula || "",
-                        inputs_used: {},
-                        rates: { rate: item.rateApplied },
-                        tariff_version: rawResult.tariffVersionId,
-                    },
-                })),
-                doc_checklist: {
-                    always: [],
-                    common: [],
-                    conditional: []
-                },
-                risk_flags: [],
-                compliance_risks: rawResult.compliance_risks,
-                preference_decision: rawResult.preference_decision,
-                verdict: rawResult.verdict,
-                grossMarginPercent: rawResult.grossMarginPercent,
-                breakEvenPrice: rawResult.breakEvenPrice,
-                detailedRisks: rawResult.detailedRisks,
-            };
-        } catch (e) {
-            console.error("SSR Calculation Failed for cluster:", clusterSlug, e);
-        }
-    }
-
-    const productName = clusterSlug.replace(/-/g, " ");
-    const canonicalUrl = `${BASE_URL}/import-duty-vat-landed-cost/${clusterSlug}/from/${originIso.toLowerCase()}/to/south-africa`;
-
-    const fullRouteContext: RouteContext = {
-        clusterSlug: clusterSlug,
-        originIso: originIso,
-        destinationIso: "ZA",
-        pageType: "product_origin_money_page",
-        hs6: null
+    const calcInputs: CalcInput = {
+      hsCode: seededInputs.hsCode,
+      customsValue: seededInputs.customsValue,
+      invoiceValue: seededInputs.invoiceValue,
+      currency: seededInputs.currency,
+      exchangeRate: seededInputs.exchangeRate,
+      originCountry: normalizedOrigin,
+      destinationCountry: "ZA",
+      importerType: "VAT_REGISTERED",
+      freightCost: seededInputs.freightCost,
+      insuranceCost: seededInputs.insuranceCost,
+      otherCharges: seededInputs.otherCharges,
+      quantity: seededInputs.quantity,
+      incoterm,
+      freightInsuranceCost: seededInputs.freightInsuranceCost,
+      usedGoods: false,
+      clusterSlug,
+      targetSellingPrice: seededInputs.targetSellingPrice,
+      targetMarginPercent: seededInputs.targetMarginPercent,
     };
 
-    // Correctly call getRelatedPages with the context object
-    const relatedPages = await getRelatedPages(fullRouteContext);
+    const rawResult = await calculateLandedCost(calcInputs, "ssr-pseo");
+    const dutyLine = rawResult.breakdown.find((i) => i.id === "duty");
+    if (dutyLine?.rateApplied) dutyPct = Number(dutyLine.rateApplied);
 
-    const faqs = generateFAQs(fullRouteContext, ssrResult);
-    const scenarios = generateProductScenarios(productName, dutyPct, 10000);
-    const riskBullets = generateProductRiskBullets(productName, originIso.toUpperCase(), dutyPct);
+    ssrResult = {
+      summary: {
+        total_taxes_zar: rawResult.breakdown
+          .filter((i) => ["duty", "vat", "excise"].includes(i.id))
+          .reduce((sum, i) => sum + i.amount, 0),
+        total_landed_cost_zar: rawResult.landedCostTotal,
+        landed_cost_per_unit_zar:
+          rawResult.landedCostPerUnit || rawResult.landedCostTotal,
+        origin_country: normalizedOrigin,
+      },
+      hs: {
+        confidence_score: 1.0,
+        confidence_bucket: "high",
+        alternatives: [],
+      },
+      tariff: {
+        version: rawResult.tariffVersionLabel,
+        effective_date:
+          rawResult.tariffVersionEffectiveFrom || new Date().toISOString(),
+        last_updated: new Date().toISOString(),
+      },
+      line_items: rawResult.breakdown.map((item) => ({
+        key: item.id,
+        label: item.label,
+        amount_zar: item.amount,
+        audit: {
+          formula: item.formula || "",
+          inputs_used: {},
+          rates: { rate: item.rateApplied },
+          tariff_version: rawResult.tariffVersionId,
+        },
+      })),
+      doc_checklist: SOLAR_PANEL_GOLDEN_DATA.checklist,
+      risk_flags: SOLAR_PANEL_GOLDEN_DATA.risks,
+      compliance_risks: rawResult.compliance_risks,
+      preference_decision: rawResult.preference_decision,
+      verdict: rawResult.verdict,
+      grossMarginPercent: rawResult.grossMarginPercent,
+      breakEvenPrice: rawResult.breakEvenPrice,
+      detailedRisks: rawResult.detailedRisks,
+    };
+  } catch (error) {
+    console.error("SSR Calculation Failed for solar panels route:", error);
+  }
 
-    return (
-        <PageShell
-            routeContext={routeContext}
-            isIndexable={true}
-            canonicalUrl={canonicalUrl}
-            title={`Pro Forma Invoice: ${productName} from ${originCountryName}`}
-        >
-            <JsonLdSchema
-                routeContext={routeContext}
-                result={ssrResult}
-                faqs={faqs}
-                canonicalUrl={canonicalUrl}
-                productName={productName}
-                originCountryName={originCountryName}
-            />
+  const canonicalUrl = `${BASE_URL}/import-duty-vat-landed-cost/solar-panels/from/china/to/south-africa`;
+  const fullRouteContext: RouteContext = {
+    clusterSlug,
+    originIso: normalizedOrigin,
+    destinationIso: "ZA",
+    pageType: "product_origin_money_page",
+    hs6: null,
+  };
 
-            {/* ── THE INVOICE UI ───────────────────────────────────────────── */}
-            <DocumentContainer className="mb-20">
-                {/* 1. HEADER (Static Invoice Meta) */}
-                {ssrResult && (
-                    <DealSummaryCard
-                        invoiceValue={defaultInputs.invoiceValue}
-                        dutyAmount={0} // Handled by InvoiceCalculator
-                        vatAmount={0}  // Handled by InvoiceCalculator
-                        freightCost={defaultInputs.freightCost}
-                        landedCost={ssrResult.summary.total_landed_cost_zar}
-                        landedCostPerUnit={ssrResult.summary.landed_cost_per_unit_zar}
-                        units={defaultInputs.quantity}
-                        verdict={ssrResult.verdict}
-                        grossMarginPct={ssrResult.grossMarginPercent}
-                        breakEvenPrice={ssrResult.breakEvenPrice}
-                        riskScore={50} // Placeholder
-                        productName={productName}
-                        originName={originCountryName}
-                    />
-                )}
+  const faqs = generateFAQs(fullRouteContext, ssrResult);
+  const scenarios = generateProductScenarios("solar panels", dutyPct, 10000);
+  const riskBullets = SOLAR_PANEL_GOLDEN_DATA.risks.map((risk) => ({
+    icon: "compliance" as const,
+    title: risk.title,
+    detail: risk.summary,
+  }));
 
-                {/* 2. BODY (Editable Line Items) */}
-                <InvoiceCalculator
-                    initialResult={ssrResult}
-                    initialInputs={defaultInputs}
-                />
+  const hydrationInputs = {
+    ...defaultInputs,
+    ...SOLAR_PANEL_GOLDEN_DATA.scenarios[1].inputs,
+    originCountry: normalizedOrigin,
+  };
 
-                {/* 3. ATTACHMENTS (Deep Content / The "Curtain") */}
-                <div className="border-t-4 border-double border-neutral-200 pt-12 px-8 pb-12 bg-neutral-50/50">
-                    <h3 className="text-sm font-bold uppercase tracking-widest text-neutral-400 mb-8 flex items-center gap-2">
-                        <span>Attached Reports & Analysis</span>
-                        <div className="h-px bg-neutral-200 flex-1"></div>
-                    </h3>
+  return (
+    <PageShell
+      routeContext={fullRouteContext}
+      isIndexable={true}
+      canonicalUrl={canonicalUrl}
+      title="Profitability Model: solar panels"
+      className="space-y-6 pb-24"
+    >
+      <JsonLdSchema
+        routeContext={fullRouteContext}
+        result={ssrResult}
+        faqs={faqs}
+        canonicalUrl={canonicalUrl}
+        productName="solar panels"
+        originCountryName={originCountryName}
+      />
 
-                    {/* Attachment A: Risks */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">A. Compliance & Risk Assessment</h4>
-                        <RiskBullets
-                            bullets={riskBullets}
-                            title="Classification & Compliance Risks"
-                            subtitle={`Key risks when importing ${productName} from ${originCountryName}.`}
-                        />
-                    </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <div className="border-b border-slate-100 pb-5">
+          <div className="mb-3 inline-flex rounded-full bg-sky-600 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+            Profitability Decision Workspace
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+            Import solar panels from China
+          </h1>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+            This MVP route gives a clean profitability verdict with
+            tariff-backed assumptions. Start with scenario presets, tune the
+            deal, and review risk and sensitivity blocks below.
+          </p>
+        </div>
 
-                    {/* Attachment B: Sensitivity */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">B. Sensitivity Analysis (FX Volatility)</h4>
-                        {ssrResult && (
-                            <SensitivityAnalysis
-                                landedCost={ssrResult.summary.total_landed_cost_zar}
-                                customsValue={defaultInputs.customsValue}
-                                dutyRate={dutyPct}
-                                dutyAmount={ssrResult.line_items.find(i => i.key === "duty")?.amount_zar || 0}
-                                exchangeRate={defaultInputs.exchangeRate}
-                                invoiceValue={defaultInputs.invoiceValue}
-                            />
-                        )}
-                    </section>
+        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              Trade lane
+            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-900">
+              China to South Africa
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              Tariff version
+            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-900">
+              {ssrResult?.tariff.version || "Live snapshot"}
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              HS confidence
+            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-900">
+              {ssrResult?.hs.confidence_bucket || "high"}
+            </p>
+          </div>
+        </div>
+      </section>
 
-                    {/* Attachment C: Market Benchmark - "Market Research Report" */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">C. Market Price Benchmark</h4>
-                        <MarketPriceBenchmark />
-                    </section>
+      <ScenarioSelector scenarios={SOLAR_PANEL_GOLDEN_DATA.scenarios} />
 
-                    {/* Attachment D: Scenarios */}
-                    <section className="mb-12">
-                        <h4 className="font-bold text-neutral-900 mb-4">D. Optimization Scenarios</h4>
-                        <ExampleScenariosTable
-                            scenarios={scenarios}
-                        />
-                    </section>
-                </div>
-            </DocumentContainer>
+      <InvoiceCalculator
+        initialResult={ssrResult}
+        initialInputs={hydrationInputs}
+      />
 
-            {/* ── FOOTER CONTENT (Below the Invoice) ────────────────────── */}
-            <div className="max-w-4xl mx-auto px-4 mb-20 space-y-20">
-                <section>
-                    <h2 className="text-2xl font-bold mb-8">Importer Playbook</h2>
-                    <ImportTimeline />
-                </section>
+      <section className="space-y-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <div className="border-b border-slate-100 pb-4">
+          <h2 className="text-xl font-semibold text-slate-900">
+            Decision support blocks
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Review downside exposure, market competitiveness, and comparative
+            scenarios.
+          </p>
+        </div>
 
-                <section>
-                    <h2 className="text-2xl font-bold mb-8">Frequently Asked Questions</h2>
-                    <FAQSection faqs={faqs} productName={productName} />
-                </section>
+        <RiskBullets
+          bullets={riskBullets}
+          title="Top compliance and execution risks"
+          subtitle="Priority issues to resolve before confirming supplier terms."
+        />
 
-                <InternalLinksGrid
-                    data={relatedPages}
-                    originCountryName={originCountryName}
-                    productName={productName}
-                />
+        {ssrResult && (
+          <SensitivityAnalysis
+            landedCost={ssrResult.summary.total_landed_cost_zar}
+            customsValue={defaultInputs.customsValue}
+            dutyRate={dutyPct}
+            dutyAmount={
+              ssrResult.line_items.find((i) => i.key === "duty")?.amount_zar ||
+              0
+            }
+            exchangeRate={defaultInputs.exchangeRate}
+            invoiceValue={defaultInputs.invoiceValue}
+          />
+        )}
 
-                <DisclaimerBanner />
-            </div>
+        <MarketPriceBenchmark />
+        <ExampleScenariosTable
+          scenarios={scenarios}
+          title="Optimization scenarios"
+          subtitle="Use this to compare price and logistics strategies before purchase order release."
+        />
+      </section>
 
-            <StickyActionBar />
-        </PageShell>
-    );
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <h2 className="text-xl font-semibold text-slate-900">
+          Importer playbook
+        </h2>
+        <ImportTimeline />
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <FAQSection faqs={faqs} productName="solar panels" />
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <DisclaimerBanner />
+      </section>
+
+      <StickyActionBar />
+    </PageShell>
+  );
 }

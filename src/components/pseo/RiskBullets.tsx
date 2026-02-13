@@ -15,12 +15,12 @@ interface RiskBulletsProps {
 }
 
 const ICONS: Record<string, React.ReactNode> = {
-    classification: <Scale className="h-5 w-5 text-amber-600 flex-shrink-0" />,
-    freight: <Ship className="h-5 w-5 text-blue-600 flex-shrink-0" />,
-    currency: <DollarSign className="h-5 w-5 text-purple-600 flex-shrink-0" />,
-    compliance: <Shield className="h-5 w-5 text-red-600 flex-shrink-0" />,
-    dumping: <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0" />,
-    fta: <HandshakeIcon className="h-5 w-5 text-teal-600 flex-shrink-0" />,
+    classification: <Scale className="h-5 w-5 text-sky-600 flex-shrink-0" />,
+    freight: <Ship className="h-5 w-5 text-sky-600 flex-shrink-0" />,
+    currency: <DollarSign className="h-5 w-5 text-sky-600 flex-shrink-0" />,
+    compliance: <Shield className="h-5 w-5 text-sky-600 flex-shrink-0" />,
+    dumping: <AlertTriangle className="h-5 w-5 text-sky-600 flex-shrink-0" />,
+    fta: <HandshakeIcon className="h-5 w-5 text-sky-600 flex-shrink-0" />,
 };
 
 export function RiskBullets({
@@ -34,11 +34,11 @@ export function RiskBullets({
         <section className="mt-12 mb-8" aria-labelledby="risk-bullets-heading">
             <h2
                 id="risk-bullets-heading"
-                className="text-xl font-bold tracking-tight text-neutral-900 md:text-2xl"
+                className="text-xl font-bold tracking-tight text-slate-900 md:text-2xl"
             >
                 {title}
             </h2>
-            <p className="mt-1 text-sm text-neutral-500 max-w-2xl mb-6">
+            <p className="mt-1 mb-6 max-w-2xl text-sm text-slate-600">
                 {subtitle}
             </p>
 
@@ -46,16 +46,16 @@ export function RiskBullets({
                 {bullets.map((bullet, i) => (
                     <div
                         key={i}
-                        className="flex items-start gap-4 p-4 rounded-xl border border-neutral-200 bg-white shadow-sm hover:shadow-md transition-shadow"
+                        className="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
                     >
                         <div className="mt-0.5">
-                            {ICONS[bullet.icon] || <AlertTriangle className="h-5 w-5 text-neutral-400 flex-shrink-0" />}
+                            {ICONS[bullet.icon] || <AlertTriangle className="h-5 w-5 text-slate-400 flex-shrink-0" />}
                         </div>
                         <div>
-                            <h3 className="text-sm font-semibold text-neutral-900">
+                            <h3 className="text-sm font-semibold text-slate-900">
                                 {bullet.title}
                             </h3>
-                            <p className="text-sm text-neutral-600 mt-0.5 leading-relaxed">
+                            <p className="mt-0.5 text-sm leading-relaxed text-slate-600">
                                 {bullet.detail}
                             </p>
                         </div>

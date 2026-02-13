@@ -32,11 +32,11 @@ export function InternalLinksGrid({
             <div className="mb-6">
                 <h2
                     id="related-guides-heading"
-                    className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50"
+                    className="text-2xl font-bold tracking-tight text-slate-900"
                 >
                     Related Import Cost Guides
                 </h2>
-                <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+                <p className="mt-1 text-sm text-slate-600">
                     Explore related duty calculators and import cost guides.
                 </p>
             </div>
@@ -44,19 +44,19 @@ export function InternalLinksGrid({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <LinkBlock
                     title={`${productName} from Other Countries`}
-                    icon={<Globe className="h-4 w-4 text-blue-500" />}
+                    icon={<Globe className="h-4 w-4 text-sky-600" />}
                     links={data.sameProductOtherOrigins}
                     emptyText="No other origins available yet."
                 />
                 <LinkBlock
                     title={`More Imports from ${originCountryName}`}
-                    icon={<Package className="h-4 w-4 text-emerald-500" />}
+                    icon={<Package className="h-4 w-4 text-sky-600" />}
                     links={data.sameOriginOtherProducts}
                     emptyText="No other products available yet."
                 />
                 <LinkBlock
                     title="Related Tariff Codes"
-                    icon={<Hash className="h-4 w-4 text-violet-500" />}
+                    icon={<Hash className="h-4 w-4 text-sky-600" />}
                     links={data.relatedHsCodes}
                     emptyText="No related codes available yet."
                 />

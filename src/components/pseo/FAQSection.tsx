@@ -27,11 +27,11 @@ export function FAQSection({ faqs, productName }: FAQSectionProps) {
             <div className="mb-8">
                 <h2
                     id="faq-heading"
-                    className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl"
+                    className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
                 >
                     Frequently Asked Questions
                 </h2>
-                <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 max-w-2xl">
+                <p className="mt-2 max-w-2xl text-sm text-slate-600">
                     Common questions about importing {productName} into South Africa — duties, VAT, documentation, and compliance.
                 </p>
             </div>
@@ -41,12 +41,12 @@ export function FAQSection({ faqs, productName }: FAQSectionProps) {
                     <AccordionItem
                         key={i}
                         value={`faq-${i}`}
-                        className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-5 shadow-sm data-[state=open]:shadow-md transition-shadow"
+                        className="rounded-lg border border-slate-200 bg-white px-5 shadow-sm transition-shadow data-[state=open]:shadow-md"
                     >
-                        <AccordionTrigger className="py-4 text-left text-sm font-semibold text-neutral-800 dark:text-neutral-200 hover:no-underline [&[data-state=open]]:text-blue-700 dark:[&[data-state=open]]:text-blue-400">
+                        <AccordionTrigger className="py-4 text-left text-sm font-semibold text-slate-800 hover:no-underline [&[data-state=open]]:text-sky-700">
                             <h3 className="text-[15px] leading-snug font-semibold pr-4">{faq.question}</h3>
                         </AccordionTrigger>
-                        <AccordionContent className="pb-4 pt-0 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                        <AccordionContent className="pb-4 pt-0 text-sm leading-relaxed text-slate-600">
                             <p>{faq.answer}</p>
                         </AccordionContent>
                     </AccordionItem>

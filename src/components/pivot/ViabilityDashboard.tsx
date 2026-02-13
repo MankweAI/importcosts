@@ -1,136 +1,101 @@
 "use client";
 
 import { usePSEOCalculatorStore } from "@/store/usePSEOCalculatorStore";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertTriangle, XCircle, TrendingUp, DollarSign, BarChart3, Shield } from "lucide-react";
+import { CheckCircle2, AlertTriangle, XCircle, TrendingUp, DollarSign, BarChart3, Shield } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+
+function formatMoney(value: number): string {
+    return `R ${value.toLocaleString("en-ZA", { maximumFractionDigits: 2 })}`;
+}
 
 export function ViabilityDashboard() {
     const { result, status, inputs } = usePSEOCalculatorStore();
+    if (status !== "success" || !result) return null;
 
-    if (status !== 'success' || !result) return null;
+    const margin = result.grossMarginPercent ?? null;
+    const verdict = result.verdict || "CAUTION";
 
-    const { verdict, breakEvenPrice, summary, grossMarginPercent } = result;
-    const activeVerdict = verdict || "CAUTION";
-
-    const variantConfig = {
+    const verdictConfig = {
         GO: {
-            gradient: "from-emerald-50 to-emerald-100/50",
-            border: "border-emerald-200",
-            badge: "bg-emerald-600",
-            text: "text-emerald-800",
-            icon: CheckCircle,
-            label: "Viable Deal",
-            sublabel: "Margins are healthy. Proceed with confidence."
+            icon: CheckCircle2,
+            title: "GO",
+            message: "Current assumptions support a viable import decision.",
+            chip: "bg-sky-600 text-white",
         },
         CAUTION: {
-            gradient: "from-amber-50 to-amber-100/50",
-            border: "border-amber-200",
-            badge: "bg-amber-500",
-            text: "text-amber-800",
             icon: AlertTriangle,
-            label: "Proceed with Caution",
-            sublabel: "Margins are thin or risks elevated. Review before committing."
+            title: "CAUTION",
+            message: "Profitability is sensitive. Validate cost and FX assumptions.",
+            chip: "bg-sky-700 text-white",
         },
         NOGO: {
-            gradient: "from-red-50 to-red-100/50",
-            border: "border-red-200",
-            badge: "bg-red-600",
-            text: "text-red-800",
             icon: XCircle,
-            label: "High Risk",
-            sublabel: "This deal is likely unprofitable or has critical blockers."
-        }
-    };
+            title: "NO-GO",
+            message: "Cost profile is currently too high for target outcomes.",
+            chip: "bg-sky-800 text-white",
+        },
+    }[verdict];
 
-    const config = variantConfig[activeVerdict];
-    const Icon = config.icon;
-
-    const hasMargin = grossMarginPercent !== undefined && grossMarginPercent !== null;
-    const marginDisplay = hasMargin ? `${grossMarginPercent!.toFixed(1)}%` : "—";
-    const marginPositive = hasMargin && grossMarginPercent! > 0;
+    const Icon = verdictConfig.icon;
 
     return (
-        <Card className={`overflow-hidden border-2 ${config.border} shadow-sm`}>
-            {/* Verdict Banner */}
-            <div className={`bg-red-500 px-6 py-5`}>
-                <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className={`flex items-center justify-center w-12 h-12 rounded-2xl ${config.badge} shadow-lg`}>
-                            <Icon className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                            <h2 className="text-xl font-bold text-neutral-900">{config.label}</h2>
-                            <p className="text-sm text-neutral-600 mt-0.5">{config.sublabel}</p>
-                        </div>
-                    </div>
-                    <Badge className={`${config.badge} text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider shadow-sm`}>
-                        {activeVerdict === "GO" ? "GO" : activeVerdict === "CAUTION" ? "CAUTION" : "NO-GO"}
-                    </Badge>
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+            <div className="mb-5 flex flex-col gap-4 border-b border-slate-100 pb-5 md:flex-row md:items-start md:justify-between">
+                <div>
+                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold tracking-wide ${verdictConfig.chip}`}>
+                        Verdict: {verdictConfig.title}
+                    </span>
+                    <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900">Viability snapshot</h2>
+                    <p className="mt-1 text-sm text-slate-600">{verdictConfig.message}</p>
+                </div>
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-sky-200 bg-sky-50 text-sky-700">
+                    <Icon className="h-6 w-6" />
                 </div>
             </div>
 
-            {/* Metrics Grid */}
-            <CardContent className="p-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-                    {/* Metric 1: Landed Cost */}
-                    <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-                        <div className="flex items-center gap-1.5 mb-2">
-                            <DollarSign className="h-3.5 w-3.5 text-neutral-400" />
-                            <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">Landed Cost / Unit</span>
-                        </div>
-                        <div className="text-xl font-bold text-neutral-900 tabular-nums">
-                            R {summary.landed_cost_per_unit_zar.toLocaleString('en-ZA', { maximumFractionDigits: 2 })}
-                        </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="mb-2 flex items-center gap-2 text-slate-500">
+                        <DollarSign className="h-4 w-4" />
+                        <span className="text-xs font-semibold uppercase tracking-wide">Landed / Unit</span>
                     </div>
+                    <p className="text-2xl font-bold text-slate-900">{formatMoney(result.summary.landed_cost_per_unit_zar)}</p>
+                </article>
 
-                    {/* Metric 2: Break-Even */}
-                    <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-                        <div className="flex items-center gap-1.5 mb-2">
-                            <TrendingUp className="h-3.5 w-3.5 text-neutral-400" />
-                            <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">Break-Even</span>
-                        </div>
-                        <div className="text-xl font-bold text-neutral-900 tabular-nums">
-                            R {breakEvenPrice?.toLocaleString('en-ZA', { maximumFractionDigits: 2 }) || "—"}
-                        </div>
-                        <p className="text-[10px] text-neutral-400 mt-1">
-                            {inputs.importerType === "VAT_REGISTERED" ? "Excl. recoverable VAT" : "Total recovery needed"}
-                        </p>
+                <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="mb-2 flex items-center gap-2 text-slate-500">
+                        <BarChart3 className="h-4 w-4" />
+                        <span className="text-xs font-semibold uppercase tracking-wide">Gross Margin</span>
                     </div>
+                    <p className="text-2xl font-bold text-slate-900">{margin === null ? "-" : `${margin.toFixed(1)}%`}</p>
+                    <p className="mt-1 text-xs text-slate-500">{margin === null ? "Set target price to unlock" : "Based on target selling price"}</p>
+                </article>
 
-                    {/* Metric 3: Gross Margin */}
-                    <div className={`p-4 rounded-xl border ${hasMargin && marginPositive ? 'bg-emerald-50/50 border-emerald-100' : hasMargin ? 'bg-red-50/50 border-red-100' : 'bg-neutral-50 border-neutral-100'}`}>
-                        <div className="flex items-center gap-1.5 mb-2">
-                            <BarChart3 className="h-3.5 w-3.5 text-neutral-400" />
-                            <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">Gross Margin</span>
-                        </div>
-                        <div className={`text-xl font-bold tabular-nums ${hasMargin && marginPositive ? 'text-emerald-700' : hasMargin ? 'text-red-700' : 'text-neutral-400'}`}>
-                            {marginDisplay}
-                        </div>
-                        {!hasMargin && (
-                            <p className="text-[10px] text-neutral-400 mt-1">Enter selling price to see margin</p>
-                        )}
+                <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="mb-2 flex items-center gap-2 text-slate-500">
+                        <TrendingUp className="h-4 w-4" />
+                        <span className="text-xs font-semibold uppercase tracking-wide">Break-even</span>
                     </div>
+                    <p className="text-2xl font-bold text-slate-900">
+                        {result.breakEvenPrice ? formatMoney(result.breakEvenPrice) : "-"}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500">
+                        {inputs.importerType === "VAT_REGISTERED" ? "VAT vendor assumptions" : "Private importer assumptions"}
+                    </p>
+                </article>
 
-                    {/* Metric 4: Confidence */}
-                    <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-                        <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-1.5">
-                                <Shield className="h-3.5 w-3.5 text-neutral-400" />
-                                <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">Confidence</span>
-                            </div>
-                            <span className={`text-[10px] font-bold uppercase ${result.hs.confidence_bucket === 'high' ? 'text-emerald-600' : 'text-amber-600'}`}>
-                                {result.hs.confidence_bucket}
-                            </span>
-                        </div>
-                        <Progress value={result.hs.confidence_score * 100} className="h-1.5 mb-1.5" />
-                        <p className="text-[10px] text-neutral-400">HS accuracy + tariff freshness</p>
+                <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="mb-2 flex items-center gap-2 text-slate-500">
+                        <Shield className="h-4 w-4" />
+                        <span className="text-xs font-semibold uppercase tracking-wide">HS Confidence</span>
                     </div>
-
-                </div>
-            </CardContent>
-        </Card>
+                    <div className="flex items-end gap-2">
+                        <p className="text-2xl font-bold text-slate-900">{(result.hs.confidence_score * 100).toFixed(0)}%</p>
+                        <p className="mb-1 text-sm capitalize text-slate-600">{result.hs.confidence_bucket}</p>
+                    </div>
+                    <Progress value={result.hs.confidence_score * 100} className="mt-2 h-1.5 bg-slate-200" />
+                </article>
+            </div>
+        </section>
     );
 }
